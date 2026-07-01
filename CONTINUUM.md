@@ -20,6 +20,15 @@ travaille la rupture sans la reconstituer de tête à chaque fois. Il protège l
 conditions du geste ; il n'est pas le geste. Le jour où l'on écrit « l'appli anticipe
 la rupture », on a refabriqué le protocole qui décide à la place du soignant.
 
+*Mécanisme intime (une fonction, pas la thèse) :* vu de l'intérieur de la tête du
+soignant, l'outil est un **déchargeur de mémoire de travail**. La perception clinique
+exige de tenir beaucoup d'indices en suspens et de laisser tourner des processus en
+tâche de fond — coûteux, fini, et mortel si ça meurt avec l'attention. L'outil ne
+perçoit pas à la place du soignant (ça, c'est le sanctuaire) ; il porte la **charge de
+rétention** de la part déjà argumentable, pendant que le soignant continue à percevoir.
+Le dépôt n'est donc pas de la traçabilité administrative : c'est le contenu de la
+mémoire de travail extériorisé.
+
 ---
 
 ## 1. Le geste que l'outil protège
@@ -48,6 +57,14 @@ Distinction structurante, valable partout dans l'outil :
 - **La déduction** — une fois la perception posée, en tirer la conduite (« si déni +
   contrainte, alors desserrer pour tenir le lien »). Cette moitié est **mécanisable** :
   la plume la rejoue à l'identique.
+
+L'ordre est **perception → décomposition, jamais l'inverse.** Le soignant perçoit
+d'abord la gestalt (d'un coup, ou en jours, ou en mois) ; il reconstruit *ensuite* la
+justification, indice par indice, pour la rendre argumentable à un autre. La déduction
+n'est pas une seconde voie parallèle à la perception : elle lui est **postérieure et
+reconstructive**. C'est ce qui rend le geste *enseignable sans être mécanisable* — on
+peut rendre des comptes sur une chose qu'on n'a pas obtenue par comptes. (Voir §2, le
+seuil de dépôt : on ne dépose que ce qui a franchi le seuil de l'argumentable.)
 
 Danger central : la machine *a* les mots crus (ils sont dans le dossier) et peut les
 **rassembler**. Mais si elle tente l'émergence, elle produit le **cliché statistique** —
@@ -85,9 +102,50 @@ Registre **hypothétique, tenu, daté** — jamais un verdict, même envers le c
 donne vie, en respectant le rythme de chacun). Champ **jamais généré ni touché par la
 machine**.
 
-**Clinique dédoublée :** une lecture **médecin** (prioritaire) + une lecture **équipe
-soignante** (secondaire). Les deux restent humaines. Voir §4 pour la gestion de la
-discordance.
+**Clinique dédoublée :** une lecture **médecin** + une lecture **équipe soignante** —
+**deux positions sans hiérarchie**, aucune ne prime. Les deux restent humaines. L'écart
+entre elles n'est pas un défaut à corriger, c'est un matériau (voir §4, la divergence des
+lectures).
+
+**Seuil de dépôt — perçu ≠ argumentable.** Dans la tête du soignant, deux états
+distincts coexistent : la perception encore **en gestation** (pas mûre, pas
+argumentable) et la perception déjà **décomposée** (argumentable, donc transmissible).
+Le seuil de ce qui entre dans le sanctuaire n'est pas « ce qui est important », c'est
+**« ce que j'ai perçu assez pour pouvoir l'argumenter à un autre »**. L'outil ne prend
+que l'argumentable, et surtout **ne force jamais à sortir ce qui est encore en train de
+se percevoir** — l'écrire trop tôt le figerait en verdict prématuré, ce qui trahit la
+temporalité que tout le reste protège. (Symétrie exacte de la plume, §5, qui refuse de
+se générer sous un seuil de matière : le soignant refuse de déposer sous un seuil
+d'argumentabilité.)
+
+**Hypothèses de travail** (dans le sanctuaire, registre visiblement distinct de la
+Clinique posée). L'outil tient **plusieurs hypothèses côte à côte — le pluriel est la
+règle, l'unique le cas particulier.** Le pluriel n'est pas une option, c'est la
+**protection structurelle** : plusieurs hypothèses qui tirent dans des sens différents
+se tiennent mutuellement ouvertes et ne peuvent pas se refermer en verdict (même règle
+que les indices §8 et la divergence des lectures §4, appliquée cette fois à la lecture du soignant
+lui-même). Chaque hypothèse est :
+- **datée et attribuée** — un moment signé, pas une vérité ;
+- **révisable visiblement** — on voit laquelle se renforce et laquelle s'affaisse à
+  mesure que les faits crus arrivent ; jamais d'écrasement silencieux. Un faisceau où
+  rien ne bouge malgré les faits qui rentrent est **suspect** (quelqu'un a cessé de
+  regarder le réel) ;
+- **non-surplombante** — un fil dans le tissu, jamais le motif qui organise la lecture
+  des autres champs ;
+- **jamais pondérée par l'outil** — ce qui pèse pèse parce que l'humain l'a *perçu*
+  comme tel ; l'outil **transcrit** le poids, il ne le fabrique pas (pas de champ
+  « criticité », pas de mise en avant automatique — sinon l'outil hiérarchise des
+  lectures, donc les lit, et le sanctuaire retombe). Ce qui doit peser fort et vite (le
+  risque suicidaire, l'organique masqué) pèse parce que la perception l'a décidé.
+
+Une hypothèse de travail ne se juge pas vraie ou fausse : elle se juge à **ce qu'elle
+permet de tenir et de continuer**, et **elle cède dès qu'un fait cru lui résiste**.
+C'est cette révisabilité — portée par le pluriel — qui sépare le tissage clinique du
+récit qui s'enferme sur lui-même. (Garde-fou : le récit le plus *cohérent* est parfois
+le délire. Ce qui distingue le bon tissage du délire n'est ni le sens ni la continuité —
+que le délire possède en abondance — mais qu'il **lâche devant le fait qui résiste**, là
+où le délire plie le fait pour sauver l'histoire. La cohérence qui vaut n'est pas la
+cohérence *interne* du récit, c'est la cohérence *avec le réel cru du patient*.)
 
 ### Ressenti — *« Descendre dans la sensation »*
 Ce que la situation fait éprouver. **Trois positions distinctes, jamais fusionnées :**
@@ -131,7 +189,7 @@ reprendre »). L'outil ne présente jamais une clôture comme une fin.
 | Couche | Contenu | Qui produit | Machine ? |
 |---|---|---|---|
 | **Visible** (traversée) | S, R, D, Diff, É | équipe (dépose) | met en forme, ne conclut jamais |
-| **Sanctuaire** (le regard) | C — lecture clinique | psychiatre (+ équipe, secondaire) | **jamais générée, jamais touchée** |
+| **Sanctuaire** (le regard) | C — lecture clinique | psychiatre + équipe (deux positions) | **jamais générée, jamais touchée** |
 | **Factuelle** (machine) | faits du journal | machine | lit et remonte, **ne juge jamais** |
 
 Code couleur, structurel et non décoratif :
@@ -144,28 +202,55 @@ soignant.
 
 ---
 
-## 4. Discordance médecin / équipe
+## 4. Divergence des lectures
 
-La lecture médecin prime ; celle de l'équipe est secondaire mais visible. Détecter la
-divergence **sans l'interpréter** (interpréter le fond franchirait le sanctuaire) :
+Plusieurs personnes déposent chacune leur lecture du même patient — médecin, équipe
+soignante, entourage (famille), structure d'accueil. **Aucune ne prime** : ce sont des
+*positions* différentes, pas des niveaux d'autorité (le médecin voit le patient autrement
+que l'IDE qui va au domicile chaque matin, autrement que la sœur qui le connaît depuis
+toujours). Ce qui compte n'est pas de savoir qui a raison : **c'est la divergence
+elle-même qui est le matériau.** Deux angles qui s'écartent sur le même patient font
+apparaître ce qu'aucun ne voit seul ; leur confrontation ne tranche pas, elle **précise
+l'hypothèse de travail** (§2). La divergence des lectures est à la Clinique ce que la
+Diffraction est au parcours : un écart qu'on tient, pas qu'on arbitre.
 
-- **(a) Juxtaposition attribuée, toujours.** Les deux lectures côte à côte, sources
-  nommées. L'écart devient visible à l'œil humain. Zéro interprétation machine. *(C'est
-  la mécanique de l'« écart tenu, non résolu » de la maquette : on ne détecte pas, on
-  montre, et l'écart saute aux yeux ; on renvoie la résolution à la réunion, pas à la
-  carte.)*
-- **(b) Balise grossière structurée.** Chaque partie pose un marqueur simple (ex. *tient
-  / fragile / décroche*). L'outil compare **les balises, pas le sens**, et signale quand
-  elles diffèrent. La clinique libre reste sanctuarisée.
-- **(c) Hypothèses plurielles de tendance** — *si assez de données*. L'outil peut
-  ouvrir : « des écarts comme celui-là ont souvent tenu à : une info que l'un avait et
-  pas l'autre / deux moments différents du patient / deux places dans la relation ».
-  **Toujours plusieurs, jamais une.** Une hypothèse seule est une interprétation
-  déguisée ; trois qui se contredisent restent une ouverture.
+Mécanisme **source-agnostique** : il accueille n'importe quels angles, traités de la même
+façon, **sans jamais interpréter le fond** (interpréter franchirait le sanctuaire) :
+
+- **(a) Juxtaposition attribuée — le cœur.** Les lectures posées côte à côte, sources
+  nommées, en texte libre. L'écart devient visible *dans sa texture* : l'œil humain voit
+  non seulement *qu'*ils divergent mais *en quoi*. Zéro tri, zéro échelle, zéro arbitrage
+  machine. *(C'est l'« écart tenu, non résolu » de la maquette : on ne détecte pas, on
+  montre, et la résolution se renvoie à la réunion, pas à la carte.)*
+- **(b) Marqueur factuel « plusieurs angles déposés ».** Pour le repérage rapide (voir
+  d'un coup, sur trente patients, où il y a matière à confronter), l'outil signale
+  *qu'*il existe plusieurs lectures — sans dire lesquelles, sans dire si elles s'accordent,
+  sans les mesurer. Fait binaire (des dépôts existent), pas sémantique. *(On ne code plus
+  d'échelle type tient/fragile/décroche : forcer les angles sur un axe commun les rend
+  commensurables de force — exactement la comparaison que le sanctuaire refuse — et
+  produit de faux signaux dans les deux sens, deux « fragile » recouvrant des fragilités
+  sans rapport.)*
+- **(c) Hypothèses plurielles** — *si assez de données*. La confrontation des angles peut
+  ouvrir plusieurs pistes de travail (« une info que l'un avait et pas l'autre / deux
+  moments différents du patient / deux places dans la relation »). **Toujours plusieurs,
+  jamais une** : une piste seule est une interprétation déguisée. Elles affinent
+  l'hypothèse sans la clore.
 
 Rejeté : **(d) comparaison sémantique par modèle** — franchit le sanctuaire.
 
-« Écart tenu, à travailler en réunion » — jamais tranché dans la carte.
+**La divergence ne se résout pas dans la carte** : elle se travaille en réunion, et ce
+qu'elle produit, c'est une hypothèse de travail plus précise — pas un gagnant. Après
+cette coupe, le §4 ne contient plus **aucune opération où la machine touche au *sens*
+d'une lecture** : elle pose (a), elle compte (b), elle ouvre plusieurs pistes (c).
+
+*Note — la divergence impliquant l'entourage a une couleur particulière.* L'entourage
+n'est pas un soignant : sa lecture engage la question de l'alliance et de la place de la
+famille dans le soin, et surtout il est **aussi une ressource externe** (§13). Une
+famille qui lit « il va bien » quand l'équipe lit « fragile », ce n'est pas seulement un
+angle de plus à juxtaposer — c'est **une direction de travail sur le lien** : un fil de
+la couture à accompagner, pas seulement un écart à noter. L'entourage est le point où
+divergence (§4), ressource externe (§13) et ressenti (§2) se touchent — trois facettes du
+même acteur.
 
 ---
 
@@ -193,15 +278,21 @@ entièrement de la qualité des prémisses déposées → §8, §1.
 
 ## 6. Vide nommé ≠ non renseigné
 
-Trois états, jamais deux :
+Quatre états, jamais deux :
+- **rempli.**
 - **vide-info** : la case est vide *et c'est un fait* (« aucun tiers — patient isolé »).
   À afficher comme un événement typographié, pas comme un blanc.
-- **non-renseigné** : un travail en attente.
-- (rempli.)
+- **non-renseigné** : un travail en attente, pas encore regardé.
+- **hypothèses en cours** : le soignant *tient quelque chose* mais ne l'a pas encore
+  perçu assez pour l'argumenter (§2, seuil de dépôt). Ce n'est **pas un trou** — c'est
+  une gestation. L'état dit à l'équipe « travail en cours derrière ce champ » et à
+  l'outil « **ne relance pas ici** » (§11). Il peut porter des hypothèses de travail
+  (plurielles, datées, révisables) ou rester nu si rien n'est encore argumentable.
 
-Écraser le premier sous le second (« à remplir ») détruit une information clinique.
-Réf. code : `diffraction_sans_partage` de *Le collègue* — le vide comme champ de
-première classe.
+Écraser le vide-info sous le non-renseigné (« à remplir ») détruit une information
+clinique. Confondre « hypothèses en cours » avec « non-renseigné » pousse à articuler
+avant maturité = verdict prématuré. Réf. code : `diffraction_sans_partage` de
+*Le collègue* — le vide comme champ de première classe.
 
 ---
 
@@ -335,7 +426,10 @@ Composition (structure fixe, contenu libre) :
    digestion de la demande. En **latence** dessous, les six portes de rupture (voir
    §12) : l'outil range en silence ce que la prose touche, et **relance par l'absence**
    sur ce qui n'a pas été touché — une fois, sous forme de question qui ouvre, jamais un
-   champ qui ordonne.
+   champ qui ordonne. **La relance distingue le trou de la gestation** (§6) : elle se
+   déclenche sur le *non-regardé*, jamais sur un champ marqué « hypothèses en cours ».
+   Relancer une perception en gestation, c'est forcer la maturité = fabriquer le verdict
+   prématuré que tout le système interdit.
 
 4. **La digestion** — SIID ou pas. **Sanctuaire.** L'outil a tendu les faits ; il ne
    conclut pas.
@@ -367,6 +461,36 @@ ou la semi-autonomie**, avec des ressources extérieures.
 
 Collecte des signaux de rupture = l'équipe (documentable par un soignant, une secrétaire
 zélée : mots crus du dossier). Lecture (SIID ou pas) = le psychiatre.
+
+---
+
+## 12 bis. Le relai — charge partagée (survie de l'équipe)
+
+Consigner l'argumentable (§2) rend la situation **consultable par tous** : elle cesse
+d'être portée par le seul dépositaire. N'importe qui peut reprendre, parce que tout le
+monde peut savoir — la situation n'est plus enfermée dans la tête de la personne qui
+l'a vécue.
+
+C'est le **mécanisme derrière la baisse d'absentéisme** de la tribune : une équipe qui
+dépose et se relaie s'use moins qu'une équipe où chacun tient tout de tête jusqu'à
+craquer. Le même geste (consigner) est **soin du patient** (continuité) *et* **survie du
+soignant** (décharge). Le déchargeur de mémoire de travail (§0) n'est pas qu'individuel :
+mis en commun, il devient un dispositif de relai collectif.
+
+**À ne pas confondre avec le champ Diffraction (§2).** Deux mécanismes distincts qui,
+tous deux, décomposent sur plusieurs têtes — d'où la parenté, d'où le risque de
+confusion :
+
+| | ce qui est décomposé | effet visé |
+|---|---|---|
+| **Diffraction** (champ de la grille) | les *regards* sur le parcours | acuité (voir ce qu'un seul regard ne construit pas) |
+| **Relai** (charge partagée) | la *charge de rétention* | survie (ne pas porter seul) |
+
+Dépendance à noter : **le relai est la condition de la diffraction.** Des regards ne se
+confrontent que s'ils sont d'abord *déposés* quelque part où ils se rencontrent — un
+angle que l'IDEL garde dans sa tête ne diffracte rien. Consigner (relai) est le substrat
+qui permet à la mise en commun des regards (diffraction) d'exister. C'est le problème de
+départ résolu : la diffraction du lundi qui se faisait de tête et s'évaporait.
 
 ---
 
@@ -431,8 +555,8 @@ la logistique.
   code stable. Bon design *et* protection : découpler l'identité de l'analyse.
 - Statiques (posés à l'entrée, servent de paramètres) : type de SIID, date d'entrée,
   statut (actif / relai en cours / clôturé).
-- Six champs de la grille (§2), dont **Clinique = sanctuaire, dédoublée** (médecin
-  prioritaire / équipe secondaire).
+- Six champs de la grille (§2), dont **Clinique = sanctuaire, dédoublée** (médecin +
+  équipe, deux positions sans hiérarchie ; l'écart = matériau, §4).
 - Ressenti = **trois sous-champs** (patient / équipe / entourage), chacun avec état
   vide-info distinct de non-renseigné.
 - Diffraction = regards attribués, gardés contrastés ; `sans_partage` booléen.
@@ -639,13 +763,28 @@ rouge, le nœud, sur un fil noir continu. Fond papier clinique (blanc froid, pas
 
 - Unité = patient, pas acte.
 - Grille = **S / C / R / Demande / Diffraction / É**, intriquée.
-- **Clinique = sanctuaire humain**, dédoublée (médecin prioritaire / équipe), nomme le
-  mécanisme, jamais l'étiquette ; hypothèse tenue, jamais verdict.
+- **Clinique = sanctuaire humain**, dédoublée (médecin + équipe, **deux positions sans
+  hiérarchie** ; l'écart est le matériau), nomme le mécanisme, jamais l'étiquette ;
+  hypothèse tenue, jamais verdict.
+- **Seuil de dépôt** = perçu ≠ argumentable ; on ne dépose que l'argumentable, on ne
+  force jamais la perception en gestation.
+- **Hypothèses de travail** = plurielles par règle (protection anti-verdict), datées,
+  révisables visiblement, non-surplombantes, **jamais pondérées par l'outil** ; jugées à
+  ce qu'elles tiennent, cèdent devant le fait cru qui résiste (garde-fou anti-délire).
 - **Interdit dur** : la machine ne suggère jamais de lecture clinique, même « évidente ».
+- Perception → décomposition (ordre non réversible) ; la déduction est postérieure et
+  reconstructive.
 - Ressenti = **trois positions**, non fusionnées.
-- Diffraction ≠ ressenti ; discordance = (a) juxtaposition + (b) balise + (c) hypothèses
-  **plurielles** ; jamais (d) sémantique.
-- **Vide nommé** ≠ non-renseigné.
+- **Divergence des lectures** (§4) = **source-agnostique** (médecin, équipe, entourage,
+  structure — aucun ne prime) ; l'écart *est* le matériau, il précise l'hypothèse, ne se
+  tranche pas. (a) juxtaposition attribuée + (b) marqueur factuel « plusieurs angles » +
+  (c) hypothèses **plurielles** ; jamais (d) sémantique, jamais d'échelle comparant les
+  angles. Divergence avec l'entourage = aussi une direction de travail sur le lien (§13).
+- **Vide nommé** ≠ non-renseigné ; 4ᵉ état = **hypothèses en cours** (gestation, pas
+  trou ; la relance ne s'y déclenche pas).
+- **Relai (charge partagée)** ≠ Diffraction : le relai répartit la *charge*, la
+  diffraction les *regards* ; le relai est la condition de la diffraction. Mécanisme de
+  la baisse d'absentéisme (tribune).
 - Plume = **montre sans expliquer**, refuse sous seuil.
 - Couche silencieuse = **factuelle seulement** (version stricte).
 - Collègue = **pour le soignant, jamais le patient** ; + plume.
