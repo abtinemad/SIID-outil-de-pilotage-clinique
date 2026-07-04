@@ -1,4 +1,4 @@
-# SIID — outil de pilotage clinique
+# CONTINUUM — outil de pilotage clinique
 
 > **Servir la continuité du parcours, contre la fragmentation de l'esprit.**
 
