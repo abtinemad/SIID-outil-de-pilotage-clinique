@@ -1226,8 +1226,12 @@ pas par la couleur — §ci-dessus).
   thèse. Le livre n'est pas à côté de l'outil : il en est la doc.
 - **`Le collègue`** (l'app) = le **moteur re-sujetté** (grille implicite, lecture par
   l'absence, gating par l'alliance, socle de clarté, plume qui montre sans expliquer).
-- Lignage esthétique **`Encre`** (noir / rouge / serif) : le rouge réservé à
-  l'intouchable (sanctuaire humain, point de nouage du logo).
+- Lignage esthétique **`Encre`** (noir / rouge / linéale monolinéaire) : le rouge
+  réservé à l'intouchable (sanctuaire humain, point de nouage du logo).
+  **La lettre obéit au fil** — épaisseur constante, sans empattement, terminaisons
+  rondes, humaniste. Le serif (choix par défaut, abandonné) modulait pleins et déliés
+  et contredisait le monolinéaire du nœud. Fin visée : une **police-fil**, glyphes
+  écrits du même trait que la marque.
 
 ---
 
