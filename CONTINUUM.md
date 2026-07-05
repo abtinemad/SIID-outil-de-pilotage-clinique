@@ -1103,6 +1103,13 @@ grammaire nouvelle** (elle n'est jamais décorative — le logo animé *est* le 
 mouvement ; **la taille des boucles suit le volume de notre récolte, non un état calculé du
 patient**).
 
+**Droit de tordre — le logo, pas le patient.** La règle clinique « on ne crée jamais de
+nœud » protège le *patient* de l'induction ; elle ne vaut **pas** pour le dessin du logo, où
+**tordre le fil pour former la boucle *est* le geste de fabrication** (torsion, pas coupe). Ne
+pas réimporter l'interdit clinique dans le graphisme — erreur de catégorie récurrente. Au
+niveau du logo, les boucles préexistent *repliées* et se déploient par torsion ; « rien ne
+naît » vaut pour la clinique (anti-projection), pas pour la plume qui vrille.
+
 ### Bistabilité et latence — deux lectures d'un seul geste
 
 Le logo porte **deux propriétés perceptives, orthogonales, non redondantes** — parce que

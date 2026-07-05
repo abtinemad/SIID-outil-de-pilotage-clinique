@@ -1,6 +1,8 @@
 # PASSATION — fil roulant
 
 > Handoff continu. Entrée la plus récente en tête. Le détail vit dans `passations/`.
+> **Socles permanents** (à lire avant de rouvrir un sujet) : mécanique du logo →
+> `passations/logo_mecanique.md`.
 
 ## 2026-07-05 — la Vigie + inscription doctrinale
 Deux temps. (1) Conception de **la Vigie** — réflexivité institutionnelle contre la
