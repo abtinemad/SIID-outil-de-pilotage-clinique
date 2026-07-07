@@ -4,6 +4,35 @@
 > **Socles permanents** (à lire avant de rouvrir un sujet) : mécanique du logo →
 > `passations/logo_mecanique.md`.
 
+## 2026-07-07 (ap-m) — métabolisation : trilobe, eval, ré-attachement du Lien
+Suite du matin (strates). **Tranché et rédigé** (dans le guide — *pas encore inscrit* dans
+CONTINUUM.md) : **les trois strates** = degrés de métabolisation (5 récolte brute/soignants · 3
+métabolisation/coordinateurs · 2 institutionnel méta/anonyme) ; **canal unique / deux guichets** ;
+triade **Affectif · Réflexif · Vigilante** (lobes — les deux premiers composés, la Vigilante
+scrutée) ; **Continuité/Fragmentation en lumière-ombre** (refonte §18 bis, Jung ; rigidification +
+dissolution subsumées comme les deux visages de la Fragmentation) ; **grammaire de l'œil par strate
++ lentille de scrutin** (scouter). **Ré-attachement du Lien** aux strates : miroir de l'agent
+(§6.4) ↔ lobe **Réflexif** (l'individu a deux traces à deux destinations — affect → climat anonyme,
+réflexivité → miroir privé) ; l'**intrication** (§4) = racine du **différentiel Vigilante** ;
+anonymat → institutionnel, participation-gating → patient. Reste : vérif schéma du **modèle d'accès
+à deux crans**. Guide complet A–E : `passations/2026-07-07_inscription_strates.md`.
+
+**Architecture d'eval** (`recherche/architecture_eval.md`, compagnon de `extraction_leclg.md` +
+`methode_reflexivite.md`) : **projection sur la source, jamais cascade de résumés** (= event
+sourcing = ton domaine 0-2 source / domaine 3 projections recalculables). Couverture **sémantique =
+moteur primaire** (extraction phénoméno ; un trou = *mode d'expérience présent dans le brut mais non
+remonté* ; critère de Sibeoni **reconnaissance + surprise**, sujet = le soignant), **structurel =
+plancher incorruptible** (non-LLM, ne peut pas oublier). Trilobe nourri par eval(pentalobe) + les
+synthèses d'équipe ; **Vigilante** = différentiel Affectif↔Réflexif (écart tenu, jamais un ratio) +
+couverture des trous (critique adversarial). Institutionnel = agrégat **anonymisé** (sémantique sur
+les cartes de couverture, jamais le contenu inter-patients). Garde : *la profondeur relève les
+enjeux du montrer-sans-conclure, elle ne les relâche pas*. Internes des evals = **attendent le zip
+Collègue + l'article phénoméno + la thèse**.
+
+Prochaines : (1) lire Collègue/phénoméno/thèse → spécifier les evals ; (2) inscrire A–E dans
+CONTINUUM.md (**feu vert requis**) ; (3) coder la lentille de scrutin (mode `read` de la Vigilante)
+au mockup.
+
 ## 2026-07-07 — les strates de métabolisation + refonte lumière/ombre
 Tournant architectural (rattrape aussi le 06, jamais journalisé). (1) **Trois strates de
 métabolisation** : le nombre de lobes indexe le *degré de digestion* de la donnée, non le zoom —
