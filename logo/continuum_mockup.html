@@ -196,6 +196,15 @@
           </select>
         </div>
         <div class="arow">
+          <span class="alab">signal&nbsp;(Vigie)</span>
+          <div class="switch mini" id="swSignal">
+            <button data-sig="repos" class="on">repos</button>
+            <button data-sig="eveil">éveil</button>
+            <button data-sig="interro">interro</button>
+            <button data-sig="notif">notif</button>
+          </div>
+        </div>
+        <div class="arow">
           <button class="ghost" id="freeze" title="Exporte l'état-clé le plus proche, sans respiration ni balancement.">figer l'état → svg</button>
           <span class="alab dim">export propre : sans respiration, sans balancement</span>
         </div>
@@ -712,6 +721,7 @@
   var ptRad=8.5, pupR=3, blinkStart=-99, blinkDur=0.3, nextBlink=2.5, pupFade=1;
   var wFixed=12, wData=10, EYE=2.5, eyeK=1, clickPulse=0; // épaisseur fixe / données ; œil neutre + dynamique
   var irisThick=0.5, eyeX=0, eyeY=0, eyePlaced=false;   // iris (socle 0.5, figé) ; position lissée de l'œil (anti-téléportation)
+  var eyeState='repos', eyeStateT=0, pupDil=0, glowS=1, bounceT=-9, bounceDur=1.3, gestType='none', spinAcc=0, interroNode=-1;   // SIGNALÉTIQUE VIGIE : état tenu + geste ponctuel + accumulateur de spin (gelable) + nœud d'accroche interro
   var flipping=false, flipStart=0, flipDur=1.7, flipAxis=0, inspFade=0, lastInter=0, IDLE_IN=14;  // retournement (2 tours) + inspection (boucle tenue) + horloge d'inactivite
 
   // §19 v2 — GARDIEN DE L'ANGLE MORT : la plus petite boucle restée (hors celle qu'on tient),
@@ -734,6 +744,9 @@
 
   // ---- state ----
   var targetS=0, currentS=0, T=0, hop=0, ptParked=null;
+  // DASHBOARD (Vigie) : l'œil entre dans une boucle (barycentre) et en ressort. Passage = franchir le fil, comme une corde à sauter.
+  var dashLobe=-1, moveT=-9, moveFrom=[210,210], moveTo=[210,210], moveKind='over', moveDur=0.62;
+  var DASH_MODE=['compose','compose','compose'];   // mode une fois DANS le lobe : composer (Affectif/Réflexif) vs lire (Vigilante) — assignation loop→nœud à figer avec la doctrine
   var FRQ=Math.round(0.2*N/TAU); // phase de frémissement périodique → le fil reste fermé au pixel près
 
   function livePts(){
@@ -746,11 +759,15 @@
     return out;
   }
 
+  // barycentre d'un lobe (Dashboard) : dans le CORPS du lobe, à mi-chemin centre→nœud. Robuste 3/5 lobes, suit la respiration du fil.
+  function dashBary(k){ var nd=nodesic(); if(!nd.length) return [CX,CY]; k=clamp(k,0,nd.length-1); return [CX+0.55*(nd[k][0]-CX), CY+0.55*(nd[k][1]-CY)]; }
   // point rouge : circule d'un nœud à l'autre, ou se pose (parked)
   function redXY(){
     var nodes=nodesic();
     if(nodes.length===0) return [CX,CY];
+    if(interroNode>=0 && interroNode<nodes.length && Math.round(currentS)===1 && eyeState==='interro') return nodes[interroNode];   // INTERRO : accroché, ne circule plus entre les nœuds
     if(ptParked!==null && ptParked<nodes.length) return nodes[ptParked];
+    if(Math.round(currentS)===1) return (dashLobe>=0 ? dashBary(dashLobe) : [CX,CY]);   // DASHBOARD (Vigie) : au CENTRE il veille (méta) ; entré dans une boucle, il se tient au barycentre du lobe
     if(reduce) return nodes[0];
     hop += 0.006;                              // vitesse de circulation entre nœuds
     var f=hop%nodes.length, i=Math.floor(f), t=smooth(f-i), j=(i+1)%nodes.length;
@@ -769,7 +786,9 @@
     if(Math.abs(targetS-currentS)<0.001) currentS=targetS;
 
     // rotation continue 360° : le logo flotte, le sens n'importe pas tant que c'est cohérent
-    spinDeg = reduce?0:(T*6)%360; var spinRad=spinDeg*Math.PI/180;
+    var interroLock = (Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // INTERRO : on fige le nœud et on accroche l'œil dessus
+    if(!reduce && !interroLock) spinAcc += 0.096;                                        // 6°/s — gelé pendant l'interro (il s'arrête, il ne tourne plus)
+    spinDeg = reduce?0:(spinAcc%360); var spinRad=spinDeg*Math.PI/180;
     // direction de visée UNIQUE (partagée par le bec du fil et la lumière du reflet) :
     // suit la souris si le pointeur survole, sinon revient au bec réglé + dérive douce.
     var aimTarget = pointerActive ? cursorAngle : (nibBase + (reduce?0:0.30*Math.sin(T*0.13)));
@@ -783,7 +802,12 @@
     if(!reduce) clickPulse *= 0.90;
     var eyeTarget = 1 + (pointerActive?0.05:0) + (ptParked!==null?0.20:0) + clickPulse;
     eyeK += (eyeTarget - eyeK)*(reduce?1:0.12);
-    ptRad = 8.5*EYE*eyeK; pupR = ptRad*0.36;
+    ptRad = 8.5*EYE*eyeK;
+    var _gp=T-bounceT;                                   // GESTE ping (notif) : bref pop d'échelle (l'œil enfle puis revient)
+    if(Math.round(currentS)===1 && gestType==='ping' && _gp>=0 && _gp<bounceDur){ ptRad *= 1 + 0.16*Math.exp(-_gp*5.5); }
+    var _rmS=T-moveT;                                    // CORDE À SAUTER (échelle) : par-dessus (over) → l'œil enfle (vient vers l'utilisateur) ; par-dessous (under) → il rétrécit (recule derrière le fil)
+    if(_rmS>=0 && _rmS<moveDur){ var _ra=Math.sin(Math.PI*(_rmS/moveDur)); ptRad *= 1 + _ra*(moveKind==='over'?0.5:-0.42); }
+    pupR = ptRad*0.36;
 
     applyScene(composeScene(livePts(), 1));
     grp.setAttribute("transform","rotate("+spinDeg.toFixed(2)+" "+CX+" "+CY+")");
@@ -807,10 +831,25 @@
     }
     var ek=reduce?1:0.08; gx+=(gtx-gx)*ek; gy+=(gty-gy)*ek;
 
+    if(interroLock){
+      if(interroNode<0){ var _nn=nodesic(),_bd=1e9,_bi=0; for(var _q=0;_q<_nn.length;_q++){var _dx=_nn[_q][0]-eyeX,_dy=_nn[_q][1]-eyeY,_dd=_dx*_dx+_dy*_dy; if(_dd<_bd){_bd=_dd;_bi=_q;}} interroNode=_bi; }   // accroche sur le nœud le plus proche
+      if(gestType==='bounce' && T-bounceT>5.0) bounceT=T;                                                          // re-saut périodique (re-appel ~5 s)
+    } else interroNode=-1;
     var _tgt=redXY();
     if(!eyePlaced){ eyeX=_tgt[0]; eyeY=_tgt[1]; eyePlaced=true; }
     var _ke=reduce?1:0.14; eyeX+=(_tgt[0]-eyeX)*_ke; eyeY+=(_tgt[1]-eyeY)*_ke;
+    var _rmP=T-moveT;                                    // CORDE À SAUTER (trajectoire) : arc de moveFrom→moveTo + lift screen-up (contre-rotation du spin, comme le saut). L'arc ÉCRASE le lissage le temps du passage.
+    if(_rmP>=0 && _rmP<moveDur){ var _u=_rmP/moveDur, _e=smooth(_u), _a=Math.sin(Math.PI*_u), _lift=(moveKind==='over'?22:13)*_a;
+      eyeX=lerp(moveFrom[0],moveTo[0],_e) - _lift*Math.sin(spinRad);
+      eyeY=lerp(moveFrom[1],moveTo[1],_e) - _lift*Math.cos(spinRad); }
     var P=[eyeX,eyeY];
+    // GESTE (Vigie) : saut sur place amorti — couche ponctuelle, superposée à l'état tenu. Déplace tout l'œil (globe+pupille+halo).
+    var _bt=T-bounceT;
+    if(Math.round(currentS)===1 && gestType==='bounce' && _bt>=0 && _bt<bounceDur){
+      var _bmag=ptRad*0.55*Math.abs(Math.sin(Math.PI*_bt/0.42))*Math.exp(-_bt*1.5);   // plus haut, décroît plus lentement → 3 sauts bien lisibles
+      P[0] += -_bmag*Math.sin(spinRad);   // saut VERTICAL à l'écran : contre-rotation du spin du nœud (sinon il part de côté)
+      P[1] += -_bmag*Math.cos(spinRad);
+    }
     ptHalo.setAttribute("cx",P[0].toFixed(1)); ptHalo.setAttribute("cy",P[1].toFixed(1)); ptHalo.setAttribute("r",(ptRad*1.06).toFixed(2));
     pt.setAttribute("cx",P[0].toFixed(1)); pt.setAttribute("cy",P[1].toFixed(1)); pt.setAttribute("r",ptRad.toFixed(2));
     ptClipC.setAttribute("cx",P[0].toFixed(1)); ptClipC.setAttribute("cy",P[1].toFixed(1)); ptClipC.setAttribute("r",ptRad.toFixed(2));
@@ -825,8 +864,9 @@
       var gzv=Math.sqrt(1-rad2);                              // défaut : face à l'utilisateur
       var idleFor=T-lastInter;                                // temps écoulé depuis la dernière interaction
       var _ci=Math.atan2(P[1]-CY, P[0]-CX);                   // azimuth : de l'œil vers l'EXTÉRIEUR — vers la boucle tenue, pas le centre (repère local)
-      var wantInsp=(ptParked!==null && !flipping)?1:0;
+      var wantInsp=((ptParked!==null || (dashLobe>=0 && Math.round(currentS)===1)) && !flipping)?1:0;   // regard SITUÉ : boucle patient tenue OU entré dans une boucle Dashboard
       inspFade += (wantInsp-inspFade)*0.03;
+      var _interroPose=(Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // posture interrogative : Vigie + état interro
       if(flipping){
         var el=T-flipStart, ax=Math.cos(flipAxis), ay=Math.sin(flipAxis);
         if(el<flipDur){                                      // DEUX tours propres (sens aléatoire) → l'œil traverse les limbes 4 fois
@@ -838,6 +878,20 @@
           else { var osc=Math.sin(st*20)*0.40*Math.exp(-st*4.5);
                  rgx=gx+osc*ax; rgy=gy+osc*ay;
                  var _r2=Math.min(0.9,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_r2); }
+        }
+      } else if(_interroPose){                               // POSTURE INTERROGATIVE : APPEL (3 sauts + darts assertifs) puis SCRUTIN (lecture saccadée de l'utilisateur)
+        var _et=T-eyeStateT;
+        if(_et<1.3){                                         // APPEL : darts marqués, alternés, calés sur les 3 sauts (« il t'appelle »)
+          var _k=Math.floor(_et/0.42), _ph=(_et-_k*0.42)/0.42, _dir=(_k%2===0)?1:-1;
+          rgx=0.18*_dir*(1-_ph); rgy=-0.12*(1-_ph);
+          var _ir2=Math.min(0.5,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_ir2);
+        } else {                                             // SCRUTIN : lecture gauche→droite, ligne par ligne, descend, recommence — comme on lit une page — + micro-nystagmus
+          var _st=_et-1.3, _cols=5, _rows=4, _fix=0.24;
+          var _cell=Math.floor(_st/_fix)%(_cols*_rows), _col=_cell%_cols, _row=Math.floor(_cell/_cols);
+          var _tgx=-0.20+0.40*_col/(_cols-1), _tgy=-0.13+0.26*_row/(_rows-1);
+          var _jit=0.012*Math.sin(_st*46);                   // nystagmus fin pendant la fixation
+          rgx=_tgx+_jit; rgy=_tgy+_jit*0.6;
+          var _ir2b=Math.min(0.45,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_ir2b);
         }
       } else if(inspFade>0.002){                             // BOUCLE TENUE : regard vers l'intérieur, balayant la boucle, effleurant le limbe puis passant derrière
         var az=_ci+0.35*Math.sin(T*0.23);                    // léger balayage autour de la direction de la boucle
@@ -855,9 +909,24 @@
       var bt=T-blinkStart;
       if(bt<blinkDur){ bf = bt<blinkDur*0.34 ? 1-bt/(blinkDur*0.34) : (bt-blinkDur*0.34)/(blinkDur*0.66); }
       var _gl=Math.hypot(rgx,rgy,gzv)||1; rgx/=_gl; rgy/=_gl; gzv/=_gl;   // regard = point unitaire sur la sphère → projection exacte (toutes animations), jamais de coupe
+      // SIGNALÉTIQUE (Vigie, 3-lobes uniquement) : la pupille se dilate selon l'état émis par le Lien. Ailleurs → aucun effet (patient contemplatif).
+      var _sig=(Math.round(currentS)===1), _dilT=0;
+      if(_sig){
+        if(eyeState==='eveil')       _dilT=0.30;      // éveil : pupille DILATÉE (attention large)
+        else if(eyeState==='interro'){ var _ei=T-eyeStateT; _dilT=(_ei<0.5)?0.35:-0.28; }   // interro : DILATE (surprise) puis CONTRACTE (focus/scrutin)
+      }
+      pupDil += (_dilT-pupDil)*0.10;                        // dilatation lissée
+      var pbreath=pupR*breath*(1+pupDil);                   // rayon pupillaire effectif (socle × dilatation)
+      // canal COULEUR : la luminosité du globe module selon l'état (éclaircir / pulser / scintiller). Gaté Vigie.
+      var _glowT=1;
+      if(_sig){ if(eyeState==='eveil') _glowT=1.10; else if(eyeState==='interro') _glowT=1.0+0.05*Math.sin(T*2.2); }
+      glowS += (_glowT-glowS)*0.12;                        // base lissée (repos/éveil/interro)
+      var glow=glowS;
+      if(_sig && eyeState==='notif'){ var _n2=T-eyeStateT; glow=1+0.55*Math.exp(-_n2*4.5); }   // FLASH net (le globe s'illumine d'un coup puis retombe)
+      pt.style.filter = (Math.abs(glow-1)>0.002) ? ("brightness("+glow.toFixed(3)+")") : "";
       pupVis = gzv>0.02;                                    // visible seulement sur la face avant
-      rx=Math.max(0.01,pupR*breath*Math.max(0,gzv)*bf); ry=Math.max(0.01,pupR*breath*bf);
-      var _pe=pupR*breath+irisThick+ptRad*0.16, _cosR=Math.sqrt(Math.max(0,1-(_pe/ptRad)*(_pe/ptRad)));   // rayon effectif = iris + marge PROPORTIONNELLE (ptRad*0.16) → gap constant quelle que soit la taille de l'oeil, aucune coupe au limbe
+      rx=Math.max(0.01,pbreath*Math.max(0,gzv)*bf); ry=Math.max(0.01,pbreath*bf);
+      var _pe=pbreath+irisThick+ptRad*0.16, _cosR=Math.sqrt(Math.max(0,1-(_pe/ptRad)*(_pe/ptRad)));   // rayon effectif = iris + marge PROPORTIONNELLE (ptRad*0.16) → gap constant quelle que soit la taille de l'oeil, aucune coupe au limbe
       pupFade = (gzv>0)?1:0;                                                              // face avant visible / face arrière occultée par le globe — pas de fondu
       cxp=P[0]+rgx*ptRad*_cosR; cyp=P[1]+rgy*ptRad*_cosR; pupAng=Math.atan2(rgy,rgx)*180/Math.PI;   // projection sphérique : le centre est tiré de cosρ → le bord effleure le limbe sans le franchir
       ptPup.setAttribute("cx",cxp.toFixed(1)); ptPup.setAttribute("cy",cyp.toFixed(1));
@@ -873,7 +942,7 @@
     // pupille), réglable (0 = invisible), clippé à l'œil.
     if(SET.ptex && irisThick>0.05 && pupVis){
       ptIris.setAttribute("cx",cxp.toFixed(1)); ptIris.setAttribute("cy",cyp.toFixed(1));
-      var _iro=Math.min(pupR*breath+irisThick, ptRad-0.6);                              // rayon de l'iris, borné au globe (curseur poussé au max)
+      var _iro=Math.min(pbreath+irisThick, ptRad-0.6);                              // rayon de l'iris, suit la pupille dilatée, borné au globe
       ptIris.setAttribute("rx",Math.max(0.01,_iro*Math.max(0,gzv)*bf).toFixed(2)); ptIris.setAttribute("ry",Math.max(0.01,_iro*bf).toFixed(2));   // foreshortenée comme la pupille
       ptIris.setAttribute("transform","rotate("+pupAng.toFixed(1)+" "+cxp.toFixed(1)+" "+cyp.toFixed(1)+")");
       ptIris.setAttribute("opacity",pupFade.toFixed(3));
@@ -928,7 +997,7 @@
   }
 
   function select(s){
-    targetS=s; ptParked=null; eyePlaced=false; lastInter=T;
+    targetS=s; ptParked=null; dashLobe=-1; eyePlaced=false; lastInter=T;
     switchBtns.forEach(function(b){ b.classList.toggle("on",(+b.dataset.s)===s); });
     frames.forEach(function(f){ f.classList.toggle("on",(+f.dataset.f)===s); });
   }
@@ -937,17 +1006,24 @@
   knotSvg.addEventListener("click",function(e){
     blinkStart=T; clickPulse=0.15; lastInter=T; // clin d'œil + petit sursaut vivant quand on touche le regard
     if(!reduce){ flipping=true; flipStart=T; flipAxis=Math.random()*2*Math.PI; }   // le clic fait tournoyer l'œil (sens aléatoire) — TOUTES les vues
-    if(lobeCount(currentS)<5) return;            // seule la vue patient pose l'œil sur une boucle
+    if(lobeCount(currentS)<3) return;            // interface (2 lobes) : rien à viser
     var r=knotSvg.getBoundingClientRect();
     var mx=(e.clientX-r.left)/r.width*420, my=(e.clientY-r.top)/r.height*420;
     // le groupe est tourné de spinDeg : ramener le clic dans le repère des nœuds (dé-tourner de -spinRad)
     var spinRad=spinDeg*Math.PI/180;
     var _cc=Math.cos(-spinRad), _ss=Math.sin(-spinRad), _mdx=mx-CX, _mdy=my-CY;
     mx=CX+_mdx*_cc-_mdy*_ss; my=CY+_mdx*_ss+_mdy*_cc;
-    // nœud le plus proche du clic
+    // nœud/lobe le plus proche du clic
     var nd=nodesic(), best=0, bd=1e9;
     for(var i=0;i<nd.length;i++){ var d=Math.hypot(nd[i][0]-mx,nd[i][1]-my); if(d<bd){bd=d;best=i;} }
-    ptParked=(ptParked===best)?null:best;
+    if(Math.round(currentS)===1){                // DASHBOARD (Vigie) : ENTRER dans la boucle (barycentre) / re-clic même boucle → RESSORTIR au centre. Passage = corde à sauter.
+      var newLobe=(dashLobe===best)?-1:best;
+      moveFrom=[eyeX,eyeY]; moveTo=(newLobe>=0)?dashBary(newLobe):[CX,CY];
+      moveKind=(newLobe>=0)?'over':'under';      // entrer = par-DESSUS (saute la corde) ; ressortir = par-DESSOUS (passe sous la corde)
+      moveT=T; dashLobe=newLobe; lastInter=T; return;
+    }
+    if(lobeCount(currentS)<5) return;            // (vue patient uniquement au-delà)
+    ptParked=(ptParked===best)?null:best;        // PATIENT : l'œil se pose sur le nœud (bord), lecture du fil
   });
   // la souris pilote la direction de visée (regard + bec + lumière) quand elle survole le nœud
   knotSvg.addEventListener("mousemove",function(e){
@@ -992,6 +1068,11 @@
     }); });
   }
   bindSwitch("swPlume","plume");
+  (function(){ var b=[].slice.call(document.querySelectorAll("#swSignal button"));
+    b.forEach(function(x){ x.addEventListener("click",function(){ eyeState=x.dataset.sig; eyeStateT=T;
+      if(eyeState==='interro'){ bounceT=T; bounceDur=1.3; gestType='bounce'; }   // interro : sauts sur place (appel) puis tenue focalisée sur la personne
+      else if(eyeState==='notif'){ bounceT=T; bounceDur=0.7; gestType='ping'; }  // notif : pop d'échelle + flash
+      b.forEach(function(y){ y.classList.toggle("on",y===x); }); }); }); })();
 
   function bindRange(rid, oid, fn, fmt){
     var r=document.getElementById(rid), o=document.getElementById(oid);
