@@ -4,6 +4,25 @@
 > **Socles permanents** (à lire avant de rouvrir un sujet) : mécanique du logo →
 > `passations/logo_mecanique.md`.
 
+## 2026-07-07 (soir) — inscription doctrinale des strates + scission en deux chantiers
+Blocs A/C/D/E inscrits dans CONTINUUM.md (**commit 56f88bd**, poussé) : la doctrine dit désormais
+les **trois strates** (degré de métabolisation, non zoom), la **triade Affectif·Réflexif·Vigilante**,
+le clair-obscur **Continuité/Fragmentation**, le **Lien ré-attaché** aux strates. L'architecture
+d'eval est scellée dans `recherche/architecture_eval.md` (projection sur la source ; couverture
+sémantique = moteur, critère Sibeoni ; structurel = plancher).
+
+**Deux chantiers restants, désormais suivis en deux conversations séparées :**
+- **(B) grammaire de l'œil + lentille de scrutin** — inscrire le BLOC B (texte prêt dans
+  `passations/2026-07-07_inscription_strates.md`) dans §19, puis coder la lentille au mockup
+  (`logo/continuum_mockup.html`, Vigilante en mode `read`). CORE géométrique intouchable.
+- **(eval) spécifier les internes des evals** sur `recherche/architecture_eval.md`, à partir du zip
+  Collègue (LeCLG) + un article de phénoméno + la thèse. Compagnons déjà au repo :
+  `recherche/extraction_leclg.md`, `recherche/methode_reflexivite.md`.
+
+**Rider** (à faire dans l'un ou l'autre, penche eval/schéma) : vérif du modèle d'accès à **deux
+crans** — participation-gating (patient) vs anonymat (institutionnel), chacun par absence de chemin
+(§6.4/§11).
+
 ## 2026-07-07 (ap-m) — métabolisation : trilobe, eval, ré-attachement du Lien
 Suite du matin (strates). **Tranché et rédigé** (dans le guide — *pas encore inscrit* dans
 CONTINUUM.md) : **les trois strates** = degrés de métabolisation (5 récolte brute/soignants · 3
