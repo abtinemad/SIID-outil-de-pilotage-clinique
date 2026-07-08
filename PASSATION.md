@@ -4,8 +4,8 @@
 > **Socles permanents** (à lire avant de rouvrir un sujet) : mécanique du logo →
 > `passations/logo_mecanique.md`.
 
-## 2026-07-09 — clôture du chantier (B) : bloc B inscrit, mockup gravé, cinq rectifications
-Chantier (B) **clos**. Cinq commits poussés sur `origin/main` :
+## 2026-07-09 — clôture du chantier (B) : bloc B inscrit, mockup gravé, six rectifications
+Chantier (B) **clos**. Six commits poussés sur `origin/main` :
 - `caa72dd` — **œil oudjat** en bilobé : clic sur un lobe → l'œil chevauche le fil un tour du ∞,
   la monture héraldique se pose, le globe rouge reste la pupille vivante dans l'amande évidée ;
   variante *repos* (le spin revient à 0, la marque se redresse). Asset : `mockup/oudjat_clean.svg`.
@@ -26,12 +26,15 @@ Chantier (B) **clos**. Cinq commits poussés sur `origin/main` :
   composent, un seul lit »**, qui *dit* la dissymétrie 2/1 que le triplet se contentait d'encoder
   (c'est Q2). (2) Reflow du paragraphe : l'insertion laissait une ligne de 39 col en son milieu —
   une cicatrice de patch. 15 lignes → 14, laisse 93 col.
+- `5ab74ff` — **DASH_MODE cite §19**. Depuis (79485c8), §19 ne nomme plus l'identifiant ; le renvoi
+  existe désormais dans le bon sens — le code cite la phrase **« deux lobes composent, un seul lit »**,
+  non la seule section. CORE byte-identique.
 
-**Conséquence à tenir.** §19 ne cite plus l'identifiant `DASH_MODE`. Le renvoi doit donc exister
-dans l'autre sens — *le code cite la doctrine*, en nommant la phrase et non la seule section.
-`patch_dashmode_renvoi.py` est passé — le code cite désormais la phrase — **commité (`5ab74ff`), non encore poussé**.
+**Conséquence tenue.** §19 ne cite plus l'identifiant `DASH_MODE`. Le renvoi existe dans l'autre
+sens — *le code cite la doctrine*, en nommant la phrase et non la seule section :
+`patch_dashmode_renvoi.py` est **passé et poussé** (`5ab74ff`, ci-dessus).
 
-**Cinq entrées de passation étaient fausses** (rectifiées ici, non effacées — un fil se corrige par
+**Six entrées de passation étaient fausses** (rectifiées ici, non effacées — un fil se corrige par
 un acte daté qui référence, jamais par réécriture) :
 1. La *corde à sauter* n'était pas à implémenter : déjà checkpointée à `dashBary`, l. 747-770.
 2. « §19 visuel stale » : §19 n'était pas périmé — **le bloc B n'avait jamais été gravé**. Il l'est.
@@ -41,7 +44,7 @@ un acte daté qui référence, jamais par réécriture) :
    de composition, `jamais de repos au milieu` — **Q1 est déjà dans le code**.
 5. Le mockup vit dans `mockup/`, non `logo/` (l'entrée du 07-07 au soir dit `logo/`).
 
-**Discipline confirmée sur les cinq commits.** CORE géométrique (`/*==CORE==*/`…`/*==/CORE==*/`,
+**Discipline confirmée sur les six commits.** CORE géométrique (`/*==CORE==*/`…`/*==/CORE==*/`,
 19 807 octets) **byte-identique**, prouvé par SHA-256 depuis `git`, hors du patch — et non par le
 `grep '==CORE=='` que j'avais d'abord prescrit, qui ne détecte que le déplacement des marqueurs
 eux-mêmes et renvoie `0` sur un diff vide : **deux faux négatifs**. `run_test.sh` vert (18/18) avant
@@ -55,11 +58,25 @@ la propriété forte `patch(base) == mockup validé`, octet pour octet.
   que le `<select>` lise `getComputedStyle(…).getPropertyValue('--labelface')` au chargement.
 - Le « n » de Soin reste discret en Spectral 12 (la serif l'affine). Choix ouvert, non un bug.
 
-**Prochain vrai chantier : le §19 visuel.** Le mockup a pris de l'avance sur la doctrine qui le
-fonde — les labels rendent lisible à l'écran une ontologie qui n'est écrite nulle part. Trois points
-à inscrire : *taille = volume de récolte, jamais valeur du patient* ; *l'alerte
-anti-surpsychiatrisation quitte la géométrie et redevient lecture clinique humaine* ; *couleur
-d'alliance = chaleur/saturation de l'encre, jamais le rouge (sanctuaire) ni l'ardoise (machine)*.
+**Le « §19 visuel à réécrire » n'existe pas** — sixième rectification, la plus grosse. Les trois
+points annoncés comme *à inscrire* le sont déjà, depuis `56f88bd` :
+- *taille = volume de récolte, jamais valeur de la personne* → §19, « L'asymétrie est montrée,
+  jamais conclue » (**gros ≠ fort, mince ≠ faible**), et « Chaque boucle porte une seule dimension » ;
+- *l'alerte anti-surpsychiatrisation quitte la géométrie* → §19, boucle soin unifiée : « cette
+  vigilance quitte la géométrie et redevient une lecture clinique humaine » ; rappel en §21 ;
+- *alliance = chaleur/saturation de l'encre, jamais le rouge (sanctuaire) ni l'ardoise (machine)*
+  → §18 bis, mais **comme question ouverte explicitement non tranchée** : « Réflexion, pas loi. »
+  **Ne pas la promouvoir en doctrine** : un point laissé en réflexion le reste jusqu'à arbitrage.
+
+**Leçon de méthode.** Six entrées de ce fil étaient fausses, toutes dans le même sens : elles
+annonçaient comme *à faire* du travail déjà fait. Une passation rédigée de mémoire dérive ; une
+passation se vérifie **contre le dépôt**, fichier en main, avant d'être écrite. Le prochain qui
+rouvre un sujet lit d'abord `git log` et le §, jamais la seule ligne du fil.
+
+**Prochain chantier : rien d'ouvert au mockup ni en doctrine.** Restent les deux fils déjà nommés
+ailleurs — la **DDL du Lien** (attend le montage Vigie collective v1) et la **calibration du
+registre-garde** (attend les sorties réelles des prompts d'eval) —, plus le **REGISTRE_LAÏQUE** que
+CONTINUUM doit produire pour ses propres evals (modèle : `REGISTRE_LAIQUE` du Collègue).
 
 ## 2026-07-07 (soir) — inscription doctrinale des strates + scission en deux chantiers
 Blocs A/C/D/E inscrits dans CONTINUUM.md (**commit 56f88bd**, poussé) : la doctrine dit désormais
