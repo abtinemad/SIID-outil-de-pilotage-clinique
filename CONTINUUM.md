@@ -1371,18 +1371,17 @@ avant que la carte de base existe.
 **Le point de nouage rouge = l'œil, le regard qui se pose.** Un œil, **unique et mobile**. Il
 ne se multiplie pas avec les boucles : il y en a **un seul**, qui **circule** sur les nouages
 par défaut (le point de vie qui anime la forme) et se **pose** sur celui d'une boucle qu'on
-tient — puis repart circuler quand on la relâche. Sa grammaire se décline **par strate**.
-Sur la **récolte** (5 lobes), se poser sur un nouage déroule les données recueillies qui
-densifient cette boucle. Sur la **métabolisation** (3 lobes), l'œil **entre dans le lobe**
-(à son barycentre, non au seuil) et prend son mode : il **compose** en silence dans
-l'Affectif et le Réflexif — le regard accompagne le nouage — et il **scrute** dans la
-Vigilante. **Le mode n'est pas une humeur de l'œil mais la nature du lobe** : composer et
-scruter sont deux organes, non deux réglages — `compose · compose · read`. Les lobes de
-composition **n'ont pas de lentille** ; scruter est **une boucle qui lit les deux autres**,
-jamais un mode qu'on activerait partout. Sur l'**institutionnel** (2 lobes), l'œil se tient
-au centre et **veille** — sentinelle,
-non lecteur. Rouge = sanctuaire (§3/§20). Déplacement doux, jamais de
-téléportation. Il porte désormais **deux fonctions de sens :**
+tient — puis repart circuler quand on la relâche. Sa grammaire se décline **par strate**. Sur
+la **récolte** (5 lobes), se poser sur un nouage déroule les données recueillies qui
+densifient cette boucle. Sur la **métabolisation** (3 lobes), l'œil **entre dans le lobe** (à
+son barycentre, non au seuil) et prend son mode : il **compose** en silence dans l'Affectif
+et le Réflexif — le regard accompagne le nouage — et il **scrute** dans la Vigilante. **Le
+mode n'est pas une humeur de l'œil mais la nature du lobe** : composer et scruter sont deux
+organes, non deux réglages — deux lobes composent, un seul lit. Les lobes de composition
+**n'ont pas de lentille** ; scruter est **une boucle qui lit les deux autres**, jamais un
+mode qu'on activerait partout. Sur l'**institutionnel** (2 lobes), l'œil se tient au centre
+et **veille** — sentinelle, non lecteur. Rouge = sanctuaire (§3/§20). Déplacement doux,
+jamais de téléportation. Il porte désormais **deux fonctions de sens :**
 
 **Sa taille = l'intensité de l'attention.** Il grossit sur la boucle qu'on déploie — on
 concentre le regard là où l'on travaille.
