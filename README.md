@@ -15,16 +15,19 @@ Un outil de coordination clinique pour les équipes de psychiatrie (programme **
 ## Architecture doctrinale
 
 - **Le nœud** — côté patient. La trajectoire rendue lisible : un fil dont l'épaisseur dit *ce qu'on sait de la personne* et cinq boucles (familial, amoureux, ami, travail, soin) dont la taille dit *le volume de notre récolte* par axe. Le **logo** en est le diagramme (§19).
-- **Le Lien** — côté soignant. Le même fil vu de l'autre côté : non plus *le problème*, mais *les liens à tisser pour aider à desserrer le nœud*. Lu sur deux registres, **affectif** (le climat, anonyme et agrégé) et **réflexif**.
-- **La Vigie** — réflexivité institutionnelle (§18 bis). Elle veille **le soin et le soignant, jamais le sujet** : abstention d'issue, mesure auto-effaçante, dépôt brut intouché.
+- **Le Lien** — côté soignant. Le même fil vu de l'autre côté : non plus *le problème*, mais *les liens à tisser pour aider à desserrer le nœud*. C'est la **métabolisation** — ce que l'équipe pense de ce qu'elle a récolté —, à **3 lobes : Affectif · Réflexif · Vigilante**, par patient et **signée** (non anonyme). (§18 bis)
+- **La Vigie** — réflexivité institutionnelle (§18 bis). L'**agrégat anonyme** de toutes les métabolisations, à **2 lobes : Continuité · Fragmentation** (la lumière et l'ombre). Elle veille **le soin et le soignant, jamais le sujet** : abstention d'issue, mesure auto-effaçante, dépôt brut intouché.
+
+Ces trois entrées sont les **trois strates** — récolte (5) · métabolisation (3) · institutionnel (2) —, du brut au méta ; le détail est en §18 bis et §19.
 
 ## Le dépôt
 
 - **`CONTINUUM.md`** — la doctrine, source unique de vérité. Chaque décision de schéma, de mécanique visuelle et de nommage y est ancrée. §18 bis (Vigie), §19 (logo), §20 (filiation).
 - **`schema.md`** — le modèle de données : quatre domaines (identité, récolte corrigeable, dépôts append-only *humains seuls*, machine en lecture seule) ; la provenance est structurelle, pas un attribut de ligne.
 - **`logo/`** — la maquette vivante (`continuum_mockup.html`), le moteur géométrique et ses tests (`testvrille.js`, `run_test.sh`), la police-fil.
-- **`passations/`** — les mémoires de reprise (une par chantier).
-- **`recherche/`** — les digestions (extraction LeCLG, méthode de réflexivité).
+- **`PASSATION.md`** (racine) — la passation courante.
+- **`passations/`** — les passations archivées par chantier.
+- **`recherche/`** — les digestions et notes de recherche (voir le dossier).
 
 ## État
 
