@@ -746,7 +746,7 @@
   var targetS=0, currentS=0, T=0, hop=0, ptParked=null;
   // DASHBOARD (Vigie) : l'œil entre dans une boucle (barycentre) et en ressort. Passage = franchir le fil, comme une corde à sauter.
   var dashLobe=-1, moveT=-9, moveFrom=[210,210], moveTo=[210,210], moveKind='over', moveDur=0.62;
-  var DASH_MODE=['compose','compose','compose'];   // mode une fois DANS le lobe : composer (Affectif/Réflexif) vs lire (Vigilante) — assignation loop→nœud à figer avec la doctrine
+  var DASH_MODE=['compose','compose','read'];   // mode une fois DANS le lobe (§19, bloc B) : composer (Affectif, Réflexif) / lire (Vigilante). Vigilante = index 2 (ordre doctrinal, pas de surplomb). Entrer dans le lobe read → scrutin (scouter).
   var FRQ=Math.round(0.2*N/TAU); // phase de frémissement périodique → le fil reste fermé au pixel près
 
   function livePts(){
@@ -786,8 +786,9 @@
     if(Math.abs(targetS-currentS)<0.001) currentS=targetS;
 
     // rotation continue 360° : le logo flotte, le sens n'importe pas tant que c'est cohérent
-    var interroLock = (Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // INTERRO : on fige le nœud et on accroche l'œil dessus
-    if(!reduce && !interroLock) spinAcc += 0.096;                                        // 6°/s — gelé pendant l'interro (il s'arrête, il ne tourne plus)
+    var scouting = (Math.round(currentS)===1 && dashLobe>=0 && DASH_MODE[dashLobe]==='read' && !flipping);   // SCOUTER : entré dans la boucle Vigilante (read) → l'œil scrute, spin gelé (il se gare)
+    var interroLock = (Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // INTERRO (démo atelier) : on fige le nœud et on accroche l'œil dessus
+    if(!reduce && !interroLock && !scouting) spinAcc += 0.096;                            // 6°/s — gelé pendant l'interro OU le scrutin (l'œil s'arrête pour scruter)
     spinDeg = reduce?0:(spinAcc%360); var spinRad=spinDeg*Math.PI/180;
     // direction de visée UNIQUE (partagée par le bec du fil et la lumière du reflet) :
     // suit la souris si le pointeur survole, sinon revient au bec réglé + dérive douce.
@@ -878,6 +879,22 @@
           else { var osc=Math.sin(st*20)*0.40*Math.exp(-st*4.5);
                  rgx=gx+osc*ax; rgy=gy+osc*ay;
                  var _r2=Math.min(0.9,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_r2); }
+        }
+      } else if(scouting){                                   // SCOUTER (lobe Vigilante) : navette entre les deux nœuds de composition — l'écart montré, tenus à l'écart, JAMAIS un milieu (Q1)
+        var _vnd=nodesic(), _vc0=-1, _vc1=-1;
+        for(var _vq=0;_vq<DASH_MODE.length && _vq<_vnd.length;_vq++){ if(DASH_MODE[_vq]==='compose'){ if(_vc0<0)_vc0=_vq; else _vc1=_vq; } }
+        if(_vc0>=0 && _vc1>=0){
+          var _va0=Math.atan2(_vnd[_vc0][1]-P[1], _vnd[_vc0][0]-P[0]);   // direction (repère local) vers un lobe de composition
+          var _va1=Math.atan2(_vnd[_vc1][1]-P[1], _vnd[_vc1][0]-P[0]);   // vers l'autre
+          var _vT=Math.max(0,(T-moveT)-moveDur);                        // temps depuis que l'œil est assis (après la corde à sauter)
+          var _vU=(_vT%2.2)/2.2, _vP0=_vU<0.5;                          // aller-retour, période 2.2 s ; un demi-cycle par pôle
+          var _vSub=(_vU%0.5)/0.5, _vSeg=_vSub<0.78?0:(_vSub-0.78)/0.22; // fixation (78 %) puis saccade rapide — jamais de repos au milieu
+          var _vFrom=_vP0?_va0:_va1, _vTo=_vP0?_va1:_va0;
+          var _vD=Math.atan2(Math.sin(_vTo-_vFrom),Math.cos(_vTo-_vFrom)); // écart signé le plus court
+          var _vAng=_vFrom+_vD*smooth(_vSeg);
+          var _vJit=0.014*Math.sin(_vT*44)*(1-_vSeg);                   // micro-nystagmus pendant la fixation seulement
+          rgx=Math.cos(_vAng)*0.34+_vJit; rgy=Math.sin(_vAng)*0.34+_vJit*0.6;
+          var _vR2=Math.min(0.5,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_vR2);
         }
       } else if(_interroPose){                               // POSTURE INTERROGATIVE : APPEL (3 sauts + darts assertifs) puis SCRUTIN (lecture saccadée de l'utilisateur)
         var _et=T-eyeStateT;
