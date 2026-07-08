@@ -4,6 +4,63 @@
 > **Socles permanents** (à lire avant de rouvrir un sujet) : mécanique du logo →
 > `passations/logo_mecanique.md`.
 
+## 2026-07-09 — clôture du chantier (B) : bloc B inscrit, mockup gravé, cinq rectifications
+Chantier (B) **clos**. Cinq commits poussés sur `origin/main` :
+- `caa72dd` — **œil oudjat** en bilobé : clic sur un lobe → l'œil chevauche le fil un tour du ∞,
+  la monture héraldique se pose, le globe rouge reste la pupille vivante dans l'amande évidée ;
+  variante *repos* (le spin revient à 0, la marque se redresse). Asset : `mockup/oudjat_clean.svg`.
+- `91dc069` — **labels par strate** : `petals()` 5-lobes → `petalsFor(Q)` généralisé. Bilobé
+  **Continuité / Fragmentation** · trilobé **Affective · Vigilante · Réflexive**, mappé **par indice
+  de build** (Vigilante = `idx1`, aligné sur `ASYM[3]`/`DASH_MODE`/scouter — *jamais* par ordre de
+  pétale) · pentalobe inchangé. Rebuild du jeu de labels dans le creux du morph (`lo≈0`) : aucun
+  pop. Police **Spectral**, tailles par strate `{2:20, 3:16, 5:12}`.
+- `4dfb7b9` — **le « n » de Soin suit l'œil**. Il recevait `fill=RED` figé à la création ; l'œil lit
+  `var(--red)`, que `setRed()` met à jour avec les stops de `#ptSphere`. Bouger le curseur de rouge
+  donnait **deux rouges à l'écran** (mesuré : œil `#781a28` / « n » `#ad333f`), contre la loi 04.
+  Corrigé non en recopiant la valeur mais en **supprimant la seconde source** :
+  `#soinN{fill:var(--red)}`, et retrait de l'attribut figé.
+- `cb2f6ad` — **§19 · grammaire de l'œil par strate + lentille de scrutin**,
+  Q1 et Q2 verrouillées dedans (via `inscrire_bloc_B.py`).
+- `79485c8` — **§19, deux scories du bloc B**. (1) `` `compose · compose · read` `` résolvait vers
+  une constante JS : la doctrine fonde le code, elle n'en dépend pas — remplacé par **« deux lobes
+  composent, un seul lit »**, qui *dit* la dissymétrie 2/1 que le triplet se contentait d'encoder
+  (c'est Q2). (2) Reflow du paragraphe : l'insertion laissait une ligne de 39 col en son milieu —
+  une cicatrice de patch. 15 lignes → 14, laisse 93 col.
+
+**Conséquence à tenir.** §19 ne cite plus l'identifiant `DASH_MODE`. Le renvoi doit donc exister
+dans l'autre sens — *le code cite la doctrine*, en nommant la phrase et non la seule section.
+`patch_dashmode_renvoi.py` est passé — le code cite désormais la phrase — **commité (`5ab74ff`), non encore poussé**.
+
+**Cinq entrées de passation étaient fausses** (rectifiées ici, non effacées — un fil se corrige par
+un acte daté qui référence, jamais par réécriture) :
+1. La *corde à sauter* n'était pas à implémenter : déjà checkpointée à `dashBary`, l. 747-770.
+2. « §19 visuel stale » : §19 n'était pas périmé — **le bloc B n'avait jamais été gravé**. Il l'est.
+3. `DASH_MODE` n'était pas un placeholder `['compose','compose','compose']` : il valait déjà
+   `['compose','read','compose']`.
+4. Le *ciblage du scrutin* n'était pas à coder : il l'est (l. 937-946), navette entre les deux lobes
+   de composition, `jamais de repos au milieu` — **Q1 est déjà dans le code**.
+5. Le mockup vit dans `mockup/`, non `logo/` (l'entrée du 07-07 au soir dit `logo/`).
+
+**Discipline confirmée sur les cinq commits.** CORE géométrique (`/*==CORE==*/`…`/*==/CORE==*/`,
+19 807 octets) **byte-identique**, prouvé par SHA-256 depuis `git`, hors du patch — et non par le
+`grep '==CORE=='` que j'avais d'abord prescrit, qui ne détecte que le déplacement des marqueurs
+eux-mêmes et renvoie `0` sur un diff vide : **deux faux négatifs**. `run_test.sh` vert (18/18) avant
+et après chaque écriture. Tous les patchs sont **dry-run par défaut**, ancres uniques vérifiées
+hors-CORE avant toute écriture, garde-CORE a posteriori, anti-double-application ; et vérifiés par
+la propriété forte `patch(base) == mockup validé`, octet pour octet.
+
+**Reste au mockup** (aucune urgence, aucune dette bloquante) :
+- **Double source de police** : `--labelface` est posé dans le CSS *et* par `selected` dans le
+  `<select>`. Rien ne les lie — même maladie que les deux rouges, forme bénigne. Une seule source :
+  que le `<select>` lise `getComputedStyle(…).getPropertyValue('--labelface')` au chargement.
+- Le « n » de Soin reste discret en Spectral 12 (la serif l'affine). Choix ouvert, non un bug.
+
+**Prochain vrai chantier : le §19 visuel.** Le mockup a pris de l'avance sur la doctrine qui le
+fonde — les labels rendent lisible à l'écran une ontologie qui n'est écrite nulle part. Trois points
+à inscrire : *taille = volume de récolte, jamais valeur du patient* ; *l'alerte
+anti-surpsychiatrisation quitte la géométrie et redevient lecture clinique humaine* ; *couleur
+d'alliance = chaleur/saturation de l'encre, jamais le rouge (sanctuaire) ni l'ardoise (machine)*.
+
 ## 2026-07-07 (soir) — inscription doctrinale des strates + scission en deux chantiers
 Blocs A/C/D/E inscrits dans CONTINUUM.md (**commit 56f88bd**, poussé) : la doctrine dit désormais
 les **trois strates** (degré de métabolisation, non zoom), la **triade Affectif·Réflexif·Vigilante**,
