@@ -28,6 +28,7 @@
   #fil{stroke:var(--ink);fill:none}
   #filR{fill:var(--ink);stroke:var(--ink);stroke-width:.7;stroke-linejoin:round}
   #pt{fill:var(--red)}
+  #soinN{fill:var(--red)}   /* le « n » de Soin : même source que l'œil (loi 04 — un seul rouge) */
   #labels text{fill:var(--ink-soft);font-family:var(--labelface,var(--wordface));font-weight:700}
   .atelier select{font-family:var(--mono);font-size:11px;color:var(--ink-soft);background:transparent;border:1px solid var(--ink-faint);border-radius:6px;padding:4px 7px;cursor:pointer}
   #gk svg,.gkbox svg,.pfbox svg{width:100%;height:100%;overflow:visible;display:block}
@@ -686,7 +687,7 @@
       var tx=document.createElementNS(NS,"text"); tx.setAttribute("text-anchor","middle");
       var tp=document.createElementNS(NS,"textPath"); tp.setAttribute("href","#lpath"+k0);
       tp.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href","#lpath"+k0);
-      if(wf.soi){ tp.appendChild(document.createTextNode("Soi")); var _nn=document.createElementNS(NS,"tspan"); _nn.textContent="n"; _nn.setAttribute("id","soinN"); _nn.setAttribute("fill",RED); tp.appendChild(_nn); soinN=_nn; }
+      if(wf.soi){ tp.appendChild(document.createTextNode("Soi")); var _nn=document.createElementNS(NS,"tspan"); _nn.textContent="n"; _nn.setAttribute("id","soinN"); tp.appendChild(_nn); soinN=_nn; }
       else tp.appendChild(document.createTextNode(wf.w));
       tx.appendChild(tp); labels.appendChild(tx); labelNodes.push(tx); labelTP.push(tp);
     }
