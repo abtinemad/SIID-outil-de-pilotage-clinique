@@ -6,7 +6,7 @@
 <title>CONTINUUM — le fil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Inter:wght@400;600&family=Nunito:wght@400;600;700&family=Spectral:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=Inter:wght@400;600&family=Nunito:wght@400;600;700&family=Spectral:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#E9ECEF; --ink:#15191E; --red:#8E1C2B; --ink-soft:#565E66; --ink-faint:rgba(21,25,30,.14);
@@ -17,7 +17,7 @@
     /* la lettre obéit au fil : linéale humaniste monolinéaire à bouts ronds, épaisseur ≈ celle du nœud.
        Le serif modulait et contredisait le monolinéaire — abandonné. Proxy système en attendant la police-fil. */
     --wordface:"Nunito","Quicksand","Avenir Next","Avenir","Century Gothic","Futura","Trebuchet MS",system-ui,sans-serif;
-    --labelface:var(--wordface);   /* police des labels (togglable dans l'atelier) */
+    --labelface:"Spectral",Georgia,serif;   /* police des labels (togglable dans l'atelier) */
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -188,14 +188,17 @@
         <div class="arow">
           <label>bec <input type="range" id="rB" min="0" max="360" step="5" value="225"><output id="oB">225°</output></label>
         </div>
+        <div class="arow">
+          <label>échelle labels <input type="range" id="rL" min="0.6" max="1.6" step="0.05" value="1"><output id="oL">1</output></label>
+        </div>
         <div class="arow plumeOnly" id="rowPlume">
           <label>contraste <input type="range" id="rC" min="1" max="3" step="0.05" value="2.50"><output id="oC">2.50</output></label>
         </div>
         <div class="arow">
           <span class="alab">police&nbsp;labels</span>
           <select id="fontSel">
-            <option data-face='"Nunito","Quicksand",system-ui,sans-serif' selected>Nunito (ronde · la nôtre)</option>
-            <option data-face='"Spectral",Georgia,serif'>Spectral (serif douce)</option>
+            <option data-face='"Nunito","Quicksand",system-ui,sans-serif'>Nunito (ronde · la nôtre)</option>
+            <option data-face='"Spectral",Georgia,serif' selected>Spectral (serif douce)</option>
           </select>
         </div>
         <div class="arow">
@@ -634,36 +637,61 @@
   var frames=[].slice.call(document.querySelectorAll(".frame"));
   var NS="http://www.w3.org/2000/svg";
 
-  var LAB=["Familiale","Sociale","Professionnelle","Amoureuse","Soi"];
-  var labelNodes=[], labelPaths=[], labelTP=[], soinN=null, _pet=null;
-  function petals(){                                   // 5 pétales (creux de rayon) + rang horaire depuis le haut — géométrie fixe, calculé une fois
-    if(_pet) return _pet;
-    var Q=KF[2], n=Q.length, R=[], rmn=1e9, rmx=-1e9, i;
+  var LAB2=["Continuité","Fragmentation"];                 // bilobé : gauche(C)=Continuité, droit(O)=Fragmentation
+  var LAB3=["Affective","Vigilante","Réflexive"];          // trilobé PAR INDICE DE BUILD : idx1=Vigilante (la plus grande, bas-droite ; = read/scouter, ASYM[3]/DASH_MODE)
+  var LAB5=["Familiale","Sociale","Professionnelle","Amoureuse","Soi"];
+  var labelNodes=[], labelPaths=[], labelTP=[], soinN=null;
+  var LSIZE={2:20, 3:16, 5:12};   // taille de police des labels PAR STRATE (bilobé plus grand : deux mots seuls)
+  var labelScale=1;               // multiplicateur global (atelier)
+  var LAB2POS={cont:{arc:-110, ins:5, flip:false}, frag:{arc:0, ins:5, flip:true}};   // bilobé, calage à l'œil : arc = position le long de la boucle · ins = retrait radial (hors du fil) · flip = sens de lecture (les deux boucles du ∞ sont parcourues en sens opposés)
+  var curOff=[], curIns=[], curFlip=[];   // décalage (arc), retrait (radial), sens de lecture — par label
+  function petalsFor(Q){                                   // pétales d'une forme quelconque : creux de rayon = séparateurs, pointe = max, rang horaire depuis le haut
+    var n=Q.length, R=[], rmn=1e9, rmx=-1e9, i;
     for(i=0;i<n;i++){ var r=Math.hypot(Q[i][0]-CX,Q[i][1]-CY); R.push(r); if(r<rmn)rmn=r; if(r>rmx)rmx=r; }
     var thr=rmn+(rmx-rmn)*0.45, sep=[];
     for(i=0;i<n;i++){ var a=R[(i-1+n)%n], b=R[i], c=R[(i+1)%n]; if(b<=a && b<=c && b<thr) sep.push(i); }
-    var ang=[], tipAt=[];
+    var ang=[], tipAt=[], tips=[];
     for(var k=0;k<sep.length;k++){ var i0=sep[k], i1=sep[(k+1)%sep.length], tr=-1, tip=Q[i0], kk=i0, g=0, step=0, ts=0;
       do{ if(R[kk]>tr){tr=R[kk];tip=Q[kk];ts=step;} kk=(kk+1)%n; step++; }while(kk!==i1 && ++g<n);
-      tipAt[k]=ts;
+      tipAt[k]=ts; tips[k]=tip;
       var aa=Math.atan2(tip[1]-CY,tip[0]-CX)+Math.PI/2; while(aa<0)aa+=2*Math.PI; while(aa>=2*Math.PI)aa-=2*Math.PI;
       ang.push({k:k,a:aa}); }
     var srt=ang.slice().sort(function(A,B){return A.a-B.a;}), rank=[];
     for(var s=0;s<srt.length;s++) rank[srt[s].k]=s;
-    _pet={sep:sep, rank:rank, tipAt:tipAt}; return _pet;
+    return {sep:sep, rank:rank, tipAt:tipAt, tips:tips};
   }
-  var PET=petals();
-  for(var k0=0;k0<PET.sep.length;k0++){
-    var rnk=PET.rank[k0], li=(rnk-2+5)%5, word=LAB[li];
-    var pth=document.createElementNS(NS,"path"); pth.setAttribute("id","lpath"+k0); pth.setAttribute("fill","none"); pth.setAttribute("stroke","none");
-    labels.appendChild(pth); labelPaths.push(pth);
-    var tx=document.createElementNS(NS,"text"); tx.setAttribute("text-anchor","middle");
-    var tp=document.createElementNS(NS,"textPath"); tp.setAttribute("href","#lpath"+k0);
-    tp.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href","#lpath"+k0);
-    if(li===4){ tp.appendChild(document.createTextNode("Soi")); var _nn=document.createElementNS(NS,"tspan"); _nn.textContent="n"; _nn.setAttribute("id","soinN"); _nn.setAttribute("fill",RED); tp.appendChild(_nn); soinN=_nn; }
-    else tp.appendChild(document.createTextNode(word));
-    tx.appendChild(tp); labels.appendChild(tx); labelNodes.push(tx); labelTP.push(tp);
+  var PET_BY={2:petalsFor(KF[0]), 3:petalsFor(KF[1]), 5:petalsFor(KF[2])};
+  var curPET=null, curLc=0;
+  // angle de build par lobe (pour aligner le mot trilobé sur l'identité réelle du lobe : Vigilante = idx1)
+  function buildAngles(L){ var az=ASYM[L], out=[]; for(var i=0;i<L;i++){ out.push((i/L)*2*Math.PI - Math.PI/2 + (az?az.a[i]:0)); } return out; }
+  function buildIdxOf(tip,L){ var ta=Math.atan2(tip[1]-CY,tip[0]-CX), ANGL=buildAngles(L), bi=0, bd=1e9;
+    for(var i=0;i<L;i++){ var d=Math.abs(Math.atan2(Math.sin(ta-ANGL[i]),Math.cos(ta-ANGL[i]))); if(d<bd){bd=d;bi=i;} } return bi; }
+  // quel mot pour le pétale k : 5=rang horaire (inchangé) ; 3=indice de build (Vigilante=idx1) ; 2=côté x (gauche=Continuité)
+  function wordFor(lc, PET, k){
+    if(lc===5){ var li=(PET.rank[k]-2+5)%5; return {w:LAB5[li], soi:(li===4)}; }
+    if(lc===3){ return {w:LAB3[buildIdxOf(PET.tips[k],3)], soi:false}; }
+    return {w:(PET.tips[k][0]<CX?LAB2[0]:LAB2[1]), soi:false};
   }
+  function buildLabels(lc){
+    while(labels.firstChild) labels.removeChild(labels.firstChild);
+    labelNodes=[]; labelPaths=[]; labelTP=[]; soinN=null;
+    curPET = PET_BY[lc] || PET_BY[5]; curLc = lc;
+    curOff=[]; curIns=[]; curFlip=[];
+    for(var k0=0;k0<curPET.sep.length;k0++){
+      var wf=wordFor(lc, curPET, k0);
+      if(lc===2){ var _p=(curPET.tips[k0][0]<CX)?LAB2POS.cont:LAB2POS.frag; curOff[k0]=_p.arc; curIns[k0]=_p.ins; curFlip[k0]=_p.flip; }
+      else { curOff[k0]=0; curIns[k0]=0; curFlip[k0]=false; }
+      var pth=document.createElementNS(NS,"path"); pth.setAttribute("id","lpath"+k0); pth.setAttribute("fill","none"); pth.setAttribute("stroke","none");
+      labels.appendChild(pth); labelPaths.push(pth);
+      var tx=document.createElementNS(NS,"text"); tx.setAttribute("text-anchor","middle");
+      var tp=document.createElementNS(NS,"textPath"); tp.setAttribute("href","#lpath"+k0);
+      tp.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href","#lpath"+k0);
+      if(wf.soi){ tp.appendChild(document.createTextNode("Soi")); var _nn=document.createElementNS(NS,"tspan"); _nn.textContent="n"; _nn.setAttribute("id","soinN"); _nn.setAttribute("fill",RED); tp.appendChild(_nn); soinN=_nn; }
+      else tp.appendChild(document.createTextNode(wf.w));
+      tx.appendChild(tp); labels.appendChild(tx); labelNodes.push(tx); labelTP.push(tp);
+    }
+  }
+  buildLabels(2);   // init sur Interface (2-lobes) ; le render rebâtit à chaque changement de strate
 
   // pool de patchs dessus-dessous (trous dans le masque + brins de dessus)
   var holeEls=[], inkEls=[];
@@ -1028,27 +1056,36 @@
       oudjatG.setAttribute('opacity', oudjatOp.toFixed(3));
     } else if(oudjatG.getAttribute('opacity')!=='0'){ oudjatG.setAttribute('opacity','0'); }
 
-    var lo=smooth((currentS-1.4)/0.5);
+    // LABELS par strate (toujours visibles, comme le pentalobe) : opacité par plateau, jeu rebâti dans le creux du morph (aucun pop)
+    var _rs=Math.round(currentS), _tlc=[2,3,5][_rs], lo;
+    if(_rs===0)      lo=1-smooth((currentS-0.15)/0.30);                                   // bilobé : plein à s=0, éteint vers 0.45
+    else if(_rs===1) lo=smooth((currentS-0.60)/0.15)*(1-smooth((currentS-1.40)/0.15));    // trilobé : fenêtre autour de s=1
+    else             lo=smooth((currentS-1.55)/0.35);                                     // pentalobe : comme avant (plein vers s=2)
+    lo=clamp(lo,0,1);
+    if(_tlc!==curLc) buildLabels(_tlc);   // rebâtit au changement de strate (frontière s=0.5/1.5 : lo≈0, aucun pop)
     labels.setAttribute("opacity", lo.toFixed(3));
-    if(lo>0.02){
-      var PET=petals(), lp=livePts(), n=lp.length, INSET=13;    // labels rentrés vers le cœur (hors du fil)
+    labels.setAttribute("font-size", ((LSIZE[curLc]||12)*labelScale).toFixed(2));
+    if(lo>0.02 && curPET){
+      var PET=curPET, lp=livePts(), n=lp.length, INSET=13;    // retrait de base ; +curIns[k] par label
       var sr=spinDeg*Math.PI/180, cs=Math.cos(sr), sn=Math.sin(sr);
       for(var k=0;k<PET.sep.length;k++){
         var i0=PET.sep[k], i1=PET.sep[(k+1)%PET.sep.length], AR=[], idx=i0, g=0, dx, dy, ex, ey, rr, kf;
+        var LIN=INSET+(curIns[k]||0);
         do{ dx=lp[idx][0]-CX; dy=lp[idx][1]-CY; ex=CX+dx*cs-dy*sn; ey=CY+dx*sn+dy*cs;
-            rr=Math.hypot(ex-CX,ey-CY)||1; kf=(rr-INSET)/rr; AR.push([CX+(ex-CX)*kf, CY+(ey-CY)*kf]); idx=(idx+1)%n; }while(idx!==i1 && ++g<n);
+            rr=Math.hypot(ex-CX,ey-CY)||1; kf=(rr-LIN)/rr; AR.push([CX+(ex-CX)*kf, CY+(ey-CY)*kf]); idx=(idx+1)%n; }while(idx!==i1 && ++g<n);
         dx=lp[i1][0]-CX; dy=lp[i1][1]-CY; ex=CX+dx*cs-dy*sn; ey=CY+dx*sn+dy*cs;
-        rr=Math.hypot(ex-CX,ey-CY)||1; kf=(rr-INSET)/rr; AR.push([CX+(ex-CX)*kf, CY+(ey-CY)*kf]);
+        rr=Math.hypot(ex-CX,ey-CY)||1; kf=(rr-LIN)/rr; AR.push([CX+(ex-CX)*kf, CY+(ey-CY)*kf]);
         // lissage 3 points : adoucit les cassures près du croisement (torsion abandonnée)
         var SM=AR.slice(), a;
         for(a=1;a<AR.length-1;a++) SM[a]=[(AR[a-1][0]+AR[a][0]+AR[a+1][0])/3,(AR[a-1][1]+AR[a][1]+AR[a+1][1])/3];
         AR=SM;
         var f=Math.min(PET.tipAt[k], AR.length-1);                            // ancré au bord le plus loin du centre (la pointe) — figé, suit le nœud sans coulisser
+        if(curFlip[k]){ AR.reverse(); f=AR.length-1-f; }    // inverse le sens de lecture (le tip reste le point d'ancrage)
         var d="M"+AR[0][0].toFixed(1)+" "+AR[0][1].toFixed(1), sofar=0;
         for(a=1;a<AR.length;a++){ d+="L"+AR[a][0].toFixed(1)+" "+AR[a][1].toFixed(1);
           if(a<=f) sofar+=Math.hypot(AR[a][0]-AR[a-1][0],AR[a][1]-AR[a-1][1]); }
         labelPaths[k].setAttribute("d", d);
-        labelTP[k].setAttribute("startOffset", sofar.toFixed(1));
+        labelTP[k].setAttribute("startOffset", (sofar + (curOff[k]||0)).toFixed(1));
       }
       if(soinN){                                             // le "n" de Soin : respire calmement (Soi <-> Soin), en rouge
         var _nf = reduce ? 1 : 0.5 + 0.5*Math.sin(T*0.7);    // respiration douce (~9 s)
@@ -1170,6 +1207,7 @@
   bindRange("rB","oB",function(v){ nibBase=v*Math.PI/180; },function(v){ return v+"°"; });
   bindRange("rP","oP",function(v){ EYE=v; refreshPoint(); },function(v){ return v.toFixed(1).replace(/\.0$/,""); });
   bindRange("rIris","oIris",function(v){ irisThick=v; },function(v){ return v.toFixed(1).replace(/\.0$/,""); });
+  bindRange("rL","oL",function(v){ labelScale=v; },function(v){ return v.toFixed(2).replace(/0$/,"").replace(/\.$/,""); });
   var fontSel=document.getElementById("fontSel");
   if(fontSel){ fontSel.addEventListener("change",function(){
     var o=fontSel.options[fontSel.selectedIndex];
