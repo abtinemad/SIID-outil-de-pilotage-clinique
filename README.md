@@ -24,7 +24,8 @@ Ces trois entrées sont les **trois strates** — récolte (5) · métabolisatio
 
 - **`CONTINUUM.md`** — la doctrine, source unique de vérité. Chaque décision de schéma, de mécanique visuelle et de nommage y est ancrée. §18 bis (Vigie), §19 (logo), §20 (filiation).
 - **`schema.md`** — le modèle de données : quatre domaines (identité, récolte corrigeable, dépôts append-only *humains seuls*, machine en lecture seule) ; la provenance est structurelle, pas un attribut de ligne.
-- **`logo/`** — la maquette vivante (`continuum_mockup.html`), le moteur géométrique et ses tests (`testvrille.js`, `run_test.sh`), la police-fil.
+- **`mockup/`** — la maquette vivante (`continuum_mockup.html`), le moteur géométrique et ses tests (`testvrille.js`, `run_test.sh`), le scouter.
+- **`logo/`** — les assets de marque : la police-fil (`police_fil_NTINUUM.svg`).
 - **`PASSATION.md`** (racine) — la passation courante.
 - **`passations/`** — les passations archivées par chantier.
 - **`recherche/`** — les digestions et notes de recherche (voir le dossier).

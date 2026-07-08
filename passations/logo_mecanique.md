@@ -9,7 +9,7 @@
 > regard/œil, voir `2026-07-04_logo_regard.md`.
 
 *Mémo de transmission pour la reprise du logo (v2). À lire avant de rouvrir le sujet.
-Le fichier vivant de référence : `logo/continuum_mockup.html`. La doctrine du logo :
+Le fichier vivant de référence : `mockup/continuum_mockup.html`. La doctrine du logo :
 `CONTINUUM.md` §19 (+ §21). Ce mémo dit ce qui est **verrouillé**, ce qui ne doit **pas
 être redéfait**, et ce qui **reste à faire** — pour ne pas rejouer les douze tours de
 conception qui ont abouti à la mécanique actuelle.*
@@ -18,7 +18,7 @@ conception qui ont abouti à la mécanique actuelle.*
 
 ## 1. Statut en une phrase
 
-**La mécanique du logo est close et démontrée.** `logo/continuum_mockup.html` est une maquette
+**La mécanique du logo est close et démontrée.** `mockup/continuum_mockup.html` est une maquette
 vivante et manipulable qui *prouve que le système marche* : un seul fil continu qui se
 vrille, boucles nouées, point rouge mobile, trois états contextuels, lignage Encre. Ce qui
 reste n'est **plus de la mécanique** — c'est du **tracé** (épaisseur de plume, netteté des
@@ -123,7 +123,7 @@ l'œil, dans un vrai éditeur vectoriel (ou via Claude Design avec le mockup en 
 - **Décliner les formats** : favicon (l'∞ doit tenir en très petit), grand format, versions
   fond transparent / fond papier.
 
-Note technique pour qui reprend le code : `logo/continuum_mockup.html` est en JS vanilla + SVG,
+Note technique pour qui reprend le code : `mockup/continuum_mockup.html` est en JS vanilla + SVG,
 géométrie dans `loopPoint` / `build` / `buildLemniscate`, morphose dans `shapeAt`, moteur
 dans `render` (cible `targetS` → courant `currentS` avec inertie). Croisements et fermeture
 vérifiables hors navigateur (les tests ont servi à régler `over` par état pour forcer le

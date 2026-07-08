@@ -1,7 +1,7 @@
 .DS_Store
 *.log
-logo/core.js
-logo/xv_*.svg
+**/core.js
+**/xv_*.svg
 scratch/
 temp/
 tmp/
