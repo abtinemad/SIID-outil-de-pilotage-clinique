@@ -1371,9 +1371,17 @@ avant que la carte de base existe.
 **Le point de nouage rouge = l'œil, le regard qui se pose.** Un œil, **unique et mobile**. Il
 ne se multiplie pas avec les boucles : il y en a **un seul**, qui **circule** sur les nouages
 par défaut (le point de vie qui anime la forme) et se **pose** sur celui d'une boucle qu'on
-tient — puis repart circuler quand on la relâche. Sur la **vue patient**, se poser sur un
-nouage déroule les données recueillies qui densifient cette boucle ; sur le **dashboard** et
-l'**interface**, il est ornemental. Rouge = sanctuaire (§3/§20). Déplacement doux, jamais de
+tient — puis repart circuler quand on la relâche. Sa grammaire se décline **par strate**.
+Sur la **récolte** (5 lobes), se poser sur un nouage déroule les données recueillies qui
+densifient cette boucle. Sur la **métabolisation** (3 lobes), l'œil **entre dans le lobe**
+(à son barycentre, non au seuil) et prend son mode : il **compose** en silence dans
+l'Affectif et le Réflexif — le regard accompagne le nouage — et il **scrute** dans la
+Vigilante. **Le mode n'est pas une humeur de l'œil mais la nature du lobe** : composer et
+scruter sont deux organes, non deux réglages — `compose · compose · read`. Les lobes de
+composition **n'ont pas de lentille** ; scruter est **une boucle qui lit les deux autres**,
+jamais un mode qu'on activerait partout. Sur l'**institutionnel** (2 lobes), l'œil se tient
+au centre et **veille** — sentinelle,
+non lecteur. Rouge = sanctuaire (§3/§20). Déplacement doux, jamais de
 téléportation. Il porte désormais **deux fonctions de sens :**
 
 **Sa taille = l'intensité de l'attention.** Il grossit sur la boucle qu'on déploie — on
@@ -1391,6 +1399,27 @@ vers le non-regardé, il ne repousse pas le plein. Ce qu'il lit est **la distrib
 attention**, jamais un déséquilibre calculé chez la personne — le jour où il jugerait « ses
 boucles à elle sont déséquilibrées », il la re-scorerait. Son ancre est la **boucle latente /
 non-lue (§6)** : celle qui ouvre, ne juge pas.
+
+**La lentille de scrutin (mode Vigilante).** Composer et scruter ne sont pas le même geste :
+l'un dépose, l'autre lit la largeur du champ. Quand l'œil entre dans la **Vigilante**, il
+**chausse une lentille** — l'instrument du regard qui scanne, posé sur le globe : signe
+visible que le mode a basculé de *composer* à *scruter*. Œil nu = on compose (Affectif,
+Réflexif) ; œil + lentille = on scrute (Vigilante). La lentille est la **vigilance humaine
+rendue visible**, jamais un verdict de machine ; elle **respecte le triptyque** (§3) — une
+forme, un voile, pas une quatrième couleur qui casserait rouge/encre/ardoise. *(Rendu exact —
+teinte, monture — = décision de maquette. [APPEL 5])*
+
+**Ce que la lentille montre — l'écart, jamais sa moyenne.** Ce que la Vigilante scrute est le
+**différentiel Affectif↔Réflexif** (§18 bis) : l'écart entre ce que l'équipe *éprouve* et ce
+qu'elle *raisonne*. La lentille le rend comme **deux marques tenues à l'écart** — le regard
+qui fait l'aller-retour entre les deux nouages, le scan qui **ne se fixe jamais**
+(micro-nystagmus, re-bounce) : un œil qui oscille entre deux pôles ne peut pas être lu comme
+les ayant moyennés. **Il n'existe aucun geste qui fonde les deux lobes en une seule marque** —
+pas de milieu, pas de ratio, pas de regard *établi* qui se lirait comme consensus.
+L'anti-fusion (§4) est tenue ici par la **forme, pas par une règle** : la moyenne n'est pas
+une opération que la signalétique s'abstient de faire, c'est une opération qu'elle **n'a
+pas** — même garantie que le sanctuaire, protégé par l'absence de chemin, non par un réglage
+(§3/§6.4). *Montrer un écart n'est pas tirer une flèche.*
 
 **Trois strates = trois degrés de métabolisation** (le nombre de lobes n'indexe plus le zoom
 clinique, mais *ce qu'on a fait de la donnée*) :
