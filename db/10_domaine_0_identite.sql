@@ -1,17 +1,16 @@
 -- CONTINUUM — Phase 0 · 10 · domaine 0 — Identité (les extrémités)
 --
--- ┌ Écart assumé avec `schema.md` §2, à arbitrer ────────────────────────────────┐
--- │ `schema.md` écrit : `patients_identite (ipp text PRIMARY KEY, …, corrige_id  │
--- │ uuid)`. Les deux clauses ne peuvent pas coexister : corriger, c'est INSÉRER   │
--- │ une ligne qui porte `corrige_id` — donc **deux lignes pour un IPP** — ce que  │
--- │ `ipp PRIMARY KEY` interdit ; et `corrige_id uuid` ne pointe vers rien, la     │
--- │ ligne n'ayant pas d'uuid. L'append-only **force** la coupe :                  │
+-- ┌ La coupe clé / attribut — loi §0 n°4, tranchée et inscrite ───────────────────┐
+-- │ Sous append-only, `ipp text PRIMARY KEY` + `corrige_id uuid` sur une même     │
+-- │ table est impossible : corriger, c'est INSÉRER une ligne qui porte            │
+-- │ `corrige_id` — donc **deux lignes pour un IPP** —, ce que `ipp PRIMARY KEY`   │
+-- │ interdit. La loi §0 rend l'attribut mouvant incompatible avec le rôle de clé, │
+-- │ et **force** la coupe :                                                       │
 -- │   · `patients`          — la clé nue, non négociable (§15), posée une fois ;  │
 -- │   · `patients_identite` — l'attribut corrigible, chaîné, append-only.         │
--- │ Ce n'est pas un ajout de commodité : c'est la loi §0 qui rend l'attribut      │
--- │ mouvant incompatible avec le rôle de clé. Le même geste est répété sur        │
--- │ `agents` (fichier 20). *La clé se pose ; l'attribut se corrige.*              │
--- └──────────────────────────────────────────────────────────────────────────────┘
+-- │ Le même geste est répété sur `agents` (fichier 20). Inscrit dans `schema.md`, │
+-- │ loi §0 n°4 : « la clé se pose, l'attribut se corrige ».                       │
+-- └───────────────────────────────────────────────────────────────────────────────┘
 
 SET ROLE continuum_migration;
 

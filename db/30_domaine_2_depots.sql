@@ -5,22 +5,21 @@
 -- colonnes numériques n'existent pas — elles ne sont pas interdites, elles sont absentes).
 -- **Ni d'axe** (invariant 20) : le rangement est une projection, recalculable.
 --
--- ┌ Trois écarts assumés avec `schema.md` §4, à arbitrer ───────────────────────┐
--- │ (1) `ref_id` est **polymorphe** dans le schéma : « dépôt révisé / levé, **ou │
--- │     proposition validée** ». Deux cibles, deux tables, deux domaines : une   │
--- │     seule colonne ne peut porter qu'une FK. Un uuid nu serait un champ       │
--- │     falsifiable — la chose même que la loi 3 bannit. Scindé en               │
--- │     `ref_depot_id` (domaine 2) et `ref_proposition_id` (domaine 3).          │
+-- ┌ La structure de `depots` — §4, tranché et inscrit ───────────────────────────┐
+-- │ (1) `ref_id` était **polymorphe** : « dépôt révisé / levé, **ou**            │
+-- │     proposition validée ». Deux cibles, deux tables, deux domaines : une     │
+-- │     seule colonne ne porte qu'une FK, et un uuid nu serait falsifiable —     │
+-- │     ce que la loi 3 bannit. Scindé en `ref_depot_id` (domaine 2) et          │
+-- │     `ref_proposition_id` (domaine 3).                                        │
 -- │ (2) `ref_nature` : colonne dénormalisée, **non falsifiable** — une FK        │
 -- │     composite (id, ipp, nature) la force à valoir la nature réelle de la     │
--- │     ligne visée. Elle achète, en structure, deux gardes qui seraient sinon   │
+-- │     ligne visée. Elle achète en structure deux gardes qui seraient sinon     │
 -- │     du code : « une levée ne lève qu'une hypothèse, une inquiétude ou une    │
 -- │     gestation » et « une révision révise le même registre ».                 │
--- │ (3) `type_valide` : le schéma range `type ∈ aigu·nap·chronique` dans la      │
--- │     prose du `contenu`. Alors la projection `type_courant` devrait **lire la │
--- │     prose** — la machine lisant du sens sur la surface vive, ce que §4       │
--- │     interdit. Le type sort dans sa colonne. Ce n'est pas un nombre.          │
--- └─────────────────────────────────────────────────────────────────────────────┘
+-- │ (3) `type_valide` : une colonne, jamais la prose. Rangé dans le `contenu`,   │
+-- │     la projection `type_courant` devrait **lire la phrase** — du sens lu     │
+-- │     sur la surface vive, ce que §4 (d) interdit. Ce n'est pas un nombre.     │
+-- └──────────────────────────────────────────────────────────────────────────────┘
 
 SET ROLE continuum_migration;
 
