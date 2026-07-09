@@ -1010,6 +1010,20 @@ il **métabolise**, et sa `lecture_clinique` vaut alors pleinement, sans primer 
 (§2). Ce n'est pas le grade qui change, c'est le **moment** (§10). Sans cette coupe, le geste du
 matin s'écrirait en lecture clinique — ce que l'**interdit dur** du §10 refuse.
 
+**Le mot cru n'est pas le sanctuaire.** Il a son registre propre : la machine peut le **reformuler,
+ranger, mettre en mots** — elle ne peut pas le **détacher de qui l'a écrit ni de quand**. Ce qui
+protège n'est pas le verbatim, c'est l'**attribution**. « L'équipe décrit une intolérance à la
+frustration » a fondu quatre regards en une voix et rendu un cliché *bien écrit* (§5) ; « Karima, le
+3 mars : … ; Céline, le 5 : … » se lit. Le sanctuaire, lui, reste ce qu'il est : la
+**`lecture_clinique`**, citée verbatim ou tue — et **jamais générée, même assistée** (§3).
+
+**La grille est formulée, pas récoltée.** Les `observation` s'accumulent ; le collège formule
+ensuite **S → R → D → Diff → É** à partir d'elles, et seul la **Clinique**. La récolte *est* la
+diffraction — chaque soignant dépose son angle sans voir celui des autres ; le champ **Diffraction**
+est le moment où le collège les pose côte à côte (§12 bis : *le relai est la condition de la
+diffraction*). La plume assiste la traversée : brouillon dérivé, validé énoncé par énoncé
+(*reconnaissance + surprise*), puis signé (§5). Elle n'assiste **jamais** la Clinique.
+
 **Métabolisation (3 lobes, par patient).** Le revers : ce que l'équipe *pense* de ce qu'elle a
 récolté. Guichet des **coordinateurs**, en **synthèse collective signée**. Trois lobes :
 - **Affectif** — le registre du **vécu** : ce que le suivi de ce patient fait éprouver ; le
@@ -1023,7 +1037,29 @@ récolté. Guichet des **coordinateurs**, en **synthèse collective signée**. T
   conserve la vision de tout le monde — l'anti-fusion, §4). La récolte s'est-elle refermée sur un
   seul axe ? un angle manque-t-il en amont ? C'est la troisième dérive épistémique — **la
   fermeture** (le couloir qui se referme sur une seule lumière). **Témoin pur : on la lit, on n'y
-  dépose pas.** C'est ici que l'œil chausse la lentille (§19), et que joue sa fonction d'angle
+  dépose pas.**
+
+  **Deux moments, un seul geste — l'écart.** (1) *À la formulation* : elle **met en mots, en clair,
+  le matériau du pentalobe**, posé à côté de la grille que le collège écrit — écart **brut ↔
+  formulé**. (2) *Au trilobe* : écart **Affectif ↔ Réflexif**. Même organe, deux instants.
+
+  **Elle écrit ; elle ne signale pas.** Elle ne compare pas deux ensembles, ne pointe pas un oubli,
+  ne rend pas d'avis : *mettre en mots correctement suffit* — bien écrit, ce qui manque manque
+  visiblement, ce qui se contredit se contredit visiblement. Poser une analyse par-dessus serait
+  **un recouvrement de plus** (§1 : l'outil montre en **retirant**, jamais en ajoutant ; le creux
+  est le signe, le combler l'efface). Elle est un **angle**, non un juge — comme les lectures
+  divergentes du §4 : leur confrontation ne tranche pas.
+
+  **Elle n'évalue jamais la cohérence.** *Le récit le plus cohérent est parfois le délire* (§2) : ce
+  qui distingue le tissage du délire n'est ni le sens ni la continuité, c'est qu'il **lâche devant
+  le fait qui résiste**. Une machine qui noterait la cohérence d'une formulation **récompenserait la
+  clôture prématurée** et signalerait comme fautive la lecture juste, restée inconfortable. Elle ne
+  demande donc pas « est-ce cohérent ? » mais montre ce qui est resté dehors — sans le nommer.
+
+  **Le nom reste chiffré.** Elle dit ce que les mots *font*, jamais ce qu'ils veulent dire (« trois
+  notes disent la porte fermée, une dit la peur » — jamais « il y a de l'évitement »). Le mot
+  clinique est celui que le collège pose. **Tirée, jamais poussée** : elle est là, on la consulte ;
+  elle ne surgit pas pendant qu'on cherche ses mots. C'est ici que l'œil chausse la lentille (§19), et que joue sa fonction d'angle
   mort (il élargit vers le non-regardé, il ne détourne jamais du vif).
 
 **Institutionnel (2 lobes, l'infini).** L'agrégat anonyme de toutes les métabolisations, ses deux
@@ -1706,6 +1742,18 @@ pas par la couleur — §ci-dessus).
   **domaine 2** (append, rien ne se masque) — **acte tracé** *et* signal (sa fausseté parle de qui
   regarde). *Mouvante ≠ corrigible.* Elle se dépose **seul** ; le **nouage ne se dépose jamais
   seul**. Sans `observation`, le geste du matin s'écrivait en lecture clinique — l'interdit dur.
+- **Le mot cru n'est pas le sanctuaire** (§18 bis) : registre propre — **reformulable avec sa
+  source, jamais fondu**. Ce qui protège est l'**attribution**, non le verbatim (invariant 18).
+  Le sanctuaire reste la **`lecture_clinique`** : citée ou tue, **jamais générée, même assistée**.
+- **La grille est formulée, pas récoltée** (§18 bis, §2) : le pentalobe récolte des `observation` ;
+  le collège formule **S/R/D/Diff/É** à partir d'elles, en `synthese_collective`. La récolte *est*
+  la diffraction ; le champ Diffraction est sa mise en commun. La plume **assiste la traversée,
+  jamais la Clinique**.
+- **La Vigilante a deux moments, un seul geste** (§18 bis) : l'écart **brut ↔ formulé** (à la
+  formulation) et l'écart **Affectif ↔ Réflexif** (au trilobe). Elle **écrit en clair**, elle ne
+  signale rien — poser une analyse par-dessus serait un recouvrement de plus (§1). Elle **n'évalue
+  jamais la cohérence** : le récit le plus cohérent est parfois le délire (§2). Le **nom reste
+  chiffré**. Elle a le droit de parler **parce qu'aucun guichet n'existe** pour y déposer (§4).
 - **Le recouvrement d'axes est une donnée** (§19), pas une bavure ; sa forme est le **croisement**.
   **Montré, jamais conclu.**
 - **`taille = volume de récolte` est une loi du pentalobe** (§19), non de la marque : au trilobe la

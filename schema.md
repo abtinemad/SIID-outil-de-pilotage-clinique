@@ -179,7 +179,7 @@ pas de criticité, pas d'échéance — non pas interdits, **inexistants**.
 
 | nature | registre | position / facette | contenu | mécanique |
 |---|---|---|---|---|
-| `observation` | **SANCTUAIRE** — le mot cru | `axes` non vide | prose libre : ce qui a été vu, entendu, rapporté. **Citée verbatim, jamais reformulée, jamais promue en lecture.** Souvent projective, souvent fausse — et c'est du signal (§0 : « le mot cru, isolé, ne veut rien dire ») | déposée **seul** (`cadre = 'seul'`) ; le terme est celui de l'hôpital : *les observations permettent de formuler une situation* |
+| `observation` | **le mot cru** — registre propre, ni sanctuaire ni traversée | `axes` non vide | prose libre : ce qui a été vu, entendu, rapporté. Souvent projective, souvent fausse — et c'est du **signal** : le mot cru parle de qui regarde autant que de qui est regardé (§1). **Jamais promue en lecture** | déposée **seul** (`cadre = 'seul'`) ; le terme est celui de l'hôpital : *les observations permettent de formuler une situation*. **Reformulable avec sa source, jamais fondue** (invariant 18) |
 | `situation` | traversée | — | prose : le réel brut, cité, non lissé — **formulée**, non récoltée | |
 | `lecture_clinique` | **SANCTUAIRE** | position **obligatoire** ∈ `medecin · equipe · entourage · structure` (source-agnostique, §4) | prose : **le mécanisme qui traverse, jamais l'étiquette** ; registre hypothétique, tenu, daté | `ref_id` = lecture révisée (chaîne visible) |
 | `hypothese` | **SANCTUAIRE** | — | prose | `ref_id` = hypothèse révisée ; se lève par `levee` |
@@ -208,7 +208,13 @@ CHECK (nature <> 'observation'       OR (axes IS NOT NULL AND cardinality(axes) 
 CHECK (axes IS NULL OR axes <@ ARRAY['familial','amoureux','ami','travail','soin'])
 
 -- le régime tient au CADRE, jamais à l'étiquette (§10 : indexé sur le moment, pas le grade)
-CHECK (nature NOT IN ('lecture_clinique','equilibre','compte_rendu','validation_typage')
+-- La GRILLE EST FORMULÉE, pas récoltée : S / R / D / Diff / É et la Clinique se nouent
+-- en collège, à partir des `observation` du pentalobe. La récolte EST la diffraction
+-- (chaque angle déposé seul, sans voir les autres) ; le champ Diffraction est le moment
+-- où le collège les pose côte à côte. C'est §12 bis : le relai est la condition de la
+-- diffraction.
+CHECK (nature NOT IN ('situation','ressenti','demande','diffraction',
+                      'lecture_clinique','equilibre','compte_rendu','validation_typage')
        OR cadre = 'synthese_collective')                            -- le nouage ne se dépose jamais seul
 -- Pas de CHECK symétrique sur la famille observation : elle se dépose seul (le geste du
 -- matin) comme en synthèse (on cite un mot cru dans la salle). La contrainte est d'un
@@ -306,6 +312,7 @@ Le capteur de fragmentation (§15) — tous les signaux mesurent **un seul phén
 | `etat_champs` | flux de dépôts | les quatre états du §6 — voir §7 |
 | `densites` | COUNT(dépôts) sur `unnest(axes)` | descriptif, permis — la boucle grossit **parce qu'on a déposé**, jamais d'après une constante |
 | `recouvrements` | paires d'axes co-présents dans un même dépôt | le point de couture (§13) ; deux boucles qui partagent de la matière **se croisent** (§19). **Montré, jamais conclu** |
+| `vigilante_recolte` | les `observation` du patient, **mises en mots en clair**, à côté de la grille en cours de formulation | **projection, jamais un dépôt** — aucun guichet n'existe (§4, second barrage) : c'est pourquoi elle a le droit de parler. Elle **écrit ce qui est là**, attribué et daté ; elle ne signale rien, ne compare rien, ne conclut rien. **Elle n'évalue jamais la cohérence** — le récit le plus cohérent est parfois le délire (§2) ; un eval de cohérence récompenserait la clôture prématurée. Bien écrit, le creux se voit tout seul (§1, l'opération est soustractive). **Tirée, jamais poussée.** Registre-garde suffixé : le nom reste chiffré (ce que les mots *font*, jamais « somatisation ») |
 | `condense` | dépôts d'un patient, rangés par axe | **éphémère, jamais persisté** (loi §0). **Un dossier de citations, pas un texte** : chaque énoncé cité verbatim, **attribué et daté**. La machine range, juxtapose, cite — elle n'écrit **aucune prose sur le patient** (invariant 12 : sur le sanctuaire, elle cite ou se tait). Le rangement est une **projection** ; la juxtaposition chronologique attribuée reste **à un clic**, et c'est elle la vérité |
 | `angles_multiples` | COUNT(DISTINCT position) > 1 sur `lecture_clinique` | le marqueur §4b : binaire, zéro sémantique |
 | `portes_couverture` | prose d'`indication` × six portes (§12) | **la seule opération sémantique machine du système** : classer la *couverture* (quels sujets la prose a touchés), **jamais en lire le sens**. Borne explicite, à tester comme telle |
@@ -442,13 +449,13 @@ Le test reste : *est-ce que ceci CLASSE, CHIFFRE ou CONCLUT à la place de l'hum
 | 9 | Retypage exige une proposition (le mouvement propose, le regard valide) | **structure** — `ref_id` obligatoire sauf premier typage |
 | 10 | Correction masquée en récolte, jamais en dépôts | **code testé** — deux fonctions de projection distinctes |
 | 11 | Acteur : ni vue inversée, ni attribut porté, ni maintenance propre | **structure + absence** — schéma nu + aucune API inverse (SQL brut joignable : assumé) |
-| 12 | Plume : **cite** le sanctuaire (jamais reformulé), **reformule** le déposé hors sanctuaire, refuse sous seuil, ne noue jamais la Clinique | **code + pratique** — prompt discipliné, tests de refus |
+| 12 | Plume : **cite** le sanctuaire — la `lecture_clinique` — verbatim ou se tait ; **reformule** le déposé hors sanctuaire (dont l'`observation`, **sans jamais fondre les auteurs**) ; refuse sous seuil ; **ne noue jamais la Clinique** — elle n'est *jamais générée*, même assistée (§3) | **code + pratique** — prompt discipliné (registre-garde suffixé), tests de refus |
 | 13 | Contenu libre déposé en synthèse collective, sauf médecin coordinateur (droit de fonction, pas hiérarchie de lecture) | **code** — permission applicative sur `cadre` |
 | 14 | Le vert ne dispense jamais de regarder (revue exhaustive au trimestriel) | **pratique** — hors schéma, nommé pour ne pas être oublié |
 | 15 | Brouillon = dérivé **éphémère**, jamais stocké (loi §0) ; garde de génération « sans source = non généré » | **code + test** — pas de table, garde à la génération |
 | 16 | Compte rendu → acte tracé par **signature humaine** seulement ; la machine ne l'insère jamais | **structure** — rôle machine sans `INSERT` sur `depots` (invariant 2) ; signature = dépôt `compte_rendu` |
 | 17 | Miroir agent : **privé par absence de chemin** (RLS, aucune vue croisée, aucun agrégat) ; réflexion, jamais score | **structure + code** — RLS sur `utilisateur_id` + aucune fonction d'agrégat |
-| 18 | **Le condensé ne fond jamais les auteurs.** Il cite, attribue, date ; il ne dit jamais « l'équipe » | **structure + code** — le verbatim vit dans son créneau typé, séparé des champs reformulés ; aucun chemin de fusion. *La Vigilante ne peut pas garder ce point : elle lit ce qui sort des lobes, pas ce qui y entre* |
+| 18 | **La machine ne fond jamais les auteurs.** Elle peut reformuler une `observation` ; elle ne peut pas la détacher de qui l'a écrite ni de quand. Jamais « l'équipe » | **structure + code** — `auteur_id` et `depose_le` voyagent avec l'énoncé, du dépôt à l'écran ; aucun chemin de fusion. *L'attribution est la garde, pas le verbatim : « l'équipe décrit une intolérance à la frustration » est un cliché bien écrit (§5) ; « Karima, le 3 mars : … ; Céline, le 5 : … » est vivant.* La Vigilante ne peut pas garder ce point : elle lit ce qui sort des lobes, pas ce qui y entre |
 | 19 | **Aucun état courant sur le perceptif.** Pas de « dernière valeur » : la **série est l'objet** | **absence** — la correction par projection n'existe qu'aux domaines 0 et 1. Vouloir mourir le matin et rire le soir : deux dépôts, deux dates, tous deux vrais, jamais réconciliés |
 
 ---
