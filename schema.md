@@ -165,7 +165,6 @@ depots (
   position     text NULL,                     -- source du regard (voir catalogue)
   facette      text NULL,                     -- demande : surface / reelle
   acteur_id    uuid NULL,
-  axes         text[] NULL,                   -- les cinq axes nourris (§19) ; recouvrement permis
   ref_id       uuid NULL,                     -- dépôt révisé / levé, ou proposition validée
   contenu      text                           -- prose ; NULL permis pour gestation seule
 )
@@ -175,11 +174,18 @@ depots (
 numérique n'existe sur un dépôt (invariant contresigné) : pas de score, pas de poids,
 pas de criticité, pas d'échéance — non pas interdits, **inexistants**.
 
+**Ni d'axe.** Le rangement d'un dépôt sur les cinq axes n'est **pas stocké** : il se
+recalcule (§6.1, `fragments`). En domaine 2 rien ne s'efface — un axe gravé faux le
+resterait, et la densité mentirait pour toujours. Le rangement se refait à l'identique
+depuis le texte : *la machine ne porte que ce qu'elle peut recalculer.* Une erreur de
+rangement ne coûte donc rien : on relance, elle change. C'est ce qui permet de ne
+demander **aucune validation** au soignant.
+
 ### Catalogue des natures
 
 | nature | registre | position / facette | contenu | mécanique |
 |---|---|---|---|---|
-| `observation` | **le mot cru** — registre propre, ni sanctuaire ni traversée | `axes` non vide | prose libre : ce qui a été vu, entendu, rapporté. Souvent projective, souvent fausse — et c'est du **signal** : le mot cru parle de qui regarde autant que de qui est regardé (§1). **Jamais promue en lecture** | déposée **seul** (`cadre = 'seul'`) ; le terme est celui de l'hôpital : *les observations permettent de formuler une situation*. **Reformulable avec sa source, jamais fondue** (invariant 18) |
+| `observation` | **le mot cru** — registre propre, ni sanctuaire ni traversée | — (le rangement est une projection, §6.1) | prose libre : ce qui a été vu, entendu, rapporté. **Entière, jamais découpée** — le découpage se recalcule à côté d'elle. Souvent projective, souvent fausse — et c'est du **signal** : le mot cru parle de qui regarde autant que de qui est regardé (§1). **Jamais promue en lecture** | déposée **seul** (`cadre = 'seul'`) ; le terme est celui de l'hôpital : *les observations permettent de formuler une situation*. **Reformulable avec sa source, jamais fondue** (invariant 18) |
 | `situation` | traversée | — | prose : le réel brut, cité, non lissé — **formulée**, non récoltée | |
 | `lecture_clinique` | **SANCTUAIRE** | position **obligatoire** ∈ `medecin · equipe · entourage · structure` (source-agnostique, §4) | prose : **le mécanisme qui traverse, jamais l'étiquette** ; registre hypothétique, tenu, daté | `ref_id` = lecture révisée (chaîne visible) |
 | `hypothese` | **SANCTUAIRE** | — | prose | `ref_id` = hypothèse révisée ; se lève par `levee` |
@@ -204,8 +210,6 @@ CHECK (nature <> 'lecture_clinique'  OR position IS NOT NULL)
 CHECK (nature <> 'lien_travail'      OR acteur_id IS NOT NULL)
 CHECK (nature <> 'levee'             OR ref_id IS NOT NULL)
 CHECK (nature = 'gestation'          OR contenu IS NOT NULL)
-CHECK (nature <> 'observation'       OR (axes IS NOT NULL AND cardinality(axes) >= 1))
-CHECK (axes IS NULL OR axes <@ ARRAY['familial','amoureux','ami','travail','soin'])
 
 -- le régime tient au CADRE, jamais à l'étiquette (§10 : indexé sur le moment, pas le grade)
 -- La GRILLE EST FORMULÉE, pas récoltée : S / R / D / Diff / É et la Clinique se nouent
@@ -310,8 +314,10 @@ Le capteur de fragmentation (§15) — tous les signaux mesurent **un seul phén
 | `type_courant` | dernier dépôt `validation_typage` | |
 | `statut_parcours` | chaîne des événements de couture | vocabulaire du §3 ci-dessus |
 | `etat_champs` | flux de dépôts | les quatre états du §6 — voir §7 |
-| `densites` | COUNT(dépôts) sur `unnest(axes)` | descriptif, permis — la boucle grossit **parce qu'on a déposé**, jamais d'après une constante |
-| `recouvrements` | paires d'axes co-présents dans un même dépôt | le point de couture (§13) ; deux boucles qui partagent de la matière **se croisent** (§19). **Montré, jamais conclu** |
+| `fragments` | chaque `observation` découpée en **portions verbatim**, chacune rangée sur un ou plusieurs axes | **projection, jamais un dépôt.** Une observation longue parle de la sœur, du chômage et du refus : elle n'a pas trois axes, elle a **trois fragments**. Le dépôt reste **entier** ; le fragment le référence, et la note complète est **à un clic**. Une **portion**, jamais une réécriture (invariant 12). Les fragments **se chevauchent** : la plus petite unité qui *garde le sens*, jamais la plus petite possible |
+| `densites` | COUNT(`fragments`) sur `unnest(axes)` | descriptif, permis — la boucle grossit **parce qu'il y a de la matière rangée**, jamais d'après une constante. Compter les *dépôts* rendrait les cinq boucles grosses dès qu'un soignant écrit long : du bruit |
+| `recouvrements` | axes co-présents **sur un même fragment** | le point de couture (§13) : *« sa sœur, depuis qu'il ne travaille plus »* est **un** croisement, non deux cases cochées. Deux boucles qui partagent de la matière **se croisent** (§19). **Montré, jamais conclu** |
+| `portions_non_couvertes` | texte d'un dépôt qu'aucun fragment ne recouvre | ce qui a été écrit et que personne n'a su ranger. **Montré à la Vigilante, jamais commenté** |
 | `vigilante_recolte` | les `observation` du patient, **mises en mots en clair**, à côté de la grille en cours de formulation | **projection, jamais un dépôt** — aucun guichet n'existe (§4, second barrage) : c'est pourquoi elle a le droit de parler. Elle **écrit ce qui est là**, attribué et daté ; elle ne signale rien, ne compare rien, ne conclut rien. **Elle n'évalue jamais la cohérence** — le récit le plus cohérent est parfois le délire (§2) ; un eval de cohérence récompenserait la clôture prématurée. Bien écrit, le creux se voit tout seul (§1, l'opération est soustractive). **Tirée, jamais poussée.** Registre-garde suffixé : le nom reste chiffré (ce que les mots *font*, jamais « somatisation ») |
 | `condense` | dépôts d'un patient, rangés par axe | **éphémère, jamais persisté** (loi §0). **Un dossier de citations, pas un texte** : chaque énoncé cité verbatim, **attribué et daté**. La machine range, juxtapose, cite — elle n'écrit **aucune prose sur le patient** (invariant 12 : sur le sanctuaire, elle cite ou se tait). Le rangement est une **projection** ; la juxtaposition chronologique attribuée reste **à un clic**, et c'est elle la vérité |
 | `angles_multiples` | COUNT(DISTINCT position) > 1 sur `lecture_clinique` | le marqueur §4b : binaire, zéro sémantique |
@@ -457,6 +463,7 @@ Le test reste : *est-ce que ceci CLASSE, CHIFFRE ou CONCLUT à la place de l'hum
 | 17 | Miroir agent : **privé par absence de chemin** (RLS, aucune vue croisée, aucun agrégat) ; réflexion, jamais score | **structure + code** — RLS sur `utilisateur_id` + aucune fonction d'agrégat |
 | 18 | **La machine ne fond jamais les auteurs.** Elle peut reformuler une `observation` ; elle ne peut pas la détacher de qui l'a écrite ni de quand. Jamais « l'équipe » | **structure + code** — `auteur_id` et `depose_le` voyagent avec l'énoncé, du dépôt à l'écran ; aucun chemin de fusion. *L'attribution est la garde, pas le verbatim : « l'équipe décrit une intolérance à la frustration » est un cliché bien écrit (§5) ; « Karima, le 3 mars : … ; Céline, le 5 : … » est vivant.* La Vigilante ne peut pas garder ce point : elle lit ce qui sort des lobes, pas ce qui y entre |
 | 19 | **Aucun état courant sur le perceptif.** Pas de « dernière valeur » : la **série est l'objet** | **absence** — la correction par projection n'existe qu'aux domaines 0 et 1. Vouloir mourir le matin et rire le soir : deux dépôts, deux dates, tous deux vrais, jamais réconciliés |
+| 20 | **Aucun axe n'est stocké sur un dépôt.** Le rangement est une projection, recalculable | **absence** — la colonne n'existe pas. En domaine 2 rien ne s'efface : un axe faux le resterait. La machine ne porte que ce qu'elle peut recalculer |
 
 ---
 

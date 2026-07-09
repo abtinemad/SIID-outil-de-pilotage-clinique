@@ -1017,6 +1017,22 @@ frustration » a fondu quatre regards en une voix et rendu un cliché *bien écr
 3 mars : … ; Céline, le 5 : … » se lit. Le sanctuaire, lui, reste ce qu'il est : la
 **`lecture_clinique`**, citée verbatim ou tue — et **jamais générée, même assistée** (§3).
 
+**L'unité rangée est le fragment, pas la note.** Une observation longue parle de la sœur, du
+chômage et du refus de traitement : elle n'a pas *trois axes*, elle a **trois fragments** — des
+portions verbatim, chacune rangée sur un ou plusieurs axes. Le dépôt reste **entier, jamais
+découpé** : c'est le record, et la note complète est **à un clic** depuis chacun de ses fragments.
+Les fragments **se chevauchent** — la plus petite unité qui *garde le sens*, jamais la plus petite
+possible ; découper au scalpel une phrase qui noue la sœur et le chômage, c'est **couper le nœud**.
+
+**Le découpage est machine, et il ne se valide pas.** Il se **recalcule** : *la machine ne porte que
+ce qu'elle peut recalculer.* Rien n'est gravé, donc rien n'est faux pour toujours — on relance, le
+rangement change. Une erreur de rangement ne coûte rien, puisque **tout reparaît dans le pentalobe**
+de toute façon. C'est pourquoi on ne demande **aucune validation** au soignant : il écrit, ça
+s'écrit. Ce qu'**aucun** fragment ne recouvre va à la Vigilante, montré, jamais commenté.
+
+*Conséquence géométrique* : une boucle grossit du **volume de fragments** rangés sur son axe, et
+« sa sœur, depuis qu'il ne travaille plus » est **un** croisement, non deux cases cochées.
+
 **La grille est formulée, pas récoltée.** Les `observation` s'accumulent ; le collège formule
 ensuite **S → R → D → Diff → É** à partir d'elles, et seul la **Clinique**. La récolte *est* la
 diffraction — chaque soignant dépose son angle sans voir celui des autres ; le champ **Diffraction**
@@ -1366,12 +1382,16 @@ soin). Plus une boucle contient de matière déposée, plus elle grossit. Les ci
 d'un isolé : c'est *sa* boucle, pas à nous de juger qu'elle n'a pas lieu d'être — protection contre
 la projection).
 
-**Un même élément nourrit deux boucles, et c'est une donnée.** Le recouvrement n'est pas une bavure
-de rangement : le travail qui déborde sur la famille, le soin qui colonise le soi, le seul lien
-qui reste passant par les soignants. C'est un point de couture (§13). Sa forme est déjà là : deux
-boucles qui partagent de la matière **se croisent**, et le croisement est le lieu du basculement
-(serrage au regard court, passage au regard long). **Montré, jamais conclu** — comme le n qui
-respire.
+**L'unité rangée est le fragment**, non la note (§18 bis) : une boucle grossit du volume de
+**fragments** qu'elle porte. Compter les notes rendrait les cinq boucles grosses dès qu'un soignant
+écrit long, et l'angle mort disparaîtrait dans le bruit.
+
+**Un même fragment nourrit deux boucles, et c'est une donnée.** Le recouvrement n'est pas une bavure
+de rangement : le travail qui déborde sur la famille, le soin qui colonise le soi, le seul lien qui
+reste passant par les soignants. *« Sa sœur, depuis qu'il ne travaille plus »* est **un** croisement,
+non deux cases cochées. C'est un point de couture (§13). Sa forme est déjà là : deux boucles qui
+partagent de la matière **se croisent**, et le croisement est le lieu du basculement (serrage au
+regard court, passage au regard long). **Montré, jamais conclu** — comme le n qui respire.
 
 **Chaque boucle porte une seule dimension : sa taille = le volume de récolte sur cet axe.**
 C'est une **loi du pentalobe**, non de la marque : au trilobe, la taille d'un lobe dit la **largeur
@@ -1754,8 +1774,13 @@ pas par la couleur — §ci-dessus).
   signale rien — poser une analyse par-dessus serait un recouvrement de plus (§1). Elle **n'évalue
   jamais la cohérence** : le récit le plus cohérent est parfois le délire (§2). Le **nom reste
   chiffré**. Elle a le droit de parler **parce qu'aucun guichet n'existe** pour y déposer (§4).
-- **Le recouvrement d'axes est une donnée** (§19), pas une bavure ; sa forme est le **croisement**.
-  **Montré, jamais conclu.**
+- **Le fragment est l'unité rangée** (§18 bis, §19) : une **portion verbatim** d'un dépôt, sur un ou
+  plusieurs axes ; la note reste **entière**, à un clic. Le découpage est **machine et recalculable**
+  — *la machine ne porte que ce qu'elle peut recalculer* —, donc **aucune validation** : une erreur
+  de rangement ne coûte rien, tout reparaît dans le pentalobe. **Aucun axe n'est stocké sur un
+  dépôt** (invariant 20, tenu par absence de colonne : en domaine 2, un axe faux le resterait).
+- **Le recouvrement d'axes est une donnée** (§19), pas une bavure ; sa forme est le **croisement**
+  — *un* fragment sur deux axes, non deux cases cochées. **Montré, jamais conclu.**
 - **`taille = volume de récolte` est une loi du pentalobe** (§19), non de la marque : au trilobe la
   taille dit la **largeur du champ scruté**.
 - **Le condensé cite, attribue, date — il ne dit jamais « l'équipe »** (§11, §5). La machine range,
