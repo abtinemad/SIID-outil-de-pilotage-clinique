@@ -56,6 +56,22 @@ const depots = pg => pg.$$eval("ul.fil li:not(.creux)", ns => ns.map(li => ({
   attr:  (li.querySelector(".attr") || {}).textContent || ""
 })));
 
+// ── Lire une signature, pas « du non-blanc avec un chiffre » ─────────────────────
+// Le banc exigeait `/\S/ && /\d/` sur la ligne d'attribution. Or `« · 10 juillet à 08 h 04 »`
+// satisfait les deux : **un dépôt signé de personne, mais horodaté, passait.** L'attribution est
+// la garde du sanctuaire (§ : « l'attribution est la garde, pas la citation verbatim ») — un
+// contrôle qui la certifie sans la lire est un contrôle faux. Troisième fois que ce banc
+// certifie une vertu qu'il ne regarde pas ; on lit maintenant le nom, et l'heure, séparément.
+const HEURE_RX = /\b\d{1,2}\s?h\s?\d{2}\b/;
+function signature(attr) {
+  const t = (attr || "").trim();
+  const i = t.indexOf(" · ");
+  return { auteur: i > 0 ? t.slice(0, i) : "", horodate: HEURE_RX.test(t) };
+}
+// qui écrit, selon l'app elle-même — le banc ne code jamais un nom en dur
+const signataire = pg => pg.$eval("#qui", e => e.value);
+const AGENTS = pg => pg.$$eval("#qui option", n => n.map(o => o.value));
+
 const champ = pg => pg.$("#txt");
 // l'épaisseur du fil, lue sur le contour du ruban (déterministe sous `reduce`).
 // On attend que le morph d'ouverture ait fini de s'établir : `SET.w` s'interpole vers `wData`
@@ -109,8 +125,17 @@ const relacher = pg => tenirBoucle(pg, 0.5, 0.5);   // le centre : l'œil se dé
   const apres = await depots(pg);
   const mien = apres.find(d => d.texte === MOT);
   tenu("C1 · le dépôt rejoint le fil", apres.length === avant.length + 1);
-  tenu("C1 · il porte auteur et heure",
-       !!mien && /\S/.test(mien.attr) && /\d/.test(mien.attr), mien && mien.attr);
+  const sig1 = signature(mien && mien.attr), qui1 = await signataire(pg);
+  tenu("C1 · il est signé de celui qui écrit", !!mien && sig1.auteur === qui1,
+       `« ${sig1.auteur} » vs « ${qui1} »`);
+  tenu("C1 · et il est horodaté", sig1.horodate, mien && mien.attr.trim());
+
+  // I11 — AUCUN dépôt affiché n'est anonyme. Pas seulement le dernier : tous. L'attribution est
+  //       rendue par un seul chemin ; le casser dé-signe le fil entier d'un coup.
+  const connus = await AGENTS(pg);
+  const anonymes = apres.filter(d => !connus.includes(signature(d.attr).auteur));
+  tenu("I11 · aucun dépôt du fil n'est anonyme", anonymes.length === 0,
+       anonymes.length ? `« ${signature(anonymes[0].attr).auteur} »` : `${apres.length} dépôts, tous signés`);
 
   // C2 — le champ vide est refusé, et RIEN ne l'explique (§8 : pas de glose)
   await pg.type("#txt", "   \n  ");
@@ -204,8 +229,9 @@ const relacher = pg => tenirBoucle(pg, 0.5, 0.5);   // le centre : l'œil se dé
     return { nu: !!e.querySelector(".depot.nu"), attr: e.querySelector(".attr").textContent, n: n.length };
   });
   tenu("C6 · une gestation se dépose nue, champ vide", dernier.n === avantG + 1 && dernier.nu);
-  tenu("C6 · et elle porte auteur, heure et nature",
-       /\S/.test(dernier.attr) && /\d/.test(dernier.attr) && /gestation/.test(dernier.attr), dernier.attr.trim());
+  const sigG = signature(dernier.attr), quiG = await signataire(pgC);
+  tenu("C6 · et elle est signée, horodatée, et dit sa nature",
+       sigG.auteur === quiG && sigG.horodate && /gestation/.test(dernier.attr), dernier.attr.trim());
 
   // I10 — `vide_info` n'est pas la gestation. « J'ai regardé, il n'y avait rien » est un FAIT,
   //      il se dit. Un fait ne se dépose pas en blanc.
