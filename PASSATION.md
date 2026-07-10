@@ -4,6 +4,39 @@
 > **Socles permanents** (à lire avant de rouvrir un sujet) : mécanique du logo →
 > `passations/logo_mecanique.md`.
 
+## 2026-07-10 — bascule : l'UI d'abord, l'accord ensuite
+**Ordre de marche.** La doctrine est faite, l'UI ne l'est pas. On dessine l'UI **entière, sans la
+doctrine sous les yeux**, et on met les deux en accord après. Une conversation qui part de la doctrine
+et glisse vers l'écran produit un mélange illisible. Le **banc de fidélité** (`mockup/tests/fidelite.js`)
+est l'instrument de cette troisième phase — **il a été construit avant les écrans** : travail juste, au
+mauvais moment ; il attend, il ne se perd pas. Acquis : la base est prouvée (**20 gestes, 20 TENU**),
+le nœud navigue, **un écran sur cinq existe**. N'existent pas : entrer dans l'app, choisir un patient,
+le trilobe, le bilobe, la dictée, la signature, la synthèse du lundi, le doigt (les marques se
+survolent — pas de survol sur une tablette), le téléphone. Six arbitrages attendent, dont §19 (trois
+phrases fausses), la signature (`agent_id` dit *qui*, jamais *qu'un acte a été signé* — et append-only :
+la colonne doit exister **avant le premier dépôt réel, ou jamais**) et l'alliance (propriété de la
+**paire**, pas une échelle, et c'est elle qui rend le bilobe dangereux : distribution, jamais les
+paires — **absence de jointure**). Commits `b925205 · 4fb325b · fcf931d · dcafc81 · 0d85635 · 51b98e8`.
+Détail → `passations/2026-07-10_ui_dabord.md`.
+
+## 2026-07-09 — le guichet de récolte, et la lecture de LeCLG
+**Le mockup n'était pas un logo : c'était le shell de l'app.** `select(s)` + `shapeAt(s)` morphent
+2/3/5 boucles — **la strate est la forme**, il n'y a pas de routeur à écrire ; `ptParked` pose l'œil,
+`dashLobe`/`DASH_MODE` entrent dans le lobe, `detacher()` est le point d'entrée. Deux jours perdus à
+lire six documents sans ouvrir le fichier où le travail était fait : *le code dit ce que la prose ne dit
+pas.* Loi de l'écran de récolte : **on lit par axe, on écrit au nœud** — le lobe tenu déroule, il ne
+reçoit pas ; il n'y a pas de sélecteur d'axe parce qu'il n'existe **aucun endroit géométrique** où en
+mettre un (invariant 20, tenu par absence de chemin). Au dépôt le fil épaissit et **aucune boucle ne
+bouge** : on ne peut pas engraisser une boucle en écrivant. `angleMort()` lisait une constante
+(il désignait le lobe 3 **pour tous les patients**) : il lit les densités, et se **tait** sur patient nu.
+Le CORE a désormais un seul propriétaire (`mockup/core.sh`). La base **acceptait un dépôt vide** —
+`db/70`, trois impossibilités, la suite passe de 16 à **20 gestes**. Et **LeCLG** : la continuité n'est
+pas mémorisée, elle est **re-dérivée** ; il détruit la source et garde la distillation, nous faisons
+l'inverse — *l'effacement protège de la fuite, l'append-only protège de la réécriture* — d'où : il ne
+peut pas auditer sa propre omission, et son `cartes.sphere` (l'axe gravé sur le dépôt) est exactement
+la panne que l'invariant 20 refuse. Huit arbitrages, six fils ouverts →
+`passations/2026-07-09_ui_guichet.md`.
+
 ## 2026-07-09 — Phase 0 : la DDL des quatre domaines (schéma **exécuté**)
 Le schéma cesse d'être un texte : il est monté sur un PostgreSQL 16 réel et prouvé par une suite
 d'impossibilités — **16 gestes, 16 TENU, `ROLLBACK`** (`db/run_db_test.sh`). Commits `f3bbf9f` (DDL +
