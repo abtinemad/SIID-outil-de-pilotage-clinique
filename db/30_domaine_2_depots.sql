@@ -28,6 +28,20 @@ CREATE TABLE depot.depots (
   ipp                 text        NOT NULL REFERENCES identite.patients (ipp),
   depose_le           timestamptz NOT NULL DEFAULT now(),
   auteur_id           uuid        NOT NULL REFERENCES recolte.agents (id),
+  -- L'agrafe : deux dépôts nés du même geste (une observation ET la date qu'elle fixe)
+  -- partagent un geste_id. Explicite, jamais déduit de « même auteur, même seconde »
+  -- (le réseau hoquette ; deux soignants déposent au même instant sur deux patients).
+  -- SOUPLE : posé par l'app, aucune FK. Seul par défaut, agrafé si l'app propage le même.
+  -- Hors de la clé composite : l'agrafe est un LIEN partagé, pas une identité — l'y mettre
+  -- en ferait une clé d'unicité, ce qu'elle n'est pas.
+  -- OUVERT : rien n'empêche aujourd'hui d'agrafer deux patients (un CHECK ne voit qu'une
+  -- ligne). Sans conséquence tant que l'agrafe ne sert qu'à l'affichage. Le jour où une
+  -- projection s'y appuie, poser : UNIQUE INDEX ... (geste_id) incompatible avec 2 ipp.
+  geste_id            uuid        NOT NULL DEFAULT gen_random_uuid(),
+  -- Le fil que le dépôt ouvre. Rencontre et soin ne se croisent pas : la NAP (injectable
+  -- à domicile) est le fil « soin » — une seconde chaîne, ses ● mensuels. Un anosognosique
+  -- stabilisé a une chaîne rencontre presque vide et une chaîne soin qui tient : la réussite.
+  fil                 text        NOT NULL DEFAULT 'rencontre',
   cadre               text        NOT NULL,
   nature              text        NOT NULL,
   champ_cible         text,
@@ -53,11 +67,18 @@ CREATE TABLE depot.depots (
   CONSTRAINT depots_cadre_connu
     CHECK (cadre IN ('seul','synthese_collective','responsabilite_medicale')),
 
+  CONSTRAINT depots_fil_connu
+    CHECK (fil IN ('rencontre','soin')),
+
   CONSTRAINT depots_nature_connue
     CHECK (nature IN (
       -- famille observation (déposée seul comme en synthèse) :
       'observation','hypothese','inquietude','vide_info','gestation','levee',
       'lien_travail','indication',
+      -- tournés vers l'avant (§ chaîne). Un dépôt, jamais une colonne : reprendre date,
+      -- c'est déposer ; annuler, c'est lever. Le relais ferme par un nom (dans `contenu`,
+      -- déjà NOT NULL sauf gestation → pas de sortie dans le vide, sans règle neuve).
+      'rendez_vous','relais',
       -- le nouage (jamais seul) :
       'situation','ressenti','demande','diffraction','lecture_clinique',
       'equilibre','compte_rendu','validation_typage'
@@ -139,7 +160,7 @@ CREATE TABLE depot.depots (
   CONSTRAINT depots_levee_reference
     CHECK (nature <> 'levee'
            OR (ref_depot_id IS NOT NULL
-               AND ref_nature IN ('hypothese','inquietude','gestation'))),
+               AND ref_nature IN ('hypothese','inquietude','gestation','rendez_vous'))),
   -- Une révision révise le même registre : une lecture clinique ne révise pas un lien.
   CONSTRAINT depots_revision_homogene
     CHECK (nature NOT IN ('lecture_clinique','hypothese','lien_travail')
