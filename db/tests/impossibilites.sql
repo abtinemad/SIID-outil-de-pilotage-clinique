@@ -172,6 +172,38 @@ SELECT test.doit_echouer(
             'Il vit seul depuis six mois.')$$,
   '23514', '11111111-1111-1111-1111-111111111111');
 
+-- 4 bis. Un dépôt vide.
+--    Le domaine 2 est append-only et rien ne s'y masque : un dépôt vide n'est pas un accident
+--    qu'on efface, c'est une cicatrice datée et signée sur le fil d'un patient. Le vide qui est
+--    un FAIT a déjà sa nature — `vide_info`, §6, « j'ai regardé, il n'y avait rien ». Le blanc
+--    du doigt qui glisse n'en est pas un. Sans ce CHECK, le refus du champ blanc est une règle
+--    d'application : contournable, donc rien.
+SELECT test.doit_echouer(
+  'un dépôt au contenu vide',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','observation','')$$,
+  '23514', '11111111-1111-1111-1111-111111111111');
+
+-- 4 ter. Et pas davantage rempli de blanc. `btrim()` ne rogne que l'ESPACE : `btrim(E'\n') <> ''`
+--    vaut vrai. Un dépôt fait d'un seul retour ligne passait. La garde est `~ '\S'` — au moins
+--    un caractère qui ne soit pas du blanc.
+SELECT test.doit_echouer(
+  'un dépôt fait d''espaces et de retours ligne',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','observation', E'   \n\t  ')$$,
+  '23514', '11111111-1111-1111-1111-111111111111');
+
+-- 4 quater. Même faiblesse au domaine 0 : un IPP fait d'un seul retour ligne passait
+--    `btrim(ipp) <> ''`. La clé se pose, elle ne se corrige pas (§0 n°4) — un IPP blanc est
+--    une clé qu'on ne pourra jamais reprendre.
+SELECT test.doit_echouer(
+  'un IPP fait d''un seul retour ligne',
+  'continuum_migration',
+  $$INSERT INTO identite.patients (ipp) VALUES (E'\n')$$,
+  '23514');
+
 -- 5. Le coordinateur formule une `situation` seul.
 --    Le droit de fonction ouvre ce qui se SIGNE, jamais ce qui se FORMULE. La grille
 --    n'existe que parce que plusieurs regards l'ont faite : un homme qui diffracte seul
@@ -209,6 +241,17 @@ SELECT test.doit_echouer(
 -- ══════════════════════════════════════════════════════════════════════════════
 --  LES CONTRÔLES POSITIFS — sans eux, les quatre ci-dessus ne prouvent rien
 -- ══════════════════════════════════════════════════════════════════════════════
+
+-- La `gestation` reste NUE. `NULL ~ '\S'` vaut NULL, et un CHECK NULL est tenu : la seule
+-- nature autorisée à n'avoir aucun contenu le reste. Sans ce contrôle, un `contenu NOT NULL`
+-- posé par mégarde passerait les deux impossibilités ci-dessus — et fermerait à l'infirmier
+-- le seul guichet où il a le droit de dire qu'il ne sait pas encore.
+SELECT test.doit_reussir(
+  'une gestation reste nue',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, champ_cible, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','gestation','demande', NULL)$$,
+  '11111111-1111-1111-1111-111111111111');
 
 -- Le mot cru se dépose seul : c'est le geste du matin, dans la voiture.
 SELECT test.doit_reussir(
