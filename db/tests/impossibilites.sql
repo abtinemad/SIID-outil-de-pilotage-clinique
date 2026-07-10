@@ -18,6 +18,12 @@
 -- n'interdit rien est pire que rien.* Les contrôles positifs sont la preuve que les
 -- impossibilités ci-dessus sont **les bonnes**, et non l'ombre d'une panne.
 --
+-- Cinq gestes de plus doivent réussir — non pour garder une impossibilité, mais pour
+-- **prouver le trio additif** (geste_id, fil, natures rendez_vous/relais, commit 0666778) :
+-- une valeur présente dans la grammaire mais jamais déposée n'est pas prouvée. Un rendez-vous
+-- se pose et se lève, deux dépôts d'un même geste partagent l'agrafe, un fil 'soin' passe, un
+-- relais ferme par un nom.
+--
 -- Tout tourne dans une transaction, et se défait. La base sort du test telle qu'elle y est
 -- entrée : un test ne dépose pas.
 
@@ -301,6 +307,65 @@ SELECT test.doit_reussir(
   'la machine lit les dépôts par la vue',
   'continuum_machine',
   $$SELECT count(*) FROM lecture.depots WHERE ipp = 'IPP-TEST-001'$$);
+
+-- ══════════════════════════════════════════════════════════════════════════════
+--  CINQ GESTES QUI PROUVENT LE TRIO ADDITIF
+--  geste_id, fil, natures rendez_vous/relais : présents dans la grammaire (commit 0666778),
+--  jamais encore déposés. Un ajout non exercé n'est pas prouvé — c'est le trou du tour précédent,
+--  déplacé d'un cran. On le ferme ici, par des dépôts réels.
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Un rendez-vous se pose. Nature neuve, `contenu` requis (ce n'est pas une gestation), aucune
+-- position, aucun nombre. L'id est figé : le report qui suit le vise.
+SELECT test.doit_reussir(
+  'un rendez-vous se dépose',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (id, ipp, auteur_id, cadre, nature, contenu)
+    VALUES ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','IPP-TEST-001',
+            '11111111-1111-1111-1111-111111111111','seul','rendez_vous','Revu le 24 mars.')$$,
+  '11111111-1111-1111-1111-111111111111');
+
+-- Le report : lever n'est pas effacer — c'est déposer une `levee` qui vise le rendez-vous. Le CHECK
+-- n'ouvre la levée qu'à hypothese/inquietude/gestation/rendez_vous ; la nature neuve devait y entrer.
+-- `ref_depot_id` n'a pas de FK : on prouve la forme (rendez_vous est levable), pas l'existence.
+SELECT test.doit_reussir(
+  'un rendez-vous se lève — le report',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, ref_depot_id, ref_nature, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','levee',
+            'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','rendez_vous','Reporté au 7 avril.')$$,
+  '11111111-1111-1111-1111-111111111111');
+
+-- L'agrafe : une observation ET la date qu'elle fixe, nées du même geste, partagent le geste_id.
+-- Rien n'impose l'unicité — un lien souple, pas une clé. Deux lignes, un geste. Si un UNIQUE INDEX
+-- s'y était glissé, ce geste virerait ROMPU : il vérifie la bonne chose, pas la simple présence.
+SELECT test.doit_reussir(
+  'deux dépôts d''un même geste partagent l''agrafe',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, geste_id, contenu)
+      VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','observation',
+              'cccccccc-cccc-cccc-cccc-cccccccccccc','Vu à domicile, posé.');
+    INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, geste_id, contenu)
+      VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','rendez_vous',
+              'cccccccc-cccc-cccc-cccc-cccccccccccc','Prochain passage le 2 avril.')$$,
+  '11111111-1111-1111-1111-111111111111');
+
+-- Le fil 'soin' : la NAP, seconde chaîne. La valeur neuve du CHECK fil doit passer.
+SELECT test.doit_reussir(
+  'un dépôt en fil=soin — la NAP',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, fil, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','observation','soin','NAP faite ce matin, sans refus.')$$,
+  '11111111-1111-1111-1111-111111111111');
+
+-- Le relais : fermer un fil par un nom (personne/structure, jamais un lieu). La seconde nature
+-- neuve, déposée. Le nom vit dans `contenu` ; pas de ref (la DDL ne l'ouvre pas au relais).
+SELECT test.doit_reussir(
+  'un relais ferme le fil par un nom',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','relais','Relais au CMP de secteur, Dr. Ferrand.')$$,
+  '11111111-1111-1111-1111-111111111111');
 
 -- ══════════════════════════════════════════════════════════════════════════════
 --  DEUX GARDES QUE LA STRUCTURE OFFRE EN PRIME
