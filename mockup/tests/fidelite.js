@@ -57,8 +57,25 @@ const depots = pg => pg.$$eval("ul.fil li:not(.creux)", ns => ns.map(li => ({
 })));
 
 const champ = pg => pg.$("#txt");
-// l'épaisseur du fil, lue sur le contour du ruban (déterministe sous `reduce`)
-const fil = pg => pg.$eval("#filR", e => +e.getTotalLength().toFixed(1));
+// l'épaisseur du fil, lue sur le contour du ruban (déterministe sous `reduce`).
+// On attend que le morph d'ouverture ait fini de s'établir : `SET.w` s'interpole vers `wData`
+// pendant que le nœud se déplie, et une lecture prise sur ce bord vaut un transitoire, pas un
+// état. On ne dort pas un temps magique : on lit jusqu'à ce que deux lectures coïncident.
+async function fil(pg) {
+  let a = await pg.$eval("#filR", e => +e.getTotalLength().toFixed(1));
+  for (let i = 0; i < 30; i++) {
+    await attendre(120);
+    const b = await pg.$eval("#filR", e => +e.getTotalLength().toFixed(1));
+    if (b === a) return b;
+    a = b;
+  }
+  throw new Error("le fil ne se stabilise pas");
+}
+// Un cran vaut +36 % de contour (8118 → 11033). Une dérive de rendu vaut moins de 1 %.
+// `f1 > f0` — ce que ce banc exigeait — était satisfait par 8 unités de poussière : le contrôle
+// certifiait « le fil répond » là où la doctrine dit « le fil monte D'UN CRAN, franchement ».
+// Un contrôle positif plus mou que sa prose est un contrôle positif faux.
+const CRAN = 1.10;
 const strate = (pg, s) => pg.click(`#switch button[data-s="${s}"]`);
 
 // clic sur une boucle : coordonnées relatives au SVG du nœud
@@ -119,11 +136,13 @@ const relacher = pg => tenirBoucle(pg, 0.5, 0.5);   // le centre : l'œil se dé
   const deposer = async t => { await pgN.type("#txt", t); await pgN.click("#btDep"); await attendre(320); };
   await deposer("Première note.");
   const f1 = await fil(pgN);
-  tenu("C-FIL · un premier dépôt épaissit le fil", f1 > f0, `${f0} → ${f1}`);
+  tenu("C-FIL · le premier dépôt fait monter le fil d'un cran", f1 > f0 * CRAN,
+       `${f0} → ${f1}  (×${(f1 / f0).toFixed(3)}, seuil ×${CRAN})`);
 
   await deposer("Deux."); await deposer("Trois."); await deposer("Quatre.");
   const f2 = await fil(pgN);
-  tenu("C-FIL · le fil monte d'un cran, franchement", f2 > f1, `${f1} → ${f2}`);
+  tenu("C-FIL · le quatrième le fait monter du second", f2 > f1 * CRAN,
+       `${f1} → ${f2}  (×${(f2 / f1).toFixed(3)}, seuil ×${CRAN})`);
 
   for (let i = 0; i < 10; i++) await deposer("note " + i);
   const f3 = await fil(pgN);
@@ -210,5 +229,9 @@ const relacher = pg => tenirBoucle(pg, 0.5, 0.5);   // le centre : l'œil se dé
   // ── verdict ──────────────────────────────────────────────────────────────────────
   for (const t of T) console.log(`${t.ok ? "  tenu " : "  ROMPU"} — ${t.nom}${t.detail ? "   (" + t.detail + ")" : ""}`);
   if (echecs) { console.error(`\n${echecs} rompu(s).`); process.exit(1); }
-  console.log("\nTout tenu.");
+  // Le verdict ne dit QUE ce qu'il a vu. « Tout tenu » se lirait de l'app entière, alors que le
+  // banc ne touche que la récolte : le trilobe et le bilobe sont des cartons, et un banc qui
+  // certifie un carton est pire qu'un banc absent.
+  console.log("\nRécolte tenue.");
+  console.log("Non couverts : métabolisation (trilobe), institutionnel (bilobe), dictée.");
 })().catch(e => { console.error("banc en erreur :", e.message); process.exit(1); });
