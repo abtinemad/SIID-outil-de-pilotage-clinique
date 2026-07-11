@@ -249,21 +249,31 @@ SELECT test.doit_echouer(
 -- ══════════════════════════════════════════════════════════════════════════════
 
 -- La `temporalite` est TOUJOURS argumentée — plus de pause opaque. Une temporalité nue
--- (aucun contenu) échoue : on ne suspend pas la relance sans dire quel temps on demande ni
--- pourquoi. Le contenu porte le couple temps + argument.
+-- (aucun contenu), même en collège, échoue : on ne suspend pas la relance sans dire quel
+-- temps on demande ni pourquoi. Le contenu porte le couple temps + argument.
 SELECT test.doit_echouer(
   'une temporalite nue est refusée',
   'continuum_soignant',
   $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, champ_cible, contenu)
-    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','temporalite','demande', NULL)$$,
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','synthese_collective','temporalite','demande', NULL)$$,
   '23514', '11111111-1111-1111-1111-111111111111');
 
--- Argumentée, elle passe : le temps et sa raison, dans le contenu.
-SELECT test.doit_reussir(
-  'une temporalite argumentee se dépose',
+-- Décider d'attendre est un acte d'équipe : une temporalité déposée SEULE est refusée
+-- (garde depots_temporalite_en_college). L'intuition du terrain la porte à l'équipe.
+SELECT test.doit_echouer(
+  'une temporalite seule est refusée',
   'continuum_soignant',
   $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, champ_cible, contenu)
     VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','temporalite','demande',
+            'On revoit la demande après l''été, le temps qu''il pose les choses.')$$,
+  '23514', '11111111-1111-1111-1111-111111111111');
+
+-- Argumentée ET en collège, elle passe : le temps et sa raison, décidés à plusieurs.
+SELECT test.doit_reussir(
+  'une temporalite en collège se dépose',
+  'continuum_soignant',
+  $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, champ_cible, contenu)
+    VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','synthese_collective','temporalite','demande',
             'On revoit la demande après l''été, le temps qu''il pose les choses.')$$,
   '11111111-1111-1111-1111-111111111111');
 

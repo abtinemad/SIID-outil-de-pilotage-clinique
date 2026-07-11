@@ -73,12 +73,14 @@ CREATE TABLE depot.depots (
   CONSTRAINT depots_nature_connue
     CHECK (nature IN (
       -- famille observation (déposée seul comme en synthèse) :
-      'observation','inquietude','vide_info','temporalite','levee',
+      'observation','inquietude','vide_info','levee',
       'lien_travail','indication',
       -- tournés vers l'avant (§ chaîne). Un dépôt, jamais une colonne : reprendre date,
       -- c'est déposer ; annuler, c'est lever. Le relais ferme par un nom (dans `contenu`,
       -- déjà NOT NULL partout → pas de sortie dans le vide, sans règle neuve).
       'rendez_vous','relais',
+      -- décidée en équipe, mais hors grille : le temps qu'on choisit de respecter :
+      'temporalite',
       -- le nouage (jamais seul) :
       'situation','ressenti','demande','diffraction','lecture_clinique',
       'hypothese_clinique','compte_rendu','validation_typage'
@@ -118,6 +120,11 @@ CREATE TABLE depot.depots (
   CONSTRAINT depots_responsabilite_medicale_reservee
     CHECK (cadre <> 'responsabilite_medicale'
            OR nature IN ('lecture_clinique','compte_rendu','validation_typage')),
+
+  -- Décider d'attendre est un acte d'équipe, jamais une intuition solo : la temporalité
+  -- se dépose en collège. Le terrain la porte à l'équipe ; elle n'a pas autorité seule.
+  CONSTRAINT depots_temporalite_en_college
+    CHECK (nature <> 'temporalite' OR cadre = 'synthese_collective'),
 
   -- ══ La prose ════════════════════════════════════════════════════════════════
   -- Toujours argumenté : plus aucune nature ne reste nue. Le contenu est requis
@@ -166,6 +173,11 @@ CREATE TABLE depot.depots (
   CONSTRAINT depots_levee_hypothese_clinique_en_college
     CHECK (nature <> 'levee'
            OR ref_nature <> 'hypothese_clinique'
+           OR cadre = 'synthese_collective'),
+  -- Rouvrir un temps décidé en équipe est aussi un acte d'équipe : levée en collège.
+  CONSTRAINT depots_levee_temporalite_en_college
+    CHECK (nature <> 'levee'
+           OR ref_nature <> 'temporalite'
            OR cadre = 'synthese_collective'),
   -- Une révision révise le même registre : une lecture clinique ne révise pas un lien.
   CONSTRAINT depots_revision_homogene
