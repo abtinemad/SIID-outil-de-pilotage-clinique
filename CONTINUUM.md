@@ -180,60 +180,23 @@ Au Collègue, la diffraction est rare, à susciter (l'utilisateur est seul). Au 
 c'est le **milieu natif** (points quotidiens, réunions, partenaires) qui **se perd à
 l'oral** — la case le capte au lieu de le provoquer.
 
-### Équilibre — *« L'équilibre qui respire »* — acte de nouage **et** état, en boucle
-Pas « c'est cousu ». **« Les liens tiennent souples, aucun élastique n'a claqué, ceux
-qui étaient trop tendus ont été reposés à temps — et rien ne s'est rompu dans
-l'abandon. »** L'équilibre peut inclure une **déliaison réussie** (un lien desserré,
-détendu, accompagné). « Ne rien lâcher » ≠ « tout garder » : *aucun fil ne se défait sans
-qu'on l'accompagne*. « Ne rien faire » / « attendre » sont des équilibres valides **s'ils
-sont construits**, pas des sorties par défaut.
+### Hypothèse clinique — le mouvement vers un équilibre vers lequel on tend
 
-**Deux faces indissociables.** (1) Un **acte de nouage** : le moment où l'équipe (médecin
-+ coordinateur) noue en une synthèse *toutes* les données — factuelles, lecture clinique,
-ce que l'alliance et la temporalité ont permis, le patient et l'entourage comme **matière
-vivante**. Le patient n'est **pas co-auteur** (l'équipe rédige) ; il est intégré comme
-source, au titre de ce que l'alliance a ouvert. (2) Un **état** : l'équilibre interne, la
-stabilité psychique du patient à ce moment.
+Pas un point d'arrivée. L'hypothèse clinique est ce que l'équipe **noue à un instant du parcours** — où on en est, où on va — en sachant qu'au tour suivant elle ne sera plus la même. L'**équilibre**, lui, est la **visée** : l'horizon vers lequel on tend, jamais un état qu'on atteint et qu'on range. On ne dépose pas un équilibre ; on dépose une hypothèse qui se révise. « Ne rien faire » / « attendre » restent des orientations valides **si elles sont construites**, pas des sorties par défaut ; et une **déliaison réussie** — un lien desserré, détendu, accompagné — est un mouvement, pas un échec (« ne rien lâcher » ≠ « tout garder » : *aucun fil ne se défait sans qu'on l'accompagne*).
 
-**La spirale.** L'état est à la fois le *résultat* du nouage (on a bien tissé → il est
-plus stable) **et** la *condition* du nouage suivant (parce qu'il est plus stable, on peut
-regarder et nouer autrement qu'au départ — « ça ne sera pas le même état qu'à la base »).
-Cause et effet sur le même objet, à deux instants : une spirale, pas un point. C'est le
-nœud gordien — à chaque tour le fil n'est plus le même.
+**Le nouage.** L'hypothèse est le moment où l'équipe (médecin + coordinateur) noue en une synthèse *toutes* les données — factuelles, lecture clinique, ce que l'alliance et la temporalité ont permis, le patient et l'entourage comme **matière vivante**. Le patient n'est **pas co-auteur** (l'équipe rédige) ; il est intégré comme source, au titre de ce que l'alliance a ouvert. Ce nouage tient ensemble **où on en est et où on va**, dans le même texte. L'« où on en est » n'est pas un état psychique mesuré : c'est une lecture, datée, révisable.
 
-**Point de rebouclage, pas terminus.** L'état **varie dans le temps et rétroagit sur les
-autres champs** : un équilibre atteint déplace la Situation, le Ressenti, la Demande qu'on
-lira au tour suivant. L'Équilibre n'est donc **pas le dernier des six** — c'est le point
-qui **renvoie au début, transformé** : il produit un état qui redevient une Situation
-déplacée. C'est l'organe qui **réalise l'intrication** (§3) : la grille n'est pas une
-séquence qui finit, c'est une boucle que l'Équilibre fait tourner.
+**La spirale — la chaîne de révisions.** Chaque hypothèse est à la fois le *fruit* du nouage précédent et la *condition* du suivant : parce qu'on a mieux compris, on peut regarder et nouer autrement qu'au départ (« ce ne sera pas la même lecture qu'à la base »). Cause et effet sur le même objet, à deux instants : une **spirale, pas un point**. C'est le nœud gordien — à chaque tour le fil n'est plus le même. Matériellement, cette spirale **est** la chaîne des révisions (`ref_id` → `ref_id`) : le récit du parcours s'écrit dans la suite des hypothèses qui se reprennent.
 
-**Le projet est l'Équilibre rédigé vers l'avant** — pas un septième terme. Nouer vers
-l'avant (le projet : ce qu'on vise, avec qui) et tenir maintenant (ce qui est stable) sont
-un seul geste, deux directions. La version tabulée « immédiat / moyen / long terme »
-morcelle en tranches ce qui se rédige en continu.
+**Point de rebouclage, pas terminus.** Une hypothèse révisée **rétroagit sur les autres champs** : elle déplace la Situation, le Ressenti, la Demande qu'on lira au tour suivant. L'Hypothèse clinique n'est donc **pas le dernier des six** — c'est le point qui **renvoie au début, transformé** : elle rouvre la grille. C'est l'organe qui **réalise l'intrication** (§3) : la grille n'est pas une séquence qui finit, c'est une boucle que l'hypothèse fait tourner — et ce qui la fait tourner, c'est la **révision**, jamais l'atteinte d'un état.
 
-**L'équilibre interne se perçoit et se dépose** (sanctuaire, dans les mots du clinicien) —
-**jamais un score, jamais une échelle** (ce serait le cliché). La machine voit *que*
-l'état a bougé (via le recours au soin, §15 — un fait), **jamais l'état lui-même**. Et le
-rebouclage est un **geste clinique** (c'est le soignant qui repart de l'état atteint pour
-relire la situation) : l'outil garde la trace de l'état daté et **rend la spirale
-visible**, il ne la fait pas tourner à la place du soignant.
+**Le projet est l'hypothèse rédigée vers l'avant** — pas un septième terme. Nouer vers l'avant (ce qu'on vise, avec qui) et tenir maintenant (où on en est) sont un seul geste, deux directions. La version tabulée « immédiat / moyen / long terme » morcelle en tranches ce qui se rédige en continu.
 
-**Point de vigilance maximale pour la plume** (§5) : l'Équilibre étant le nouage de toutes
-les couches, c'est le seul endroit où la plume travaille sur *tout* — et donc où la
-tentation de la laisser « conclure » est la plus forte. C'est là qu'elle doit montrer sans
-conclure le plus strictement : elle transcrit le nouage rédigé par l'équipe, elle ne noue
-pas.
+**Le mouvement se dépose, jamais un score.** L'hypothèse est déposée dans les mots de l'équipe — **jamais un score, jamais une échelle** (ce serait le cliché). La machine voit *qu'il* y a eu mouvement (via le recours au soin, §15 — un fait), **jamais le mouvement lui-même**. Et le rebouclage est un **geste clinique** : c'est le soignant qui repart de la dernière hypothèse posée pour relire la situation. L'outil garde la trace des hypothèses datées et **rend la spirale visible** ; il ne la fait pas tourner à la place du soignant.
 
-**Clôturer un SIID n'est jamais une coupe.** Ce n'est pas *finir* le suivi — c'est renouer
-le fil ailleurs (CMP, autonomie, semi-autonomie). L'autonomie du patient n'est pas la fin
-du lien, c'est son fruit (« la compétence n'est pas de prêter, c'est de reprendre »).
-L'outil ne présente jamais une clôture comme une fin. Garde-fou : un projet (l'équilibre
-rédigé vers l'avant) reste une **hypothèse de travail** (daté, révisable, cédant devant le
-fait qui résiste), **jamais un engagement signé opposable** au patient — sinon la
-co-construction devient un contrat, c'est-à-dire la contrainte revenue par la porte de
-l'accord.
+**Point de vigilance maximale pour la plume** (§5) : l'hypothèse clinique étant le nouage de *toutes* les couches, c'est le seul endroit où la plume travaille sur tout — et donc où la tentation de la laisser « conclure » est la plus forte. C'est là qu'elle doit montrer sans conclure le plus strictement : elle **transcrit le nouage rédigé par l'équipe, elle ne noue pas** (invariant 12).
+
+**Clôturer un SIID n'est jamais une coupe.** Ce n'est pas *finir* le suivi — c'est renouer le fil ailleurs (CMP, autonomie, semi-autonomie). L'autonomie du patient n'est pas la fin du lien, c'est son fruit (« la compétence n'est pas de prêter, c'est de reprendre »). L'outil ne présente jamais une clôture comme une fin. On **lève** l'hypothèse en collège — lever n'est pas effacer, c'est un acte daté de plus, l'hypothèse reste visible. Garde-fou : le projet reste une **hypothèse de travail** (daté, révisable, cédant devant le fait qui résiste), **jamais un engagement signé opposable** au patient — sinon la co-construction devient un contrat, c'est-à-dire la contrainte revenue par la porte de l'accord.
 
 ---
 
@@ -1104,7 +1067,7 @@ branche compte rendu, ci-dessous), sans avoir à tout ré-assembler à la main.
 **Un seul canal, deux guichets.** Le canal unique est une contrainte sur la **destination** (le
 flux de dépôts, domaine 2 du schéma), **pas sur le lieu du geste**. La récolte (5-lobes) et la
 métabolisation (3-lobes) sont **deux guichets qui écrivent dans le même store** : composer dans
-la métabolisation = déposer un `equilibre`, un `compte_rendu` — **aucune nature nouvelle, aucun
+la métabolisation = déposer un `hypothese_clinique`, un `compte_rendu` — **aucune nature nouvelle, aucun
 entrepôt parallèle**. Le soignant ne se perd pas : un seul endroit reçoit, quel que soit le
 guichet. La **signature reste la frontière** (§5) ; le condensé prémâché que le coordinateur a
 sous les yeux est le **brouillon de la plume** (§6.3), reformulé sans fabriquer, sanctuaire cité
