@@ -62,9 +62,9 @@
          background:none;pointer-events:none}
   /* nœud agrandi (régler ~150–190px). align-self:flex-end → il s'ancre sur la ligne du bas
      et déborde vers le HAUT au-dessus de la liste, sans être rogné par le cadre (overflow:hidden). */
-  .noeud{width:130px;height:130px;flex:0 0 auto;align-self:flex-end;cursor:pointer;touch-action:none;pointer-events:auto}
-  .noeud svg{width:130px;height:130px;display:block;overflow:visible}
-  #fil2{stroke:var(--ink);fill:none}
+  .noeud{width:120px;height:120px;flex:0 0 auto;align-self:flex-end;cursor:pointer;touch-action:none;pointer-events:auto}
+  .noeud svg{width:120px;height:120px;display:block;overflow:visible}
+  #fil2{stroke:var(--ink)}
   .fente{flex:1;height:46px;border-radius:23px;background:rgba(255,255,255,.6);
          border:1px solid var(--faint);display:flex;align-items:center;padding:0 16px;pointer-events:auto;
          transition:opacity .2s, transform .26s cubic-bezier(.2,.9,.2,1);transform-origin:left center}
@@ -528,14 +528,10 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   q.addEventListener("input", function(){ dessineListe(q.value); });
   q.addEventListener("keydown", function(e){ if(e.key==="Escape"){ fente.classList.add("ferme"); q.value=""; dessineListe(""); } });
 
-  // ── réglages du nœud (file active) — change le chiffre, sauvegarde, regarde ──
-  // Realm ES propre à cette page : n'affecte ni l'atelier ni app_mockup.
-  // La TAILLE d'affichage n'est pas ici : c'est le CSS .noeud / .noeud svg (plus haut).
-  SET.plume    = true;            // ruban plein (true) ou trait simple (false)
-  SET.w        = 10;              // calibre du ruban          · plage utile 6 → 16
-  SET.gap      = 10;               // réserve du dessous        · plage utile 0 → 4  (trop haut : le trou mange le brin)
-  SET.contrast = 2.5;             // contraste d'épaisseur     · plage utile 1 → 3
-  SET.nib      = 250*Math.PI/180; // angle du bec (radians)    · 0 → 2π
+  // file active : nœud en mode plume (ruban plein)
+  SET.plume = true;
+  SET.w     = 12;    // calibre du ruban
+  SET.gap   = 1.5;   // réserve du dessous au croisement
   dessineListe(""); cadre(); render2();
 })();
 </script>
