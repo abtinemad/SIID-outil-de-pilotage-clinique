@@ -326,7 +326,7 @@ SELECT test.doit_reussir(
   '11111111-1111-1111-1111-111111111111');
 
 -- Le report : lever n'est pas effacer — c'est déposer une `levee` qui vise le rendez-vous. Le CHECK
--- n'ouvre la levée qu'à hypothese/inquietude/gestation/rendez_vous ; la nature neuve devait y entrer.
+-- n'ouvre la levée qu'à hypothese_clinique/inquietude/gestation/rendez_vous ; la nature neuve devait y entrer.
 -- `ref_depot_id` n'a pas de FK : on prouve la forme (rendez_vous est levable), pas l'existence.
 SELECT test.doit_reussir(
   'un rendez-vous se lève — le report',
