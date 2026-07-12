@@ -195,7 +195,7 @@ depots (
   cadre               text NOT NULL,          -- seul · synthese_collective ·
                                               -- responsabilite_medicale (§10)
   nature              text NOT NULL,          -- catalogue ci-dessous
-  champ_cible         text NULL,              -- pour vide_info / gestation
+  champ_cible         text NULL,              -- pour vide_info / temporalite
   position            text NULL,              -- source du regard (voir catalogue)
   facette             text NULL,              -- demande : surface / reelle
   acteur_id           uuid NULL,
@@ -203,7 +203,7 @@ depots (
   ref_nature          text NULL,              -- sa nature, forcée par FK composite
   ref_proposition_id  uuid NULL,              -- proposition validée    (domaine 3)
   type_valide         text NULL,              -- aigu · nap · chronique — jamais deviné
-  contenu             text                    -- prose ; NULL permis pour gestation seule
+  contenu             text                    -- prose ; contenu requis partout, plus de nudité
 )
 ```
 
@@ -220,7 +220,7 @@ tables, deux domaines, une colonne — donc aucune FK, donc un uuid nu, donc un 
 falsifiable, ce que la loi 3 bannit. Scindé. `ref_nature` est **dénormalisée mais non
 falsifiable** (FK composite `(ref_depot_id, ipp, ref_nature) → (id, ipp, nature)`) : elle
 achète en structure trois gardes qui seraient sinon du code — *une levée ne lève qu'une
-hypothèse clinique, une inquiétude ou une gestation* ; *une révision révise le même registre* ; et
+hypothèse clinique, une inquiétude ou une temporalité* ; *une révision révise le même registre* ; et
 *« `ref_id` obligatoire sauf premier typage »* devient un index unique partiel, au lieu
 d'un « premier » que nul ne sait définir en SQL.
 
@@ -252,11 +252,11 @@ demander **aucune validation** au soignant.
 | `diffraction` | traversée | attribution **jamais anonyme** : `acteur_id` si la source est un acteur, sinon nommée dans la prose | prose : le regard depuis une autre position, gardé contrasté | |
 | `hypothese_clinique` | traversée — **vigilance plume maximale** (§5) | — | prose : **le nouage** — toutes les couches nouées en une hypothèse de travail : où on en est *et* où on va, dans le même texte (jamais un 7ᵉ terme, jamais trois cases temporelles). Jamais un état d'équilibre atteint — une lecture en mouvement | la **spirale** = la chaîne de révisions (`ref_id` = hypothèse révisée) ; se lève par `levee` en collège ; jamais contrat opposable |
 | `vide_info` | suit le champ | `champ_cible` (+ position pour ressenti/diffraction) | prose nommant le vide (« aucun tiers — isolé ») | événement typographié, pas un blanc (§6) |
-| `gestation` | **SANCTUAIRE** | `champ_cible` (+ position éventuelle) | **NULL permis** (« rester nu », §6) | ouvre l'état « hypothèses en cours » ; se lève par `levee`. **Seul dépôt à effet machine** : suspend la relance sur ce champ (§11). La machine voit *qu'il* existe, jamais ce qui gestationne |
+| `temporalite` | **SANCTUAIRE** | `champ_cible` (+ position éventuelle) | **contenu requis** : le temps demandé *et* son argument, dans les mots de l'équipe (« on revoit après l'été, le temps qu'il pose les choses ») | **se dépose ET se lève en collège** (`synthese_collective`) — décider d'attendre, et rouvrir, sont des actes d'équipe ; ouvre l'état « temporalité à respecter ». **Seul dépôt à effet machine** : **défère** la relance sur ce champ (§11) — il ne la suspend pas. La machine lit l'argument temporel pour déférer, jamais un verdict |
 | `inquietude` | **SANCTUAIRE** | — (portée patient) | prose datée (« le 3 mars, ça m'inquiète ») | se lève par `levee` — sinon étiquette qui condamne (§15). **La couleur déposée = il existe une inquiétude ouverte** |
 | `lien_travail` | **SANCTUAIRE** (la lecture de tension est clinique, §13) | `acteur_id` **obligatoire** | **prose libre** : la tension et la direction (coudre, tenir, desserrer, recoudre ailleurs) vivent **dans les mots, jamais en enum** — un enum de directions serait le signe fixe que §13 bannit. Les directions servent d'amorces grises à l'écran, jamais de valeurs stockées | `ref_id` = lecture de lien révisée |
 | `validation_typage` | traversée | — | `type_valide ∈ aigu · nap · chronique` (colonne, jamais deviné de la prose) **+ prose du sens lu** (stabilisation *ou* décrochage — la valeur seule ne dit rien, §15a/c) | `ref_proposition_id → proposition machine` **obligatoire**, sauf premier typage à l'indication — tenu par **index unique partiel** (au plus un typage sans proposition par patient). On ne retype pas d'un clic : il faut que le mouvement l'ait proposé (tue le Goodhart par le typage) |
-| `levee` | suit le registre du dépôt levé | — | prose du motif (le fait qui a résisté ; l'inquiétude dissipée) | `ref_depot_id` **obligatoire** → `hypothese_clinique · inquietude · gestation`, **vérifié par la structure** (`ref_nature` sous FK composite) ; une seule levée par dépôt levé. Lever n'est pas effacer : deux actes datés, tous deux visibles |
+| `levee` | suit le registre du dépôt levé | — | prose du motif (le fait qui a résisté ; l'inquiétude dissipée) | `ref_depot_id` **obligatoire** → `hypothese_clinique · inquietude · temporalite`, **vérifié par la structure** (`ref_nature` sous FK composite) ; une seule levée par dépôt levé. Lever n'est pas effacer : deux actes datés, tous deux visibles |
 | `compte_rendu` | traversée | — | prose : la synthèse de prise en charge, **reformulée** puis **validée énoncé par énoncé** et signée | pas de `ref_id` machine (le brouillon est éphémère, §6.3) ; la **signature EST l'acte de dépôt** (`auteur_id` = signataire, `depose_le` = signature) — immuable comme tout dépôt ; la machine ne l'insère jamais (invariant 2) |
 
 Contraintes d'exemple (le repo fera le DDL complet) :
@@ -266,8 +266,8 @@ CHECK (nature <> 'ressenti'          OR position IN ('patient','equipe','entoura
 CHECK (nature <> 'lecture_clinique'  OR position IS NOT NULL)
 CHECK (nature <> 'lien_travail'      OR acteur_id IS NOT NULL)
 CHECK (nature <> 'levee'             OR (ref_depot_id IS NOT NULL
-                                         AND ref_nature IN ('hypothese_clinique','inquietude','gestation')))
-CHECK (nature = 'gestation'          OR contenu IS NOT NULL)
+                                         AND ref_nature IN ('hypothese_clinique','inquietude','temporalite')))
+CHECK (contenu IS NOT NULL)
 
 -- le régime tient au CADRE, jamais à l'étiquette (§10 : indexé sur le moment, pas le grade)
 --
@@ -280,6 +280,9 @@ CHECK (nature = 'gestation'          OR contenu IS NOT NULL)
 -- l'on peut formuler seul, le trilobe cesse d'être un collège, c'est un bureau.
 CHECK (nature NOT IN ('situation','ressenti','demande','diffraction','hypothese_clinique')
        OR cadre = 'synthese_collective')
+
+-- Décider d'attendre est un acte d'équipe : la temporalité aussi se dépose en collège.
+CHECK (nature <> 'temporalite' OR cadre = 'synthese_collective')
 
 -- Ce qui se SIGNE engage une responsabilité, donc une personne : la signature EST l'acte
 -- de dépôt (§5) — un compte rendu à quatre mains n'est pas un compte rendu.
@@ -429,9 +432,11 @@ pistes                (id, ipp, emise_le, contenu text[] CHECK (cardinality(cont
 
 - **Retypage** : le différentiel propose, le regard valide (dépôt `validation_typage`
   qui la référence). La proposition porte sa base factuelle — jamais une lecture.
-- **Relances** (§11) : une fois par porte (`UNIQUE`), **jamais émise si une gestation
-  est ouverte** sur la demande (relancer une gestation = forcer la maturité = fabriquer
-  le verdict prématuré), **affichée dans la vue, jamais notifiée**. Question qui ouvre,
+- **Relances** (§11) : une fois par porte (`UNIQUE`), **déférée à la temporalité argumentée**
+  quand une `temporalite` est ouverte sur la demande — elle respecte le temps que l'équipe a
+  justifié (relancer sans le respecter = forcer la maturité = fabriquer le verdict prématuré),
+  mais **déférée, pas suspendue** : le temps passé, elle revient. **Affichée dans la vue,
+  jamais notifiée**. Question qui ouvre,
   jamais champ qui ordonne.
 - **Pistes** (§4c, §8) : cardinalité ≥ 2 par contrainte — **plusieurs ou le silence**.
   Une piste seule est une interprétation déguisée. Jamais sur la lecture clinique.
@@ -506,14 +511,14 @@ patient) ; il ne vient jamais te chercher.
 
 Par (champ, position éventuelle), dérivé du flux :
 
-1. **gestation ouverte** → *hypothèses en cours* (relance suspendue) ;
+1. **temporalite ouverte** → *temporalité à respecter* (relance déférée) ;
 2. sinon, **dernier dépôt pertinent = `vide_info`** → *vide-info* (événement
    typographié) ;
 3. sinon, **des dépôts existent** → *rempli* ;
 4. sinon → *non-renseigné* (absence de lignes : ne coûte rien, ne réclame rien).
 
-Composable : un contenu ancien + une gestation ouverte s'affichent **ensemble**
-(le travail en cours n'efface pas ce qui a été argué).
+Composable : un contenu ancien + une temporalite ouverte s'affichent **ensemble**
+(le temps à respecter n'efface pas ce qui a été argué).
 
 **Les deux couleurs** (§15) : `couleur_factuelle` = projection du recours ;
 `couleur_deposee` = il existe une `inquietude` ouverte. Affichées **côte à côte,
@@ -537,7 +542,7 @@ Le test reste : *est-ce que ceci CLASSE, CHIFFRE ou CONCLUT à la place de l'hum
 | 5 | Aucune échéance nulle part | **structure** — aucune colonne « pour quand » ; les dates disent quand une chose *a eu lieu* |
 | 6 | Jamais d'agrégat de recours (Goodhart) | **absence** — aucune vue/fonction agrégée ; le `AVG` = geste contre le grain, jamais un clic |
 | 7 | Pistes machine plurielles ou silence | **structure** — `CHECK cardinality ≥ 2` |
-| 8 | Relance : une fois, jamais sur gestation, jamais poussée | **structure + code** — `UNIQUE (ipp, porte)` + garde gestation + absence d'infra de notification |
+| 8 | Relance : une fois, déférée à la temporalité, jamais poussée | **structure + code** — `UNIQUE (ipp, porte)` + garde temporalite + absence d'infra de notification |
 | 9 | Retypage exige une proposition (le mouvement propose, le regard valide) | **structure** — `ref_id` obligatoire sauf premier typage |
 | 10 | Correction masquée en récolte, jamais en dépôts | **code testé** — deux fonctions de projection distinctes |
 | 11 | Acteur : ni vue inversée, ni attribut porté, ni maintenance propre | **structure + absence** — schéma nu + aucune API inverse (SQL brut joignable : assumé) |
