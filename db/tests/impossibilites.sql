@@ -120,6 +120,13 @@ INSERT INTO depot.depots (id, ipp, auteur_id, cadre, nature, contenu) VALUES
    '11111111-1111-1111-1111-111111111111', 'seul', 'observation',
    'Le 3 mars : « toute-puissance ». Il a refusé de s''asseoir.');
 
+-- un dépôt collège licite, cible des tests d'avis : Karima (IDE) propose l'hypothèse,
+-- elle attend une seconde signature.
+INSERT INTO depot.depots (id, ipp, auteur_id, cadre, nature, contenu) VALUES
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'IPP-TEST-001',
+   '11111111-1111-1111-1111-111111111111', 'synthese_collective', 'hypothese_clinique',
+   'Hypothèse de travail — à ratifier par un second.');
+
 RESET ROLE;
 
 -- ══════════════════════════════════════════════════════════════════════════════
@@ -411,6 +418,58 @@ SELECT test.doit_echouer(
   '42501');
 
 -- ── Le verdict ────────────────────────────────────────────────────────────────
+
+-- ══════════════════════════════════════════════════════════════════════════════
+-- Les AVIS — la signature à plusieurs du collège (db/35).
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Un avis sur une observation n'a aucun chemin : on ne signe pas une perception. La
+-- récolte reste naïve (garde structurel, pas discipline d'app).
+SELECT test.doit_echouer(
+  'un avis sur une observation est refusé',
+  'continuum_soignant',
+  $$INSERT INTO depot.avis (depot_id, ipp, depot_nature, agent_id, type)
+    VALUES ('22222222-2222-2222-2222-222222222222','IPP-TEST-001','observation',
+            '33333333-3333-3333-3333-333333333333','signature')$$,
+  '23514', '33333333-3333-3333-3333-333333333333');
+
+-- Diverger s'argumente : un refus nu est refusé — même loi que la temporalité.
+SELECT test.doit_echouer(
+  'un refus sans argument est refusé',
+  'continuum_soignant',
+  $$INSERT INTO depot.avis (depot_id, ipp, depot_nature, agent_id, type, contenu)
+    VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','IPP-TEST-001','hypothese_clinique',
+            '33333333-3333-3333-3333-333333333333','refus', NULL)$$,
+  '23514', '33333333-3333-3333-3333-333333333333');
+
+-- Ratifier est muet : une signature qui porte un contenu est refusée.
+SELECT test.doit_echouer(
+  'une signature avec contenu est refusée',
+  'continuum_soignant',
+  $$INSERT INTO depot.avis (depot_id, ipp, depot_nature, agent_id, type, contenu)
+    VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','IPP-TEST-001','hypothese_clinique',
+            '33333333-3333-3333-3333-333333333333','signature','je suis d''accord')$$,
+  '23514', '33333333-3333-3333-3333-333333333333');
+
+-- Le contrôle positif : un second agent signe. Prouve que la table est privilégiée (le
+-- joker `depot` de db/60 l'a happée) et que la signature muette passe.
+SELECT test.doit_reussir(
+  'un second agent signe une hypothèse',
+  'continuum_soignant',
+  $$INSERT INTO depot.avis (depot_id, ipp, depot_nature, agent_id, type)
+    VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','IPP-TEST-001','hypothese_clinique',
+            '33333333-3333-3333-3333-333333333333','signature')$$,
+  '33333333-3333-3333-3333-333333333333');
+
+-- Un agent, une position par proposition : re-signer ce qu'on a déjà signé est refusé
+-- (le compte ne se gonfle pas).
+SELECT test.doit_echouer(
+  'un même agent ne signe pas deux fois',
+  'continuum_soignant',
+  $$INSERT INTO depot.avis (depot_id, ipp, depot_nature, agent_id, type)
+    VALUES ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','IPP-TEST-001','hypothese_clinique',
+            '33333333-3333-3333-3333-333333333333','signature')$$,
+  '23505', '33333333-3333-3333-3333-333333333333');
 
 \echo ''
 \echo '════════ CONTINUUM · Phase 0 · tests d''impossibilité ════════'

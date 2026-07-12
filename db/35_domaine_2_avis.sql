@@ -42,9 +42,11 @@ CREATE TABLE depot.avis (
 
   CONSTRAINT avis_type_connu
     CHECK (type IN ('signature','refus')),
-  -- Ratifier est muet, diverger s'argumente.
+  -- Ratifier est muet, diverger s'argumente. Comme la temporalité, le refus refuse le
+  -- NULL *et* le blanc — sinon un refus nu passerait (NULL ~ '\S' vaut NULL, un CHECK
+  -- NULL est tenu).
   CONSTRAINT avis_refus_argumente
-    CHECK (type <> 'refus' OR contenu ~ '\S'),
+    CHECK (type <> 'refus' OR (contenu IS NOT NULL AND contenu ~ '\S')),
   CONSTRAINT avis_signature_nue
     CHECK (type <> 'signature' OR contenu IS NULL),
 
