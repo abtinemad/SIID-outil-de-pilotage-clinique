@@ -255,7 +255,9 @@ import { creerNoeud } from '../noeud.js';
   $("contacts").innerHTML = "proche — <span class='qui'>"+esc(PATIENT.proche)+"</span><br>soignant — <span class='qui'>"+esc(PATIENT.soignant)+"</span>";
 
   /* Le vrai nœud — module partagé, sur sa propre forme (creerForme) */
-  var noeud = creerNoeud($("knot"));
+  var noeud = creerNoeud(document.getElementById('knot'), {
+    encre: getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()
+  });
 
   /* La lentille : le nœud émet l'axe tenu (onLobe), la page trie les observations.
      Le module gère le toggle (re-clic sur la même boucle → index = -1 = relâché). */
