@@ -147,7 +147,8 @@
   <div id="panneau"></div>
 </div>
 <script type="module">
-import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, clamp, smooth, easeAngle, f1, shapeAt, nodesAt, lobeCount, SET, POOL, xNodes, slice, composeScene, setRefreshStatics } from './noyau.js';
+import { SET, setRed, setInk, setRefreshStatics } from './noyau.js';
+import { creerNoeud } from './noeud.js';
 (function(){
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -169,93 +170,6 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
   var frames=[].slice.call(document.querySelectorAll(".frame"));
   var NS="http://www.w3.org/2000/svg";
 
-  var LAB2=["Continuité","Fragmentation"];                 // bilobé : gauche(C)=Continuité, droit(O)=Fragmentation
-  var LAB3=["Affective","Vigilante","Réflexive"];          // trilobé PAR INDICE DE BUILD : idx1=Vigilante (la plus grande, bas-droite ; = read/scouter, ASYM[3]/DASH_MODE)
-  var LAB5=["Familiale","Sociale","Professionnelle","Amoureuse","Soi"];
-  var labelNodes=[], labelPaths=[], labelTP=[], soinN=null;
-  var LSIZE={2:20, 3:16, 5:12};   // taille de police des labels PAR STRATE (bilobé plus grand : deux mots seuls)
-  var labelScale=1;               // multiplicateur global (atelier)
-  var LAB2POS={cont:{arc:-110, ins:5, flip:false}, frag:{arc:0, ins:5, flip:true}};   // bilobé, calage à l'œil : arc = position le long de la boucle · ins = retrait radial (hors du fil) · flip = sens de lecture (les deux boucles du ∞ sont parcourues en sens opposés)
-  var curOff=[], curIns=[], curFlip=[];   // décalage (arc), retrait (radial), sens de lecture — par label
-  function petalsFor(Q){                                   // pétales d'une forme quelconque : creux de rayon = séparateurs, pointe = max, rang horaire depuis le haut
-    var n=Q.length, R=[], rmn=1e9, rmx=-1e9, i;
-    for(i=0;i<n;i++){ var r=Math.hypot(Q[i][0]-CX,Q[i][1]-CY); R.push(r); if(r<rmn)rmn=r; if(r>rmx)rmx=r; }
-    var thr=rmn+(rmx-rmn)*0.45, sep=[];
-    for(i=0;i<n;i++){ var a=R[(i-1+n)%n], b=R[i], c=R[(i+1)%n]; if(b<=a && b<=c && b<thr) sep.push(i); }
-    var ang=[], tipAt=[], tips=[];
-    for(var k=0;k<sep.length;k++){ var i0=sep[k], i1=sep[(k+1)%sep.length], tr=-1, tip=Q[i0], kk=i0, g=0, step=0, ts=0;
-      do{ if(R[kk]>tr){tr=R[kk];tip=Q[kk];ts=step;} kk=(kk+1)%n; step++; }while(kk!==i1 && ++g<n);
-      tipAt[k]=ts; tips[k]=tip;
-      var aa=Math.atan2(tip[1]-CY,tip[0]-CX)+Math.PI/2; while(aa<0)aa+=2*Math.PI; while(aa>=2*Math.PI)aa-=2*Math.PI;
-      ang.push({k:k,a:aa}); }
-    var srt=ang.slice().sort(function(A,B){return A.a-B.a;}), rank=[];
-    for(var s=0;s<srt.length;s++) rank[srt[s].k]=s;
-    return {sep:sep, rank:rank, tipAt:tipAt, tips:tips};
-  }
-  var PET_BY={2:petalsFor(KF[0]), 3:petalsFor(KF[1]), 5:petalsFor(KF[2])};
-  var curPET=null, curLc=0;
-  // angle de build par lobe (pour aligner le mot trilobé sur l'identité réelle du lobe : Vigilante = idx1)
-  function buildAngles(L){ var az=ASYM[L], out=[]; for(var i=0;i<L;i++){ out.push((i/L)*2*Math.PI - Math.PI/2 + (az?az.a[i]:0)); } return out; }
-  function buildIdxOf(tip,L){ var ta=Math.atan2(tip[1]-CY,tip[0]-CX), ANGL=buildAngles(L), bi=0, bd=1e9;
-    for(var i=0;i<L;i++){ var d=Math.abs(Math.atan2(Math.sin(ta-ANGL[i]),Math.cos(ta-ANGL[i]))); if(d<bd){bd=d;bi=i;} } return bi; }
-  // quel mot pour le pétale k : 5=rang horaire (inchangé) ; 3=indice de build (Vigilante=idx1) ; 2=côté x (gauche=Continuité)
-  function wordFor(lc, PET, k){
-    if(lc===5){ var li=(PET.rank[k]-2+5)%5; return {w:LAB5[li], soi:(li===4)}; }
-    if(lc===3){ return {w:LAB3[buildIdxOf(PET.tips[k],3)], soi:false}; }
-    return {w:(PET.tips[k][0]<CX?LAB2[0]:LAB2[1]), soi:false};
-  }
-  function buildLabels(lc){
-    while(labels.firstChild) labels.removeChild(labels.firstChild);
-    labelNodes=[]; labelPaths=[]; labelTP=[]; soinN=null;
-    curPET = PET_BY[lc] || PET_BY[5]; curLc = lc;
-    curOff=[]; curIns=[]; curFlip=[];
-    for(var k0=0;k0<curPET.sep.length;k0++){
-      var wf=wordFor(lc, curPET, k0);
-      if(lc===2){ var _p=(curPET.tips[k0][0]<CX)?LAB2POS.cont:LAB2POS.frag; curOff[k0]=_p.arc; curIns[k0]=_p.ins; curFlip[k0]=_p.flip; }
-      else { curOff[k0]=0; curIns[k0]=0; curFlip[k0]=false; }
-      var pth=document.createElementNS(NS,"path"); pth.setAttribute("id","lpath"+k0); pth.setAttribute("fill","none"); pth.setAttribute("stroke","none");
-      labels.appendChild(pth); labelPaths.push(pth);
-      var tx=document.createElementNS(NS,"text"); tx.setAttribute("text-anchor","middle");
-      var tp=document.createElementNS(NS,"textPath"); tp.setAttribute("href","#lpath"+k0);
-      tp.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href","#lpath"+k0);
-      if(wf.soi){ tp.appendChild(document.createTextNode("Soi")); var _nn=document.createElementNS(NS,"tspan"); _nn.textContent="n"; _nn.setAttribute("id","soinN"); tp.appendChild(_nn); soinN=_nn; }
-      else tp.appendChild(document.createTextNode(wf.w));
-      tx.appendChild(tp); labels.appendChild(tx); labelNodes.push(tx); labelTP.push(tp);
-    }
-  }
-  buildLabels(2);   // init sur Interface (2-lobes) ; le render rebâtit à chaque changement de strate
-
-  // pool de patchs dessus-dessous (trous dans le masque + brins de dessus)
-  var holeEls=[], inkEls=[];
-  for(var k1=0;k1<POOL;k1++){
-    var h=document.createElementNS(NS,"path"); holesG.appendChild(h); holeEls.push(h);
-    var o=document.createElementNS(NS,"path"); oversG.appendChild(o); inkEls.push(o);
-  }
-
-  function applyScene(sc){
-    if(sc.mode==="stroke"){
-      fil.style.display=""; filR.style.display="none";
-      fil.setAttribute("d", sc.baseD); fil.setAttribute("stroke-width", f1(sc.w));
-    } else {
-      fil.style.display="none"; filR.style.display="";
-      filR.setAttribute("d", sc.baseD);
-    }
-    for(var k=0;k<POOL;k++){
-      var h=holeEls[k], o=inkEls[k];
-      if(k<sc.holes.length){
-        h.setAttribute("d", sc.holes[k]); o.setAttribute("d", sc.inks[k]);
-        if(sc.mode==="stroke"){
-          h.setAttribute("fill","none"); h.setAttribute("stroke","#000");
-          h.setAttribute("stroke-width", f1(sc.holeW[k])); h.setAttribute("stroke-linecap","butt");
-          o.setAttribute("fill","none"); o.setAttribute("stroke",INK);
-          o.setAttribute("stroke-width", f1(sc.inkW[k])); o.setAttribute("stroke-linecap","round"); o.setAttribute("stroke-linejoin","round");
-        } else {
-          h.setAttribute("fill","#000"); h.setAttribute("stroke","#000"); h.setAttribute("stroke-width","0.7"); h.setAttribute("stroke-linejoin","round");
-          o.setAttribute("fill",INK); o.setAttribute("stroke",INK); o.setAttribute("stroke-width","0.7"); o.setAttribute("stroke-linejoin","round");
-        }
-      } else { h.setAttribute("d",""); o.setAttribute("d",""); }
-    }
-  }
 
   // signature du wordmark (forme CO) + lockup ∞NT + épreuves favicon : même pipeline, formes statiques
   var WM_K=1.6, WM_PTR=9; // graisse et point calés sur les capitales
@@ -266,427 +180,8 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
     x0-=pad; y0-=pad; x1+=pad; y1+=pad;
     return { s:f1(x0)+" "+f1(y0)+" "+f1(x1-x0)+" "+f1(y1-y0), ar:(x1-x0)/(y1-y0), h:(y1-y0) };
   }
-  function refreshStatics(){
-    SET.w = wFixed;   // (maquette d'app : le wordmark et les épreuves vivent dans continuum_mockup.html)
-    refreshPoint();
-  }
-  var ptRad=8.5, pupR=3, blinkStart=-99, blinkDur=0.3, nextBlink=2.5, pupFade=1;
-  var wFixed=12, wData=10, EYE=2.5, eyeK=1, clickPulse=0; // épaisseur fixe / données ; œil neutre + dynamique
-  var irisThick=0.5, eyeX=0, eyeY=0, eyePlaced=false;   // iris (socle 0.5, figé) ; position lissée de l'œil (anti-téléportation)
-  var eyeState='repos', eyeStateT=0, pupDil=0, glowS=1, bounceT=-9, bounceDur=1.3, gestType='none', spinAcc=0, interroNode=-1;   // SIGNALÉTIQUE VIGIE : état tenu + geste ponctuel + accumulateur de spin (gelable) + nœud d'accroche interro
-  var flipping=false, flipStart=0, flipDur=1.7, flipAxis=0, inspFade=0, lastInter=0, IDLE_IN=14;  // retournement (2 tours) + inspection (boucle tenue) + horloge d'inactivite
+  function refreshStatics(){ /* l'œil et le tracé vivent dans le nœud (noeud.js) ; rien à rafraîchir ici */ }
 
-  // §19 v2 — GARDIEN DE L'ANGLE MORT : la plus petite boucle restée (hors celle qu'on tient),
-  // = le moins-documenté. Lit la taille de lobe (ASYM[5].s), jamais un état de la personne.
-  // §19 v2 — GARDIEN DE L'ANGLE MORT. Il lit `densites` : le volume de fragments rangés
-  // par axe, jamais la constante d'asymétrie de la marque (qui désignait toujours le même
-  // lobe, pour tous les patients — une garde décorative).
-  // Si les cinq axes sont à zéro, il n'y a pas d'angle mort : tout l'est. L'œil circule
-  // et ne désigne rien. Le silence de l'outil est une position (§15).
-  function angleMort(held){
-    var d=densitesParLobe(), b=-1, bv=1e9, tot=0, i;
-    for(i=0;i<d.length;i++) tot+=d[i];
-    if(tot===0) return -1;
-    for(i=0;i<d.length;i++){ if(i===held) continue; if(d[i]<bv){ bv=d[i]; b=i; } }
-    return b;
-  }
-  var gx=0, gy=0, aimScreen=3.927, cursorAngle=3.927, pointerActive=false, nibBase=225*Math.PI/180, spinDeg=0, reflBase=3.93;
-  function refreshPoint(){
-    var r=8.5*EYE; ptRad=r; pupR=r*0.36;
-    pt.setAttribute("r", r.toFixed(2));
-    pt.setAttribute("fill", SET.ptex ? "url(#ptSphere)" : RED);
-    ptHalo.setAttribute("r", (r*1.06).toFixed(2)); // filet papier : sépare l'œil du fil
-    ptHalo.setAttribute("fill", "#E9ECEF");
-    ptPup.setAttribute("fill", INK);
-    ptPup.setAttribute("opacity", SET.ptex ? "1" : "0"); // plat = pas de pupille
-  }
-
-  // ---- state ----
-  var targetS=0, currentS=0, T=0, hop=0, ptParked=null;
-  // DASHBOARD (Vigie) : l'œil entre dans une boucle (barycentre) et en ressort. Passage = franchir le fil, comme une corde à sauter.
-  var dashLobe=-1, moveT=-9, moveFrom=[210,210], moveTo=[210,210], moveKind='over', moveDur=0.62; var eyeUnder=false;
-  var DASH_MODE=['compose','read','compose'];   // §19 : « deux lobes composent, un seul lit ». Le mode est la nature du lobe, non une humeur
-                                                 // de l'œil : la lentille est l'organe de la seule Vigilante (idx1), pas un réglage disponible partout.
-  var SCOUT={size:0.66, posX:-0.20, posY:0.02, dur:0.7, oriMin:-1, oriMax:12, montRest:-2, flipFrom:50};
-  var scoutT=-9, wasScouting=false;   // mode DANS le lobe (§19, bloc B) : composer / lire. read=Vigilante = la boucle À DROITE (la plus grande, idx de tri 1 ; le tri top→droite→gauche interdit droite ET idx 2). Entrer dans le lobe read → scrutin (scouter).
-  // ---- OUDJAT (2-lobes) : clic sur un lobe -> l'oeil parcourt le fil (sens selon le cote) -> la monture se pose ----
-  var OUDJAT={size:1.0, ori:0, orbitDur:1.6};   // se regle a l'oeil : size = echelle relative au globe ; ori = inclinaison ; orbitDur = duree du tour
-  var oudjatPhase='off', oudjatT=-9, oudjatDir=1, oudjatStartIdx=0, oudjatOp=0, OUD_PUPX=737.5049, OUD_PUPY=693.7131;
-  var FRQ=Math.round(0.2*N/TAU); // phase de frémissement périodique → le fil reste fermé au pixel près
-
-  function livePts(){
-    var pts=shapeAt(currentS), pulse=reduce?1:(1+0.012*Math.sin(T*1.4)), out=[];
-    for(var i=0;i<pts.length;i++){
-      var x=pts[i][0]-CX, y=pts[i][1]-CY;
-      if(!reduce){ var fr=1+0.010*Math.sin(T*2.1 + i*TAU*FRQ/N); x*=fr; y*=fr; }
-      out.push([CX+x*pulse, CY+y*pulse]);
-    }
-    return out;
-  }
-
-  // barycentre d'un lobe (Dashboard) : dans le CORPS du lobe, à mi-chemin centre→nœud. Robuste 3/5 lobes, suit la respiration du fil.
-  function dashBary(k){ var nd=nodesic(); if(!nd.length) return [CX,CY]; k=clamp(k,0,nd.length-1); return [CX+2.25*(nd[k][0]-CX), CY+2.25*(nd[k][1]-CY)]; }   // 2.25 : DANS le corps de la boucle (le nœud/croisement est près du centre ; l'œil saute dans la boucle, pas sur le nœud)
-  // point rouge : circule d'un nœud à l'autre, ou se pose (parked)
-  function redXY(){
-    var nodes=nodesic();
-    if(nodes.length===0) return [CX,CY];
-    if(interroNode>=0 && interroNode<nodes.length && Math.round(currentS)===1 && eyeState==='interro') return nodes[interroNode];   // INTERRO : accroché, ne circule plus entre les nœuds
-    if(ptParked!==null && ptParked<nodes.length) return nodes[ptParked];
-    if(Math.round(currentS)===1) return (dashLobe>=0 ? dashBary(dashLobe) : [CX,CY]);   // DASHBOARD (Vigie) : au CENTRE il veille (méta) ; entré dans une boucle, il se tient au barycentre du lobe
-    if(reduce) return nodes[0];
-    hop += 0.006;                              // vitesse de circulation entre nœuds
-    var f=hop%nodes.length, i=Math.floor(f), t=smooth(f-i), j=(i+1)%nodes.length;
-    return [ lerp(nodes[i][0],nodes[j][0],t), lerp(nodes[i][1],nodes[j][1],t) ];
-  }
-  // nœuds avec la même respiration que le fil (pour rester posés dessus)
-  function nodesic(){
-    var nd=nodesAt(currentS), pulse=reduce?1:(1+0.012*Math.sin(T*1.4)), out=[];
-    for(var i=0;i<nd.length;i++){ var x=nd[i][0]-CX, y=nd[i][1]-CY; out.push([CX+x*pulse, CY+y*pulse]); }
-    return out;
-  }
-
-  function render(){
-    T+=0.016;
-    currentS += (targetS-currentS)*0.06;
-    if(Math.abs(targetS-currentS)<0.001) currentS=targetS;
-    // OUDJAT - machine d'etat (2-lobes) : off -> orbit -> on ; quitter le 2-lobes reinitialise
-    if(Math.round(currentS)!==0 && oudjatPhase!=='off') oudjatPhase='off';
-    if(oudjatPhase==='orbit' && (T-oudjatT)>=OUDJAT.orbitDur){ oudjatPhase='on'; oudjatT=T; }
-    oudjatOp += (((oudjatPhase==='on')?1:0)-oudjatOp)*(reduce?1:0.14);
-
-    // rotation continue 360° : le logo flotte, le sens n'importe pas tant que c'est cohérent
-    var scouting = (Math.round(currentS)===1 && dashLobe>=0 && DASH_MODE[dashLobe]==='read' && !flipping);   // SCOUTER : entré dans la boucle Vigilante (read) → l'œil scrute, spin gelé (il se gare)
-    var interroLock = (Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // INTERRO (démo atelier) : on fige le nœud et on accroche l'œil dessus
-    if(oudjatPhase==='on'){ var _uT=Math.round(spinAcc/360)*360; spinAcc += (_uT-spinAcc)*0.06; }   // OUDJAT pose : la marque se redresse et se pose (repos)
-    else if(!reduce && !interroLock && !scouting) spinAcc += 0.096;                            // 6°/s — gelé pendant l'interro OU le scrutin (l'œil s'arrête pour scruter)
-    spinDeg = reduce?0:(spinAcc%360); var spinRad=spinDeg*Math.PI/180;
-    // direction de visée UNIQUE (partagée par le bec du fil et la lumière du reflet) :
-    // suit la souris si le pointeur survole, sinon revient au bec réglé + dérive douce.
-    var aimTarget = pointerActive ? cursorAngle : (nibBase + (reduce?0:0.30*Math.sin(T*0.13)));
-    aimScreen = easeAngle(aimScreen, aimTarget, reduce?1:(pointerActive?0.12:0.05));
-    SET.nib = aimScreen - spinRad;   // bec en repère local (compense la rotation) → nervure fixe à l'écran
-
-    // épaisseur du fil : FIXE (12) en interface/dashboard, pilotée par les DONNÉES (fin→14) en vue patient
-    var pat = smooth(currentS-1);            // 0 interface/dashboard → 1 patient
-    SET.w = wFixed + (wData - wFixed)*pat;
-    // taille de l'œil : neutre + survol + clic (pulse) + boucle déployée (on concentre le regard)
-    if(!reduce) clickPulse *= 0.90;
-    var eyeTarget = 1 + (pointerActive?0.05:0) + (ptParked!==null?0.20:0) + clickPulse;
-    eyeK += (eyeTarget - eyeK)*(reduce?1:0.12);
-    ptRad = 8.5*EYE*eyeK;
-    var _gp=T-bounceT;                                   // GESTE ping (notif) : bref pop d'échelle (l'œil enfle puis revient)
-    if(Math.round(currentS)===1 && gestType==='ping' && _gp>=0 && _gp<bounceDur){ ptRad *= 1 + 0.16*Math.exp(-_gp*5.5); }
-    var _rmS=T-moveT;                                    // CORDE À SAUTER (échelle) : par-dessus (over) → l'œil enfle (vient vers l'utilisateur) ; par-dessous (under) → il rétrécit (recule derrière le fil)
-    if(_rmS>=0 && _rmS<moveDur){ var _ra=Math.sin(Math.PI*(_rmS/moveDur)); ptRad *= 1 + _ra*(moveKind==='over'?0.5:-0.42); }
-    pupR = ptRad*0.36;
-
-    applyScene(composeScene(livePts(), 1));
-    grp.setAttribute("transform","rotate("+spinDeg.toFixed(2)+" "+CX+" "+CY+")");
-
-    // regard : cible = curseur (converti en repère local) si pointeur, sinon dérive autonome
-    var gtx, gty;
-    // L'œil ne suit PAS la souris (vue patient) : il fait son travail — dérive autonome + angle mort.
-    gtx=0.60*Math.sin(T*0.6); gty=0.48*Math.sin(T*0.44+1.2);
-    // Posé sur une boucle (concentration) → le regard s'ouvre par moments vers l'angle mort.
-    // Le corps ne bouge pas ; seul le regard dérive, puis revient. Élargir, jamais détourner.
-    if(ptParked!==null && SET.ptex){
-      var _am=angleMort(ptParked);
-      // ── Ce que l'œil désigne, il le DIT ─────────────────────────────────────────────
-      // Un voyant lit la désignation dans l'inclinaison du regard. Un lecteur d'écran ne
-      // recevait rien : l'angle mort était réservé aux yeux. Il ne l'est plus.
-      // Ce n'est pas une conclusion — l'œil nomme l'axe vers lequel il se tourne, exactement
-      // ce que le dessin montre déjà. Et quand il ne désigne rien, il ne dit rien : le
-      // silence de l'outil est une position (§15), pas une chaîne vide à annoncer.
-      designer(_am);
-      if(_am>=0){
-        var _nd=nodesic(), _an=_nd[_am], _p0=_nd[ptParked];
-        var _da=Math.atan2(_an[1]-_p0[1], _an[0]-_p0[0]);
-        var _g=Math.sin(T*0.5); _g = _g>0 ? _g*_g*_g : 0;        // coup d'œil bref, récurrent (~13 s), doux
-        var _amp=0.5*_g;
-        gtx = gtx*(1-_g) + Math.cos(_da)*_amp;
-        gty = gty*(1-_g) + Math.sin(_da)*_amp;
-      }
-    } else designer(-1);
-    var ek=reduce?1:0.08; gx+=(gtx-gx)*ek; gy+=(gty-gy)*ek;
-
-    if(interroLock){
-      if(interroNode<0){ var _nn=nodesic(),_bd=1e9,_bi=0; for(var _q=0;_q<_nn.length;_q++){var _dx=_nn[_q][0]-eyeX,_dy=_nn[_q][1]-eyeY,_dd=_dx*_dx+_dy*_dy; if(_dd<_bd){_bd=_dd;_bi=_q;}} interroNode=_bi; }   // accroche sur le nœud le plus proche
-      if(gestType==='bounce' && T-bounceT>5.0) bounceT=T;                                                          // re-saut périodique (re-appel ~5 s)
-    } else interroNode=-1;
-    var _tgt=redXY();
-    if(!eyePlaced){ eyeX=_tgt[0]; eyeY=_tgt[1]; eyePlaced=true; }
-    var _ke=reduce?1:0.14; eyeX+=(_tgt[0]-eyeX)*_ke; eyeY+=(_tgt[1]-eyeY)*_ke;
-    var _rmP=T-moveT;                                    // CORDE À SAUTER (trajectoire) : arc de moveFrom→moveTo + lift screen-up (contre-rotation du spin, comme le saut). L'arc ÉCRASE le lissage le temps du passage.
-    if(_rmP>=0 && _rmP<moveDur){ var _u=_rmP/moveDur, _e=smooth(_u), _a=Math.sin(Math.PI*_u), _lift=(moveKind==='over'?22:13)*_a;
-      eyeX=lerp(moveFrom[0],moveTo[0],_e) - _lift*Math.sin(spinRad);
-      eyeY=lerp(moveFrom[1],moveTo[1],_e) - _lift*Math.cos(spinRad); }
-    // RETOUR AU CENTRE : l'œil passe SOUS le fil — on remonte le calque du fil par-dessus l'œil le temps de l'animation
-    // ORBITE OUDJAT : l'oeil chevauche le fil, un tour complet du ∞ ; sens selon le lobe clique (derive de la tangente)
-    if(oudjatPhase==='orbit'){
-      var _ou=Math.min(1,(T-oudjatT)/OUDJAT.orbitDur), _oe=smooth(_ou), _olp=livePts(), _oN=_olp.length;
-      var _oi=(((oudjatStartIdx+oudjatDir*Math.round(_oe*_oN))%_oN)+_oN)%_oN;
-      eyeX=_olp[_oi][0]; eyeY=_olp[_oi][1];
-    }
-    var _underNow=(_rmP>=0 && _rmP<moveDur && moveKind==='under');
-    if(_underNow!==eyeUnder){ if(_underNow) grp.insertBefore(eyeG, grp.firstChild); else grp.insertBefore(eyeG, oversG.nextSibling); eyeUnder=_underNow; }
-    var P=[eyeX,eyeY];
-    // GESTE (Vigie) : saut sur place amorti — couche ponctuelle, superposée à l'état tenu. Déplace tout l'œil (globe+pupille+halo).
-    var _bt=T-bounceT;
-    if(Math.round(currentS)===1 && gestType==='bounce' && _bt>=0 && _bt<bounceDur){
-      var _bmag=ptRad*0.55*Math.abs(Math.sin(Math.PI*_bt/0.42))*Math.exp(-_bt*1.5);   // plus haut, décroît plus lentement → 3 sauts bien lisibles
-      P[0] += -_bmag*Math.sin(spinRad);   // saut VERTICAL à l'écran : contre-rotation du spin du nœud (sinon il part de côté)
-      P[1] += -_bmag*Math.cos(spinRad);
-    }
-    ptHalo.setAttribute("cx",P[0].toFixed(1)); ptHalo.setAttribute("cy",P[1].toFixed(1)); ptHalo.setAttribute("r",(ptRad*1.06).toFixed(2));
-    pt.setAttribute("cx",P[0].toFixed(1)); pt.setAttribute("cy",P[1].toFixed(1)); pt.setAttribute("r",ptRad.toFixed(2));
-    ptClipC.setAttribute("cx",P[0].toFixed(1)); ptClipC.setAttribute("cy",P[1].toFixed(1)); ptClipC.setAttribute("r",ptRad.toFixed(2));
-    var bf=1, cxp=P[0], cyp=P[1], breath=1, rx=pupR, ry=pupR, pupAng=0, pupVis=true;
-    if(SET.ptex && !reduce){
-      // regard porté par un vecteur 3D (rgx,rgy,gzv). Trois états, distingués par le signe de gzv :
-      //  · repos (aucune boucle)  → gzv>0 : l'œil FAIT FACE à l'utilisateur (dérive douce). Vers l'intérieur seulement après longue inactivité.
-      //  · boucle tenue           → gzv<0 : l'œil regarde vers l'INTÉRIEUR de l'écran (le nœud, la boucle), effleurant les limbes.
-      //  · clic                   → deux tours de globe, puis bascule vers l'état ci-dessus.
-      var rgx=gx, rgy=gy, rad2=rgx*rgx+rgy*rgy;
-      if(rad2>0.9){ var kk=Math.sqrt(0.9/rad2); rgx*=kk; rgy*=kk; rad2=0.9; }
-      var gzv=Math.sqrt(1-rad2);                              // défaut : face à l'utilisateur
-      var idleFor=T-lastInter;                                // temps écoulé depuis la dernière interaction
-      var _ci=Math.atan2(P[1]-CY, P[0]-CX);                   // azimuth : de l'œil vers l'EXTÉRIEUR — vers la boucle tenue, pas le centre (repère local)
-      var wantInsp=((ptParked!==null || (dashLobe>=0 && Math.round(currentS)===1)) && !flipping)?1:0;   // regard SITUÉ : boucle patient tenue OU entré dans une boucle Dashboard
-      inspFade += (wantInsp-inspFade)*0.03;
-      var _interroPose=(Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // posture interrogative : Vigie + état interro
-      if(flipping){
-        var el=T-flipStart, ax=Math.cos(flipAxis), ay=Math.sin(flipAxis);
-        if(el<flipDur){                                      // DEUX tours propres (sens aléatoire) → l'œil traverse les limbes 4 fois
-          var fa=(el/flipDur)*4*Math.PI, planar=Math.sin(fa)*0.92;
-          rgx=planar*ax; rgy=planar*ay; gzv=Math.cos(fa);
-        } else {                                             // nystagmus post-rotatoire amorti (bien visible), puis l'inspection prend le relais vers l'intérieur
-          var st=el-flipDur;
-          if(st>=0.9){ flipping=false; }
-          else { var osc=Math.sin(st*20)*0.40*Math.exp(-st*4.5);
-                 rgx=gx+osc*ax; rgy=gy+osc*ay;
-                 var _r2=Math.min(0.9,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_r2); }
-        }
-      } else if(scouting){                                   // SCOUTER (lobe Vigilante) : navette entre les deux nœuds de composition — l'écart montré, tenus à l'écart, JAMAIS un milieu (Q1)
-        var _vnd=nodesic(), _vc0=-1, _vc1=-1;
-        for(var _vq=0;_vq<DASH_MODE.length && _vq<_vnd.length;_vq++){ if(DASH_MODE[_vq]==='compose'){ if(_vc0<0)_vc0=_vq; else _vc1=_vq; } }
-        if(_vc0>=0 && _vc1>=0){
-          var _vg0=dashBary(_vc0), _va0=Math.atan2(_vg0[1]-P[1], _vg0[0]-P[0]);   // direction (repère local) vers un lobe de composition
-          var _vg1=dashBary(_vc1), _va1=Math.atan2(_vg1[1]-P[1], _vg1[0]-P[0]);   // vers l'autre
-          var _vT=Math.max(0,(T-moveT)-moveDur);                        // temps depuis que l'œil est assis (après la corde à sauter)
-          var _vU=(_vT%2.2)/2.2, _vP0=_vU<0.5;                          // aller-retour, période 2.2 s ; un demi-cycle par pôle
-          var _vSub=(_vU%0.5)/0.5, _vSeg=_vSub<0.78?0:(_vSub-0.78)/0.22; // fixation (78 %) puis saccade rapide — jamais de repos au milieu
-          var _vFrom=_vP0?_va0:_va1, _vTo=_vP0?_va1:_va0;
-          var _vD=Math.atan2(Math.sin(_vTo-_vFrom),Math.cos(_vTo-_vFrom)); // écart signé le plus court
-          var _vAng=_vFrom+_vD*smooth(_vSeg);
-          var _vJit=0.014*Math.sin(_vT*44)*(1-_vSeg);                   // micro-nystagmus pendant la fixation seulement
-          rgx=Math.cos(_vAng)*0.34+_vJit; rgy=Math.sin(_vAng)*0.34+_vJit*0.6;
-          var _vR2=Math.min(0.5,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_vR2);
-        }
-      } else if(_interroPose){                               // POSTURE INTERROGATIVE : APPEL (3 sauts + darts assertifs) puis SCRUTIN (lecture saccadée de l'utilisateur)
-        var _et=T-eyeStateT;
-        if(_et<1.3){                                         // APPEL : darts marqués, alternés, calés sur les 3 sauts (« il t'appelle »)
-          var _k=Math.floor(_et/0.42), _ph=(_et-_k*0.42)/0.42, _dir=(_k%2===0)?1:-1;
-          rgx=0.18*_dir*(1-_ph); rgy=-0.12*(1-_ph);
-          var _ir2=Math.min(0.5,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_ir2);
-        } else {                                             // SCRUTIN : lecture gauche→droite, ligne par ligne, descend, recommence — comme on lit une page — + micro-nystagmus
-          var _st=_et-1.3, _cols=5, _rows=4, _fix=0.24;
-          var _cell=Math.floor(_st/_fix)%(_cols*_rows), _col=_cell%_cols, _row=Math.floor(_cell/_cols);
-          var _tgx=-0.20+0.40*_col/(_cols-1), _tgy=-0.13+0.26*_row/(_rows-1);
-          var _jit=0.012*Math.sin(_st*46);                   // nystagmus fin pendant la fixation
-          rgx=_tgx+_jit; rgy=_tgy+_jit*0.6;
-          var _ir2b=Math.min(0.45,rgx*rgx+rgy*rgy); gzv=Math.sqrt(1-_ir2b);
-        }
-      } else if(inspFade>0.002){                             // BOUCLE TENUE : regard vers l'intérieur, balayant la boucle, effleurant le limbe puis passant derrière
-        var az=_ci+0.35*Math.sin(T*0.23);                    // léger balayage autour de la direction de la boucle
-        var _depth=0.30*Math.sin(T*0.31)+0.06;               // gzv cible ∈ [−0.24,+0.36] : pupille majoritairement AU LIMBE, pointée vers la boucle ; plonge derrière par intermittence
-        var _lat=Math.sqrt(Math.max(0,1-_depth*_depth));
-        rgx=rgx*(1-inspFade)+Math.cos(az)*_lat*inspFade;
-        rgy=rgy*(1-inspFade)+Math.sin(az)*_lat*inspFade;
-        gzv=gzv*(1-inspFade)+_depth*inspFade;
-      } else if(idleFor>IDLE_IN){                             // REPOS PROLONGÉ : l'œil s'autorise par moments à regarder vers l'intérieur, puis revient
-        var _ramp=Math.min(1,(idleFor-IDLE_IN)/6), _dv=Math.sin(T*0.11+2.0);
-        if(_dv>0.72){ var _dd=(_dv-0.72)/0.28*_ramp; gzv=gzv*(1-_dd)+(-0.9)*_dd; }
-      }
-      breath=1+0.24*Math.sin(T*0.7);
-      if(T>nextBlink){ blinkStart=T; nextBlink=T+2.2+Math.random()*3.6; }
-      var bt=T-blinkStart;
-      if(bt<blinkDur){ bf = bt<blinkDur*0.34 ? 1-bt/(blinkDur*0.34) : (bt-blinkDur*0.34)/(blinkDur*0.66); }
-      var _gl=Math.hypot(rgx,rgy,gzv)||1; rgx/=_gl; rgy/=_gl; gzv/=_gl;   // regard = point unitaire sur la sphère → projection exacte (toutes animations), jamais de coupe
-      // SIGNALÉTIQUE (Vigie, 3-lobes uniquement) : la pupille se dilate selon l'état émis par le Lien. Ailleurs → aucun effet (patient contemplatif).
-      var _sig=(Math.round(currentS)===1), _dilT=0;
-      if(_sig){
-        if(eyeState==='eveil')       _dilT=0.30;      // éveil : pupille DILATÉE (attention large)
-        else if(eyeState==='interro'){ var _ei=T-eyeStateT; _dilT=(_ei<0.5)?0.35:-0.28; }   // interro : DILATE (surprise) puis CONTRACTE (focus/scrutin)
-      }
-      pupDil += (_dilT-pupDil)*0.10;                        // dilatation lissée
-      var pbreath=pupR*breath*(1+pupDil);                   // rayon pupillaire effectif (socle × dilatation)
-      // canal COULEUR : la luminosité du globe module selon l'état (éclaircir / pulser / scintiller). Gaté Vigie.
-      var _glowT=1;
-      if(_sig){ if(eyeState==='eveil') _glowT=1.10; else if(eyeState==='interro') _glowT=1.0+0.05*Math.sin(T*2.2); }
-      glowS += (_glowT-glowS)*0.12;                        // base lissée (repos/éveil/interro)
-      var glow=glowS;
-      if(_sig && eyeState==='notif'){ var _n2=T-eyeStateT; glow=1+0.55*Math.exp(-_n2*4.5); }   // FLASH net (le globe s'illumine d'un coup puis retombe)
-      pt.style.filter = (Math.abs(glow-1)>0.002) ? ("brightness("+glow.toFixed(3)+")") : "";
-      pupVis = gzv>0.02;                                    // visible seulement sur la face avant
-      rx=Math.max(0.01,pbreath*Math.max(0,gzv)*bf); ry=Math.max(0.01,pbreath*bf);
-      var _pe=pbreath+irisThick+ptRad*0.16, _cosR=Math.sqrt(Math.max(0,1-(_pe/ptRad)*(_pe/ptRad)));   // rayon effectif = iris + marge PROPORTIONNELLE (ptRad*0.16) → gap constant quelle que soit la taille de l'oeil, aucune coupe au limbe
-      pupFade = (gzv>0)?1:0;                                                              // face avant visible / face arrière occultée par le globe — pas de fondu
-      cxp=P[0]+rgx*ptRad*_cosR; cyp=P[1]+rgy*ptRad*_cosR; pupAng=Math.atan2(rgy,rgx)*180/Math.PI;   // projection sphérique : le centre est tiré de cosρ → le bord effleure le limbe sans le franchir
-      ptPup.setAttribute("cx",cxp.toFixed(1)); ptPup.setAttribute("cy",cyp.toFixed(1));
-      ptPup.setAttribute("rx",rx.toFixed(2)); ptPup.setAttribute("ry",ry.toFixed(2));
-      ptPup.setAttribute("transform","rotate("+pupAng.toFixed(1)+" "+cxp.toFixed(1)+" "+cyp.toFixed(1)+")");
-      ptPup.setAttribute("opacity", pupFade.toFixed(3));
-    } else {
-      ptPup.setAttribute("cx",P[0].toFixed(1)); ptPup.setAttribute("cy",P[1].toFixed(1));
-      ptPup.setAttribute("rx",pupR.toFixed(2)); ptPup.setAttribute("ry",pupR.toFixed(2));
-      ptPup.setAttribute("transform",""); ptPup.setAttribute("opacity","1"); pupFade=1;
-    }
-    // iris (option) : anneau coloré SOUS la pupille, centré sur ELLE (synchronisé, il bouge avec la
-    // pupille), réglable (0 = invisible), clippé à l'œil.
-    if(SET.ptex && irisThick>0.05 && pupVis){
-      ptIris.setAttribute("cx",cxp.toFixed(1)); ptIris.setAttribute("cy",cyp.toFixed(1));
-      var _iro=Math.min(pbreath+irisThick, ptRad-0.6);                              // rayon de l'iris, suit la pupille dilatée, borné au globe
-      ptIris.setAttribute("rx",Math.max(0.01,_iro*Math.max(0,gzv)*bf).toFixed(2)); ptIris.setAttribute("ry",Math.max(0.01,_iro*bf).toFixed(2));   // foreshortenée comme la pupille
-      ptIris.setAttribute("transform","rotate("+pupAng.toFixed(1)+" "+cxp.toFixed(1)+" "+cyp.toFixed(1)+")");
-      ptIris.setAttribute("opacity",pupFade.toFixed(3));
-    } else ptIris.setAttribute("opacity","0");
-    // reflet spéculaire : UNE seule source de lumière, imaginée dans la direction de la souris (ou de
-    // l'inclinaison du bec au repos). Le point brillant orbite vers la lumière sur la cornée — aucun
-    // mélange (donc aucun saut), aucun clignement. C'est de la lumière, pas du regard.
-    if(SET.ptex){
-      var _Ld = aimScreen - spinRad;                       // direction de la lumière, repère du globe (dans grp)
-      var _off = ptRad*0.52;                               // le highlight se pose vers la lumière, sur la cornée
-      var glx = P[0] + Math.cos(_Ld)*_off;
-      var gly = P[1] + Math.sin(_Ld)*_off;
-      ptCatch.setAttribute("cx",glx.toFixed(1)); ptCatch.setAttribute("cy",gly.toFixed(1));
-      ptCatch.setAttribute("r",(pupR*0.34).toFixed(2));
-      ptCatch.setAttribute("opacity","0.95");
-    } else ptCatch.setAttribute("opacity","0");
-
-    if(scouting && !wasScouting) scoutT=T;
-    wasScouting=scouting;
-    if(scouting){
-      var _scr=spinDeg*Math.PI/180, _sdx=P[0]-CX, _sdy=P[1]-CY;
-      var _scX=CX+_sdx*Math.cos(_scr)-_sdy*Math.sin(_scr)+SCOUT.posX*ptRad;
-      var _scY=CY+_sdx*Math.sin(_scr)+_sdy*Math.cos(_scr)+SCOUT.posY*ptRad;
-      var _eu=reduce?1:Math.min(1,(T-scoutT)/SCOUT.dur);
-      var _es=1-Math.pow(1-_eu,3);
-      var _k=SCOUT.size*ptRad/462;
-      var _ori=reduce?2:(SCOUT.oriMin+(SCOUT.oriMax-SCOUT.oriMin)*(0.5+0.5*Math.sin(T*0.45)));
-      var _mt=reduce?SCOUT.montRest:(SCOUT.flipFrom+(SCOUT.montRest-SCOUT.flipFrom)*_es);
-      scouterG.setAttribute("transform","translate("+_scX.toFixed(1)+" "+_scY.toFixed(1)+") rotate("+_ori.toFixed(2)+") scale("+_k.toFixed(4)+") translate(-542 -877)");
-      montureG.setAttribute("transform","translate(1005 877) rotate("+_mt.toFixed(2)+") scale(1.21) translate(-1005 -877)");
-      scouterG.setAttribute("opacity","1");
-    } else if(scouterG.getAttribute("opacity")!=="0"){ scouterG.setAttribute("opacity","0"); }
-    // OUDJAT - la monture se pose sur l'oeil (hors #grp) : enregistree par sa pupille sur P, epinglee a l'orientation du fil
-    if(oudjatOp>0.001){
-      oudjatG.firstChild.setAttribute('fill', INK);                       // suit l'encre du fil (slider)
-      var _osr=spinDeg*Math.PI/180, _odx=P[0]-CX, _ody=P[1]-CY;
-      var _oX=CX+_odx*Math.cos(_osr)-_ody*Math.sin(_osr);                 // P (repere local) -> ecran, comme le scouter
-      var _oY=CY+_odx*Math.sin(_osr)+_ody*Math.cos(_osr);
-      var _ok=OUDJAT.size*ptRad/173.79;                                   // echelle : pupille oudjat (rx≈173.79) calee sur le globe
-      oudjatG.setAttribute('transform','translate('+_oX.toFixed(1)+' '+_oY.toFixed(1)+') rotate('+(spinDeg+OUDJAT.ori).toFixed(2)+') scale('+_ok.toFixed(4)+') translate('+(-OUD_PUPX)+' '+(-OUD_PUPY)+')');
-      oudjatG.setAttribute('opacity', oudjatOp.toFixed(3));
-    } else if(oudjatG.getAttribute('opacity')!=='0'){ oudjatG.setAttribute('opacity','0'); }
-
-    // LABELS par strate (toujours visibles, comme le pentalobe) : opacité par plateau, jeu rebâti dans le creux du morph (aucun pop)
-    var _rs=Math.round(currentS), _tlc=[2,3,5][_rs], lo;
-    if(_rs===0)      lo=1-smooth((currentS-0.15)/0.30);                                   // bilobé : plein à s=0, éteint vers 0.45
-    else if(_rs===1) lo=smooth((currentS-0.60)/0.15)*(1-smooth((currentS-1.40)/0.15));    // trilobé : fenêtre autour de s=1
-    else             lo=smooth((currentS-1.55)/0.35);                                     // pentalobe : comme avant (plein vers s=2)
-    lo=clamp(lo,0,1);
-    if(_tlc!==curLc) buildLabels(_tlc);   // rebâtit au changement de strate (frontière s=0.5/1.5 : lo≈0, aucun pop)
-    labels.setAttribute("opacity", lo.toFixed(3));
-    labels.setAttribute("font-size", ((LSIZE[curLc]||12)*labelScale).toFixed(2));
-    if(lo>0.02 && curPET){
-      var PET=curPET, lp=livePts(), n=lp.length, INSET=13;    // retrait de base ; +curIns[k] par label
-      var sr=spinDeg*Math.PI/180, cs=Math.cos(sr), sn=Math.sin(sr);
-      for(var k=0;k<PET.sep.length;k++){
-        var i0=PET.sep[k], i1=PET.sep[(k+1)%PET.sep.length], AR=[], idx=i0, g=0, dx, dy, ex, ey, rr, kf;
-        var LIN=INSET+(curIns[k]||0);
-        do{ dx=lp[idx][0]-CX; dy=lp[idx][1]-CY; ex=CX+dx*cs-dy*sn; ey=CY+dx*sn+dy*cs;
-            rr=Math.hypot(ex-CX,ey-CY)||1; kf=(rr-LIN)/rr; AR.push([CX+(ex-CX)*kf, CY+(ey-CY)*kf]); idx=(idx+1)%n; }while(idx!==i1 && ++g<n);
-        dx=lp[i1][0]-CX; dy=lp[i1][1]-CY; ex=CX+dx*cs-dy*sn; ey=CY+dx*sn+dy*cs;
-        rr=Math.hypot(ex-CX,ey-CY)||1; kf=(rr-LIN)/rr; AR.push([CX+(ex-CX)*kf, CY+(ey-CY)*kf]);
-        // lissage 3 points : adoucit les cassures près du croisement (torsion abandonnée)
-        var SM=AR.slice(), a;
-        for(a=1;a<AR.length-1;a++) SM[a]=[(AR[a-1][0]+AR[a][0]+AR[a+1][0])/3,(AR[a-1][1]+AR[a][1]+AR[a+1][1])/3];
-        AR=SM;
-        var f=Math.min(PET.tipAt[k], AR.length-1);                            // ancré au bord le plus loin du centre (la pointe) — figé, suit le nœud sans coulisser
-        if(curFlip[k]){ AR.reverse(); f=AR.length-1-f; }    // inverse le sens de lecture (le tip reste le point d'ancrage)
-        var d="M"+AR[0][0].toFixed(1)+" "+AR[0][1].toFixed(1), sofar=0;
-        for(a=1;a<AR.length;a++){ d+="L"+AR[a][0].toFixed(1)+" "+AR[a][1].toFixed(1);
-          if(a<=f) sofar+=Math.hypot(AR[a][0]-AR[a-1][0],AR[a][1]-AR[a-1][1]); }
-        labelPaths[k].setAttribute("d", d);
-        labelTP[k].setAttribute("startOffset", (sofar + (curOff[k]||0)).toFixed(1));
-      }
-      if(soinN){                                             // le "n" de Soin : respire calmement (Soi <-> Soin), en rouge
-        var _nf = reduce ? 1 : 0.5 + 0.5*Math.sin(T*0.7);    // respiration douce (~9 s)
-        soinN.setAttribute("opacity", _nf.toFixed(2));
-      }
-    }
-
-    var lc=lobeCount(currentS);
-    var ctx = lc<=2?"institutionnel":(lc===3?"métabolisation":"récolte");
-    tag.innerHTML='<b>'+lc+' boucle'+(lc>1?'s':'')+'</b> — '+ctx;
-    hint.className=(lc>=5?"hint show":"hint");
-
-    requestAnimationFrame(render);
-  }
-
-  function select(s){
-    targetS=s; ptParked=null; dashLobe=-1; eyePlaced=false; lastInter=T;
-    switchBtns.forEach(function(b){ b.classList.toggle("on",(+b.dataset.s)===s); });
-    frames.forEach(function(f){ f.classList.toggle("on",(+f.dataset.f)===s); });
-  }
-  switchBtns.forEach(function(b){ b.addEventListener("click",function(){ select(+b.dataset.s); }); });
-
-  knotSvg.addEventListener("click",function(e){
-    blinkStart=T; clickPulse=0.15; lastInter=T; // clin d'œil + petit sursaut vivant quand on touche le regard
-    // 2-LOBES : clic sur un lobe -> orbite (sens selon le cote) puis pose de l'oudjat ; re-clic -> la monture se leve. (Pas de flip ici.)
-    if(Math.round(currentS)===0){
-      var _r=knotSvg.getBoundingClientRect();
-      var _mx=(e.clientX-_r.left)/_r.width*420, _my=(e.clientY-_r.top)/_r.height*420;
-      var _sr=spinDeg*Math.PI/180, _cc=Math.cos(-_sr), _ss=Math.sin(-_sr), _dx=_mx-CX, _dy=_my-CY;
-      _mx=CX+_dx*_cc-_dy*_ss; _my=CY+_dx*_ss+_dy*_cc;                     // de-rotation du spin
-      var _side=(_mx < (CX-10))?-1:1;                                     // < croisement (CX-10) = lobe gauche (C) ; sinon lobe droit (O)
-      if(oudjatPhase==='off'){
-        if(reduce){ oudjatPhase='on'; oudjatT=T; return; }
-        var _lp=livePts(), _nd=(nodesic()[0]||[CX,CY]), _bi=0, _bd=1e9;
-        for(var _i=0;_i<_lp.length;_i++){ var _ex=_lp[_i][0]-_nd[0], _ey=_lp[_i][1]-_nd[1], _d2=_ex*_ex+_ey*_ey; if(_d2<_bd){_bd=_d2;_bi=_i;} }
-        var _tx=_lp[(_bi+1)%_lp.length][0]-_lp[_bi][0];                   // tangente.x au point de depart
-        oudjatDir=(_side>0)?(_tx>=0?1:-1):(_tx>=0?-1:1);                  // partir VERS le lobe clique -> droite/gauche = sens opposes
-        oudjatStartIdx=_bi; oudjatPhase='orbit'; oudjatT=T;
-      } else { oudjatPhase='off'; oudjatT=T; }
-      return;
-    }
-    if(!reduce){ flipping=true; flipStart=T; flipAxis=Math.random()*2*Math.PI; }   // le clic fait tournoyer l'œil (sens aléatoire) — TOUTES les vues
-    if(lobeCount(currentS)<3) return;            // interface (2 lobes) : rien à viser
-    var r=knotSvg.getBoundingClientRect();
-    var mx=(e.clientX-r.left)/r.width*420, my=(e.clientY-r.top)/r.height*420;
-    // le groupe est tourné de spinDeg : ramener le clic dans le repère des nœuds (dé-tourner de -spinRad)
-    var spinRad=spinDeg*Math.PI/180;
-    var _cc=Math.cos(-spinRad), _ss=Math.sin(-spinRad), _mdx=mx-CX, _mdy=my-CY;
-    mx=CX+_mdx*_cc-_mdy*_ss; my=CY+_mdx*_ss+_mdy*_cc;
-    // nœud/lobe le plus proche du clic
-    var nd=nodesic(), best=0, bd=1e9;
-    for(var i=0;i<nd.length;i++){ var d=Math.hypot(nd[i][0]-mx,nd[i][1]-my); if(d<bd){bd=d;best=i;} }
-    if(Math.round(currentS)===1){                // DASHBOARD (Vigie) : ENTRER dans la boucle (barycentre) / re-clic même boucle → RESSORTIR au centre. Passage = corde à sauter.
-      var newLobe=(dashLobe===best)?-1:best;
-      moveFrom=[eyeX,eyeY]; moveTo=(newLobe>=0)?dashBary(newLobe):[CX,CY];
-      moveKind=(newLobe>=0)?'over':'under';      // entrer = par-DESSUS (saute la corde) ; ressortir = par-DESSOUS (passe sous la corde)
-      moveT=T; dashLobe=newLobe; lastInter=T; return;
-    }
-    if(lobeCount(currentS)<5) return;            // (vue patient uniquement au-delà)
-    ptParked=(ptParked===best)?null:best;        // PATIENT : l'œil se pose sur le nœud (bord), lecture du fil
-  });
-  // la souris pilote la direction de visée (regard + bec + lumière) quand elle survole le nœud
-  knotSvg.addEventListener("mousemove",function(e){
-    var r=knotSvg.getBoundingClientRect();
-    cursorAngle=Math.atan2(e.clientY-(r.top+r.height/2), e.clientX-(r.left+r.width/2));
-    pointerActive=true; lastInter=T;
-  });
-  knotSvg.addEventListener("mouseleave",function(){ pointerActive=false; });
   // ══════════════════════════════════════════════════════════════════════════════
   //  L'APP — le nœud EST le shell. Un seul objet qui se replie ; pas de pages.
   //
@@ -706,41 +201,12 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
 
   var $=function(i){ return document.getElementById(i); };
 
-  // ── Mapping des indices ───────────────────────────────────────────────────────
-  // Trois indexations coexistent dans le moteur : indice de build (ASYM), indice de
-  // nœud (ptParked, angleMort), rang horaire de pétale (labels). Elles coïncident au
-  // pentalobe — on ne le suppose pas, on le calcule.
-  function axeDuBuild(b){
-    var P=PET_BY[5];
-    for(var k=0;k<P.sep.length;k++) if(buildIdxOf(P.tips[k],5)===b) return LAB5[(P.rank[k]-2+5)%5];
-    return "?";
-  }
-  function buildDuNoeud(i){ var nd=KN[2]; return i>=0&&i<nd.length ? buildIdxOf(nd[i],5) : -1; }
-
-  // La désignation de l'œil, rendue au lecteur d'écran. Écrite seulement quand elle change :
-  // la boucle de rendu tourne à 60 Hz, le DOM n'a pas à en savoir autant.
-  var _amDit = null;
-  function designer(am){
-    var v = (am>=0) ? ("l’œil se tourne vers " + axeDuBuild(buildDuNoeud(am))) : "";
-    if(v===_amDit) return;
-    _amDit = v;
-    if(v){ pt.setAttribute("role","img"); pt.setAttribute("aria-label", v); }
-    else { pt.removeAttribute("role"); pt.removeAttribute("aria-label"); }
-  }
 
   // ── Le grain : la forme du nœud quand rien n'a été récolté ────────────────────
   // `ASYM[5].s` ne disparaît pas ; il cesse d'être la TAILLE. Sans lui, le patient nu
   // s'afficherait en fleur parfaitement symétrique — la symétrie normative que le §19
   // bannit — et les boucles NAÎTRAIENT de la donnée, quand la loi du logo dit qu'elles
   // préexistent repliées. La récolte DÉPLIE, elle ne crée pas.
-  var GRAIN = ASYM[5].s.slice();
-  var TAU_D = 4;      // saturation. À calibrer sur les données réelles, jamais en chambre (§11.2).
-  // Amplitude calée sur l'étalement du grain lui-même (0.87 → 1.13, soit 30 %).
-  // Critère : elle est bien réglée quand la densité peut CHANGER QUELLE BOUCLE EST LA PLUS
-  // PETITE, et rien de plus. En dessous, la modulation est décorative et l'œil désigne encore
-  // le lobe dessiné le plus petit il y a trois semaines. Au-dessus, on lit un compte sur le
-  // dessin, et « montré jamais chiffré » tombe.
-  var K_AMP = 0.30;
 
   // ── Dépôts (domaine 2) ────────────────────────────────────────────────────────
   var DEPOTS=[
@@ -793,7 +259,7 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
   function couvertures(txt){ return COUV.map(function(c){ return c.fig.test(txt||""); }); }
 
   function passer(){
-    var frags=[];
+    var frags=[], AX=noeud.axes();   // la carte des axes vient du nœud (forme de l'instance), jamais copiée ici
     DEPOTS.forEach(function(d,di){
       if(d.n==="gestation") return;          // rien à ranger : elle est nue, et c'est un acte
       // découpage grossier en propositions — la portion la plus petite QUI GARDE LE SENS.
@@ -802,12 +268,12 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
       parts.forEach(function(p){
         var deb=d.t.indexOf(p,off); off=deb+p.length;
         var lobes=[];
-        for(var b=0;b<5;b++){ var ax=axeDuBuild(b); if(LEX[ax] && LEX[ax].test(p)) lobes.push(b); }
+        for(var b=0;b<5;b++){ var ax=AX[b]; if(LEX[ax] && LEX[ax].test(p)) lobes.push(b); }
         if(lobes.length) frags.push({depot:di, debut:deb, fin:off, lobes:lobes});
       });
     });
     PASSE={ calculeLe:new Date(), n:DEPOTS.length, frags:frags };
-    regenPentalobe(); rendre();
+    noeud.setGrain(densitesParLobe()); rendre();
   }
 
   function densitesParLobe(){
@@ -825,13 +291,6 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
   // La saturation n'est pas un défaut : c'est « montré, jamais chiffré » tenu par la
   // courbe. Une boucle linéaire laisserait lire le compte sur le dessin ; celle-ci dit
   // « beaucoup », jamais « quatre-vingts ».
-  function regenPentalobe(){
-    var d=densitesParLobe();
-    for(var i=0;i<5;i++) ASYM[5].s[i] = GRAIN[i]*(1 + K_AMP*(1-Math.exp(-d[i]/TAU_D)));
-    var K5b=build(5);
-    KF[2]=K5b.pts; KN[2]=xNodes(KF[2]); PET_BY[5]=petalsFor(KF[2]);
-    if(curLc===5) buildLabels(5);
-  }
 
   // ── L'épaisseur du fil : quatre crans francs, jamais une courbe ───────────────
   // « rien · pas assez · il y en a · le dossier est fourni ». Un saut visible entre chaque :
@@ -852,7 +311,7 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
     for(var i=0;i<SEUILS.length;i++) if(n>=SEUILS[i]) c=i+1;
     return Math.min(c, 2);                // plafond récolte : le 4e cran se gagne au trilobe
   }
-  function majFil(){ wData = CRANS[cranRecolte()]; }
+  function majFil(){ noeud.setEpaisseur(CRANS[cranRecolte()]); }
 
   // ── Le panneau ────────────────────────────────────────────────────────────────
   var HEURE=new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"});
@@ -877,10 +336,10 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
   function passePerimee(){ return !PASSE || PASSE.n !== DEPOTS.length; }
 
   function rendre(){
-    var s=Math.round(targetS), pan=$("panneau");
+    var s=STRATE, pan=$("panneau");
     majFil();
 
-    if(s===2 && ptParked===null){                       // ── LE NŒUD : on écrit ──
+    if(s===2 && HELD<0){                                // ── LE NŒUD : on écrit ──
       var fl=DEPOTS.map(function(d){
         // La gestation est la seule nature autorisée à n'avoir aucun contenu
         // (`depots_contenu_sauf_gestation`). Elle ne s'affiche pas comme un dépôt raté :
@@ -924,11 +383,11 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
     }
 
     if(s===2){                                          // ── UNE BOUCLE TENUE : on lit ──
-      var b=buildDuNoeud(ptParked), ax=axeDuBuild(b);
+      var b=HELD, ax=HELDAXE, AX=noeud.axes();
       var fr=(PASSE? PASSE.frags.filter(function(f){ return f.lobes.indexOf(b)>=0; }) : []);
       var corps = fr.length
         ? fr.map(function(f){ var d=DEPOTS[f.depot];
-            var croise=f.lobes.length>1 ? '<span class="croise">croise '+f.lobes.filter(function(x){return x!==b;}).map(axeDuBuild).join(" · ")+'</span>' : '';
+            var croise=f.lobes.length>1 ? '<span class="croise">croise '+f.lobes.filter(function(x){return x!==b;}).map(function(x){return AX[x];}).join(" · ")+'</span>' : '';
             return '<li><p class="depot">'+ech(d.t.slice(f.debut,f.fin))+'</p>'+
                    '<p class="attr">'+ech(d.a)+' · '+quand(d.h)+' · <a href="#" class="note">la note entière</a> '+croise+'</p></li>';
           }).join("")
@@ -994,24 +453,34 @@ import { CX, CY, N, TAU, INK, RED, setRed, setInk, ASYM, build, KF, KN, lerp, cl
   var QUI="Karima";
   $("qui").addEventListener("change",function(){ QUI=this.value; });
 
-  // ── Les trois strates, terrain → institutionnel ────────────────────────────────
-  // Le moteur a déjà câblé les boutons sur `select`. On enveloppe `select` : la strate
-  // change la forme ET le panneau, d'un seul geste. Pas de routeur — la strate EST la forme.
-  var _select=select;
-  select=function(s){
-    _select(s);
-    // Ouvrir la métabolisation paie le recalcul. C'est le seul déclencheur, et il est humain
-    // sans être un verdict : on ne valide pas un rangement, on paie le calcul d'une projection.
+  // ── Le nœud (module) et son câblage à la page ──────────────────────────────────
+  // La page ne dessine plus le nœud : elle l'instancie, le pilote (setStrate/setGrain),
+  // et écoute ses événements. La strate change la forme (nœud) ET le panneau (page).
+  setRed(0.85); setInk(0.36);
+  var STRATE=2, HELD=-1, HELDAXE=null;
+  var noeud = creerNoeud(knotSvg);
+
+  // #tag/#hint suivent le lobe courant, émis par le nœud pendant le morph (jamais un id de page dans le module)
+  noeud.onStrateChange(function(s, lc, ctx){
+    tag.innerHTML='<b>'+lc+' boucle'+(lc>1?'s':'')+'</b> — '+ctx;
+    hint.className=(lc>=5?"hint show":"hint");
+  });
+  // clic sur une boucle : le nœud tient l'œil et NOTIFIE la page de l'axe tenu (pour le panneau « on lit »)
+  noeud.onLobe(function(b, axe){ HELD=b; HELDAXE=axe; rendre(); });
+
+  // la strate décide la forme (nœud) ET le panneau (page), d'un seul geste
+  function changerStrate(s){
+    STRATE=s; HELD=-1; HELDAXE=null;
+    noeud.setStrate(s);
+    switchBtns.forEach(function(b){ b.classList.toggle("on",(+b.dataset.s)===s); });
+    frames.forEach(function(f){ f.classList.toggle("on",(+f.dataset.f)===s); });
+    // Ouvrir la métabolisation paie le recalcul (seul déclencheur, humain sans être un verdict).
     if(s===1 && passePerimee()) passer();
     rendre();
-  };
-  knotSvg.addEventListener("click",function(){ rendre(); });
+  }
+  switchBtns.forEach(function(b){ b.addEventListener("click",function(){ changerStrate(+b.dataset.s); }); });
 
-  setRed(0.85); setInk(0.36);
-  regenPentalobe();
-  refreshStatics();
-  select(2); rendre();
-  render();
+  changerStrate(2); rendre();
 })();
 
 </script>
