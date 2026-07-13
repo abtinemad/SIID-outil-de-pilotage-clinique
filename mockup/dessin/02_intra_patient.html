@@ -77,6 +77,11 @@
   .actes{display:flex;gap:8px;margin-top:2px}
   .actes button{background:rgba(21,25,30,.05);border:1px solid var(--faint);border-radius:11px;padding:9px 15px;font-family:var(--word);font-size:12.5px;color:var(--ink);cursor:pointer}
   .actes button.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  /* Le titre de section + son déclencheur en icône, aligné à droite */
+  .secHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .trigIco{background:0;border:0;padding:0;width:24px;height:24px;line-height:22px;text-align:center;
+           font-family:var(--word);font-size:17px;color:var(--ink);opacity:.5;cursor:pointer;transition:opacity .15s,color .15s}
+  .trigIco:hover{opacity:1;color:var(--red)}
   .edit{display:none;margin-top:10px}
   .edit.on{display:block}
   .edit textarea{width:100%;height:140px;border:1px solid var(--faint);border-radius:12px;background:rgba(255,255,255,.7);padding:12px 13px;font-family:var(--prose);font-size:13px;line-height:1.5;color:var(--ink);outline:0;resize:vertical}
@@ -166,10 +171,10 @@
 
   <!-- OBSERVATIONS — déposées par UNE personne (« déposer »), jamais signées en équipe -->
   <div class="sec" data-mode="recolte">
-    <div class="secTitre">Observations</div>
+    <div class="secHead"><div class="secTitre">Observations</div>
+      <span id="actesO"><button class="trigIco" id="btObs" title="ajouter un fragment" aria-label="ajouter un fragment">+</button></span></div>
     <div class="secSub">La perception brute sur le terrain</div>
     <div id="frags"></div>
-    <div class="actes" id="actesO" style="margin-top:10px"><button class="pri" id="btObs">déposer</button></div>
     <div class="edit" id="editO">
       <textarea id="taO" placeholder="ce qui s'observe sur le terrain…"></textarea>
       <div class="sig">déposé par une personne · pas signé en équipe</div>
@@ -179,10 +184,10 @@
 
   <!-- RÉCIT — lecture machine vivante + acte de signature d'équipe (même mécanique que la synthèse) -->
   <div class="sec" data-mode="recolte">
-    <div class="secTitre">Récit</div>
+    <div class="secHead"><div class="secTitre">Récit</div>
+      <span id="actesR"><button class="trigIco" id="btRecit" title="prendre la plume" aria-label="prendre la plume">✎</button></span></div>
     <div class="secSub">L'histoire qui s'en dégage</div>
     <div class="recit machine" id="recitMachine"></div>
-    <div class="actes" id="actesR" style="margin-top:10px"><button class="pri" id="btRecit">récit</button></div>
     <div class="edit" id="editR">
       <textarea id="taR" placeholder="l'histoire qui s'en dégage…"></textarea>
       <div class="sig">on part de la lecture machine · on signe en équipe</div>
@@ -193,9 +198,9 @@
 
   <!-- SYNTHÈSE -->
   <div class="sec" data-mode="metab">
-    <div class="secTitre">Synthèse</div>
+    <div class="secHead"><div class="secTitre">Synthèse</div>
+      <span id="actesS"><button class="trigIco" id="btSynth" title="prendre la plume" aria-label="prendre la plume">✎</button></span></div>
     <div class="secSub">Ce que l'équipe en retient</div>
-    <div class="actes" id="actesS"><button class="pri" id="btSynth">synthèse</button></div>
     <div class="edit" id="editS">
       <textarea id="taS" placeholder="ce que l'équipe en retient…"></textarea>
       <div class="sig">on part de la lecture machine · on signe en équipe</div>
@@ -206,9 +211,9 @@
 
   <!-- HYPOTHÈSE — ce qui se joue : une QUESTION. L'équipe pose d'abord ; la machine ne se révèle qu'après. -->
   <div class="sec" data-mode="metab">
-    <div class="secTitre">Hypothèse</div>
+    <div class="secHead"><div class="secTitre">Hypothèse</div>
+      <span id="actesH"><button class="trigIco" id="btHyp" title="prendre la plume" aria-label="prendre la plume">✎</button></span></div>
     <div class="secSub">Ce qui se joue</div>
-    <div class="actes" id="actesH"><button class="pri" id="btHyp">hypothèse</button></div>
     <div class="edit" id="editH">
       <textarea id="taH" placeholder="ce qui se joue — la question qui oriente…"></textarea>
       <div class="sig">l'équipe pose la question · on noue et signe en collège</div>
@@ -224,9 +229,9 @@
 
   <!-- ACCOMPAGNEMENT — où on va : objet distinct de l'hypothèse (même structure que Synthèse) -->
   <div class="sec" data-mode="metab" style="padding-bottom:26px">
-    <div class="secTitre">Accompagnement</div>
+    <div class="secHead"><div class="secTitre">Accompagnement</div>
+      <span id="actesA"><button class="trigIco" id="btAcc" title="prendre la plume" aria-label="prendre la plume">✎</button></span></div>
     <div class="secSub">Où on va</div>
-    <div class="actes" id="actesA"><button class="pri" id="btAcc">accompagnement</button></div>
     <div class="edit" id="editA">
       <textarea id="taA" placeholder="où on va…"></textarea>
       <div class="sig">on reprend l'accompagnement en cours · on signe en équipe</div>
