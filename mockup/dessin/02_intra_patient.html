@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cahier de dessin — 02 · vue intra-patient</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600&family=Spectral:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9ECEF; --ink:#15191E; --red:#8E1C2B; --ink-soft:#565E66;
+    --trait:rgba(21,25,30,.34); --plein:rgba(21,25,30,.80); --creux:rgba(21,25,30,.46);
+    --faint:rgba(21,25,30,.12); --ghost:rgba(21,25,30,.05);
+    --prose:"Spectral",Georgia,serif;
+    --slate:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --word:"Nunito","Avenir Next",system-ui,sans-serif;
+    --pale:.26;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#D6DADE;color:var(--ink);font-family:var(--word);
+       -webkit-font-smoothing:antialiased;display:flex;justify-content:center;padding:26px 0}
+  .tel{position:relative;width:390px;min-height:820px;background:var(--paper);
+       border-radius:34px;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden}
+
+  /* En-tête */
+  .entete{padding:22px 22px 14px;border-bottom:1px solid var(--faint)}
+  .ret{background:0;border:0;font-family:var(--slate);font-size:11px;color:var(--ink-soft);padding:0 0 10px;cursor:pointer;opacity:.8}
+  .nom{font-family:var(--prose);font-weight:700;font-size:23px;line-height:1.05}
+  .usage{font-family:var(--prose);font-style:italic;font-weight:600;font-size:15px;color:var(--red);margin-top:1px}
+  .admin{font-family:var(--slate);font-size:10.5px;color:var(--ink-soft);margin-top:9px;line-height:1.7;letter-spacing:.2px}
+  .admin b{color:var(--ink);font-weight:600}
+  .contacts{font-family:var(--word);font-size:12px;color:var(--ink-soft);margin-top:9px;line-height:1.55}
+  .contacts .qui{color:var(--ink)}
+  .logos{display:flex;gap:9px;margin-top:14px}
+  .logo{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.55);border:1px solid var(--faint);
+        border-radius:12px;padding:6px 11px;font-family:var(--word);font-size:12px;color:var(--ink);cursor:pointer}
+  .logo svg{display:block}
+
+  /* La chaîne */
+  .pec{padding:10px 18px 6px}
+  .pecTitre{font-family:var(--slate);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-soft);opacity:.7;margin-bottom:2px}
+  .chaine{width:100%;height:38px;overflow:visible}
+  .chaine .clk{cursor:pointer}
+
+  /* ── La case du nœud : détaché, grand, la lentille ── */
+  .noeudCase{padding:6px 0 2px;text-align:center;border-top:1px solid var(--faint)}
+  #knot{width:232px;height:232px;cursor:pointer;overflow:visible}
+  #fil2{fill:none}
+  .lobeMark{font-family:var(--word);font-size:12px;fill:var(--ink-soft);text-anchor:middle;pointer-events:none;opacity:.5;transition:.18s}
+  .lobeMark.on{fill:var(--red);opacity:1;font-weight:600}
+  .lentInfo{font-family:var(--slate);font-size:9px;color:var(--ink-soft);opacity:.65;min-height:12px;margin-top:-4px}
+
+  /* Sections titrées */
+  .sec{padding:14px 18px 8px;border-top:1px solid var(--faint)}
+  .secTitre{font-family:var(--prose);font-weight:700;font-size:17px}
+  .secSub{font-family:var(--slate);font-size:9.5px;color:var(--ink-soft);opacity:.8;margin:1px 0 10px}
+
+  /* Observations (les fragments) */
+  .frag{background:rgba(255,255,255,.5);border:1px solid var(--faint);border-radius:14px;padding:11px 14px;margin-bottom:9px;transition:opacity .22s}
+  .frag.pale{opacity:var(--pale)}
+  .frag .txt{font-family:var(--prose);font-size:14px;line-height:1.45}
+  .frag .meta{font-family:var(--slate);font-size:10px;color:var(--ink-soft);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap}
+  .frag .lb{font-family:var(--word);font-size:9.5px;color:var(--ink-soft);border:1px solid var(--faint);border-radius:8px;padding:1px 6px}
+
+  /* Récit / Synthèse / Hypothèse */
+  .recit{font-family:var(--prose);font-size:13px;line-height:1.5;background:rgba(255,255,255,.4);border:1px solid var(--faint);border-radius:12px;padding:11px 13px}
+  .recit.machine{border-style:dashed}
+  .recit .maj{display:block;font-family:var(--slate);font-size:9px;color:var(--ink-soft);opacity:.7;margin-top:8px}
+  .actes{display:flex;gap:8px;margin-top:2px}
+  .actes button{background:rgba(21,25,30,.05);border:1px solid var(--faint);border-radius:11px;padding:9px 15px;font-family:var(--word);font-size:12.5px;color:var(--ink);cursor:pointer}
+  .actes button.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .edit{display:none;margin-top:10px}
+  .edit.on{display:block}
+  .edit textarea{width:100%;height:140px;border:1px solid var(--faint);border-radius:12px;background:rgba(255,255,255,.7);padding:12px 13px;font-family:var(--prose);font-size:13px;line-height:1.5;color:var(--ink);outline:0;resize:vertical}
+  .edit .sig{font-family:var(--slate);font-size:10px;color:var(--ink-soft);margin:8px 2px 10px}
+  .stack{margin-top:12px}
+  .item{border-left:2px solid var(--faint);padding:2px 0 11px 11px;margin-bottom:2px}
+  .item.tete{border-left-color:var(--ink)}
+  .item .d{font-family:var(--slate);font-size:9.5px;color:var(--ink-soft)}
+  .item .t{font-family:var(--prose);font-size:12.5px;line-height:1.45;color:#2A2F35;margin-top:3px}
+
+  /* Fenêtre traitements */
+  .over{position:absolute;inset:0;background:rgba(233,236,239,.97);z-index:9;transform:translateY(101%);transition:transform .3s;padding:24px 22px}
+  .over.on{transform:none}
+  .over h4{font-family:var(--prose);font-weight:700;font-size:19px;margin:0 0 12px}
+  .over .tr{font-family:var(--prose);font-size:14px;padding:9px 0;border-bottom:1px solid var(--faint)}
+  .over .fer{background:0;border:0;font-family:var(--slate);font-size:11px;color:var(--ink-soft);cursor:pointer;margin-top:16px;text-decoration:underline;text-underline-offset:3px}
+</style>
+</head>
+<body>
+<div class="tel">
+
+  <!-- EN-TÊTE -->
+  <div class="entete">
+    <button class="ret" onclick="alert('→ retour à la file active (01)')">‹ file active</button>
+    <div class="nom" id="nom"></div>
+    <div class="usage" id="usage"></div>
+    <div class="admin" id="admin"></div>
+    <div class="contacts" id="contacts"></div>
+    <div class="logos">
+      <button class="logo" onclick="document.getElementById('over').classList.add('on')">
+        <svg width="16" height="16" viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="14" rx="2" fill="none" stroke="var(--ink)" stroke-width="1.3"/><path d="M7 7h6M7 10h6M7 13h4" stroke="var(--ink)" stroke-width="1.1" stroke-linecap="round"/></svg>
+        traitements
+      </button>
+      <span class="logo" title="NAP — le fil soin" style="cursor:default">
+        <svg width="16" height="16" viewBox="0 0 20 20"><path d="M3 17 L11 9" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"/><path d="M10 6 L14 10 M12 4 L16 8 M15 5 L17 3" stroke="var(--red)" stroke-width="1.3" stroke-linecap="round"/></svg>
+        NAP
+      </span>
+    </div>
+  </div>
+
+  <!-- LA CHAÎNE -->
+  <div class="pec">
+    <div class="pecTitre">chaîne</div>
+    <svg class="chaine" id="chaine" viewBox="0 0 354 38" aria-label="la chaîne de suivi"></svg>
+  </div>
+
+  <!-- LE NŒUD — sa case, la lentille -->
+  <div class="noeudCase">
+    <svg id="knot" viewBox="0 0 420 420" aria-label="le nœud du patient — cinq axes ; toucher une boucle isole son axe">
+      <defs>
+        <radialGradient id="ptSphere" cx="42%" cy="40%" r="66%">
+          <stop offset="0" stop-color="#A6323F"/><stop offset=".55" stop-color="#8E1C2B"/><stop offset="1" stop-color="#520F19"/>
+        </radialGradient>
+      </defs>
+      <g id="holes-g"></g>
+      <path id="fil2" stroke-linecap="round" stroke-linejoin="round"/>
+      <g id="eyeG"><circle id="ptHalo" fill="#E9ECEF"/><circle id="pt" r="9" fill="url(#ptSphere)"/></g>
+      <g id="marks"></g>
+    </svg>
+    <div class="lentInfo" id="lentInfo"></div>
+  </div>
+
+  <!-- OBSERVATIONS -->
+  <div class="sec">
+    <div class="secTitre">Observations</div>
+    <div class="secSub">les fragments — bruts, du plus récent au plus ancien</div>
+    <div id="frags"></div>
+  </div>
+
+  <!-- RÉCIT -->
+  <div class="sec">
+    <div class="secTitre">Récit</div>
+    <div class="secSub">Ce qu'on voit</div>
+    <div class="recit machine" id="recitMachine"></div>
+  </div>
+
+  <!-- SYNTHÈSE -->
+  <div class="sec">
+    <div class="secTitre">Synthèse</div>
+    <div class="secSub">Ce qu'on pense</div>
+    <div class="actes" id="actesS"><button class="pri" id="btSynth">synthèse</button></div>
+    <div class="edit" id="editS">
+      <textarea id="taS"></textarea>
+      <div class="sig">on part de la lecture machine · on signe en équipe</div>
+      <div class="actes"><button class="pri" id="btSignerS">valider et signer en équipe</button><button id="btAnnulS">annuler</button></div>
+    </div>
+    <div class="stack" id="listS"></div>
+  </div>
+
+  <!-- HYPOTHÈSE -->
+  <div class="sec" style="padding-bottom:26px">
+    <div class="secTitre">Hypothèse</div>
+    <div class="secSub">Où on va</div>
+    <div class="actes" id="actesH"><button class="pri" id="btHyp">hypothèse</button></div>
+    <div class="edit" id="editH">
+      <textarea id="taH"></textarea>
+      <div class="sig">on part de la synthèse · on noue et signe en collège</div>
+      <div class="actes"><button class="pri" id="btSignerH">nouer et signer en collège</button><button id="btAnnulH">annuler</button></div>
+    </div>
+    <div class="stack" id="listH"></div>
+  </div>
+
+  <!-- TRAITEMENTS -->
+  <div class="over" id="over">
+    <h4>Traitements</h4>
+    <div class="tr">Olanzapine 10 mg — soir</div>
+    <div class="tr">Valproate 500 mg — matin / soir</div>
+    <div class="tr" style="color:var(--red)">NAP — Palipéridone LP, injection mensuelle · prochaine le 24</div>
+    <button class="fer" onclick="document.getElementById('over').classList.remove('on')">fermer</button>
+  </div>
+
+</div>
+
+<script type="module">
+import { CX, CY, INK, shapeAt, nodesAt, composeScene, SET } from '../noyau.js';
+(function(){
+"use strict";
+
+  var PATIENT = {
+    nom:"JOUVE, Paul", usage:"« Paul »", ipp:"IPP 4471-092", ne:"né le 09.03.1987 · H",
+    adresse:"14 rue des Peupliers, Nanterre",
+    proche:"sœur — Claire J. · 06 xx", soignant:"CMP Colombes · Dr M. / K.D. réf."
+  };
+  var AXES = ["Familial","Amoureux","Ami","Travail","Soin"];
+  var FRAGS = [
+    {t:"Sa sœur a rappelé, depuis qu'il ne travaille plus. Elle demande si on peut passer le matin.", a:"Karima", d:"aujourd'hui", ax:[0,3]},
+    {t:"Il dit qu'il ne prend plus le traitement du soir. Il ne veut pas en parler à sa sœur.", a:"Céline", d:"hier", ax:[4,0]},
+    {t:"Rendez-vous manqué au CMP. Il était chez lui, il n'a pas ouvert.", a:"Anthony", d:"2 juil.", ax:[4]},
+    {t:"Il a parlé de son ancien poste à l'atelier. Il en parle au présent.", a:"Céline", d:"28 juin", ax:[3]},
+    {t:"Le 3 mars : « toute-puissance ». Il a refusé de s'asseoir, puis s'est excusé dans le couloir.", a:"Karima", d:"14 juin", ax:[4]},
+    {t:"Sa sœur pleure au téléphone. Elle dit qu'elle n'en peut plus, mais qu'elle ne lâchera pas.", a:"Karima", d:"11 juin", ax:[0]},
+    {t:"Un voisin l'a vu au parc avec quelqu'un. Il n'en a rien dit.", a:"L.M.", d:"3 juin", ax:[1,2]},
+    {t:"A mangé au foyer deux fois cette semaine.", a:"M.T.", d:"29 mai", ax:[2,4]}
+  ];
+  var RECIT_MACHINE =
+    "Paul est en rupture partielle de traitement (le soir), non discutée en famille. Sa sœur reste le lien principal mais dit son épuisement. Le travail apparaît au présent dans son discours — un appui qui n'est plus actif mais reste vivant. Un rendez-vous manqué récent, sans explication donnée.";
+  var SYNTHESES = [
+    { d:"4 juil.", par:"équipe", t:"Alliance tenue par la sœur. Traitement pris. Réinvestissement possible du côté du travail à explorer. Pas d'inquiétude aiguë." }
+  ];
+  var HYPOTHESES = [
+    { d:"4 juil.", par:"collège · 2 sign.", t:"On accompagne le desserrage du lien fraternel sans le rompre ; on ouvre doucement le versant travail comme appui. On ne force pas le traitement du soir — on attend qu'il en reparle." }
+  ];
+
+  var esc = function(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); };
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* En-tête */
+  $("nom").textContent = PATIENT.nom;
+  $("usage").textContent = PATIENT.usage;
+  $("admin").innerHTML = "<b>"+esc(PATIENT.ipp)+"</b> · "+esc(PATIENT.ne)+"<br>"+esc(PATIENT.adresse);
+  $("contacts").innerHTML = "proche — <span class='qui'>"+esc(PATIENT.proche)+"</span><br>soignant — <span class='qui'>"+esc(PATIENT.soignant)+"</span>";
+
+  /* Le nœud : pentalobe statique (s=2), dans sa case */
+  SET.plume = true; SET.w = 12; SET.gap = 1.5;
+  var noeudPts = nodesAt(2);
+  (function dessineNoeud(){
+    var P = shapeAt(2), sc = composeScene(P, 1.35), rib = sc.mode === "ribbon", i;
+    var fil = $("fil2");
+    fil.setAttribute("d", sc.baseD);
+    fil.setAttribute("fill", rib ? INK : "none");
+    fil.setAttribute("stroke", INK);
+    fil.setAttribute("stroke-width", rib ? "0.7" : sc.w.toFixed(1));
+    var g = $("holes-g");
+    for(i=0;i<sc.holes.length;i++){
+      var h = document.createElementNS("http://www.w3.org/2000/svg","path");
+      h.setAttribute("d", sc.holes[i]);
+      h.setAttribute("fill", rib ? "var(--paper)" : "none");
+      h.setAttribute("stroke", "var(--paper)");
+      h.setAttribute("stroke-width", rib ? "0.7" : (sc.holeW[i]||sc.w).toFixed(1));
+      g.appendChild(h);
+    }
+    if(noeudPts.length){ $("pt").setAttribute("cx",noeudPts[0][0]); $("pt").setAttribute("cy",noeudPts[0][1]);
+      $("ptHalo").setAttribute("cx",noeudPts[0][0]); $("ptHalo").setAttribute("cy",noeudPts[0][1]); $("ptHalo").setAttribute("r","10"); }
+    var marks = $("marks"), NS = "http://www.w3.org/2000/svg";
+    for(i=0;i<5;i++){
+      var ang = (i/5)*2*Math.PI - Math.PI/2;
+      var tx = CX + Math.cos(ang)*188, ty = CY + Math.sin(ang)*188 + 4;
+      var t = document.createElementNS(NS,"text");
+      t.setAttribute("class","lobeMark"); t.setAttribute("id","mk"+i);
+      t.setAttribute("x",tx.toFixed(0)); t.setAttribute("y",ty.toFixed(0));
+      t.textContent = AXES[i];
+      marks.appendChild(t);
+    }
+  })();
+
+  /* La lentille : clic sur une boucle → l'axe, les observations hors-axe pâlissent */
+  var axeTenu = -1;
+  $("knot").addEventListener("click", function(ev){
+    var r = this.getBoundingClientRect();
+    var px = (ev.clientX - r.left)/r.width * 420, py = (ev.clientY - r.top)/r.height * 420;
+    var dx = px - CX, dy = py - CY, dist = Math.hypot(dx,dy);
+    if(dist < 46){ axeTenu = -1; }
+    else {
+      var ang = Math.atan2(dy, dx) + Math.PI/2;
+      var lobe = Math.round(ang / (2*Math.PI) * 5); lobe = ((lobe % 5) + 5) % 5;
+      axeTenu = (axeTenu === lobe) ? -1 : lobe;
+    }
+    for(var i=0;i<5;i++){ var mk=$("mk"+i); if(mk) mk.classList.toggle("on", axeTenu===i); }
+    $("lentInfo").textContent = axeTenu>=0 ? "axe tenu · "+AXES[axeTenu] : "";
+    [].forEach.call($("frags").children, function(el){
+      var ax = JSON.parse(el.dataset.ax);
+      el.classList.toggle("pale", axeTenu>=0 && ax.indexOf(axeTenu)<0);
+    });
+  });
+
+  /* Observations — récent → ancien */
+  var fr = $("frags");
+  FRAGS.forEach(function(f){
+    var el = document.createElement("div");
+    el.className = "frag"; el.dataset.ax = JSON.stringify(f.ax);
+    var lbs = f.ax.map(function(a){ return '<span class="lb">'+esc(AXES[a])+'</span>'; }).join("");
+    el.innerHTML = '<div class="txt">'+esc(f.t)+'</div><div class="meta"><span>'+esc(f.a)+' · '+esc(f.d)+'</span>'+lbs+'</div>';
+    fr.appendChild(el);
+  });
+
+  /* La chaîne */
+  (function chaine(){
+    var W=354, PAD=16, J0=-96, J1=26, y=20;
+    function X(j){ return PAD + (j-J0)/(J1-J0)*(W-2*PAD); }
+    var rdv=[-82,-55,-29,+2], vus=[-82,-55,-29], spont=[-44,-16,-6];
+    var s='<line class="clk" x1="'+PAD+'" y1="'+y+'" x2="'+(W-PAD)+'" y2="'+y+'" stroke="var(--trait)" stroke-width="1.3"/>';
+    s+='<line x1="'+X(0)+'" y1="6" x2="'+X(0)+'" y2="34" stroke="var(--trait)" stroke-width="1" opacity=".5"/>';
+    rdv.forEach(function(j){
+      s+= vus.indexOf(j)>=0
+        ? '<circle class="clk" cx="'+X(j)+'" cy="'+y+'" r="4" fill="var(--plein)"/>'
+        : '<circle class="clk" cx="'+X(j)+'" cy="'+y+'" r="4.4" fill="var(--paper)" stroke="var(--creux)" stroke-width="1.5"/>';
+    });
+    spont.forEach(function(j){
+      s+='<path class="clk" d="M'+(X(j)-4)+' '+(y-9)+' L'+X(j)+' '+(y-3)+' L'+(X(j)+4)+' '+(y-9)+'" fill="none" stroke="var(--creux)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
+    });
+    $("chaine").innerHTML = s;
+    [].forEach.call($("chaine").querySelectorAll(".clk"), function(e){ e.addEventListener("click", function(){ alert("→ ouvre le(s) dépôt(s) de ce point"); }); });
+  })();
+
+  /* Récit (lecture machine) */
+  $("recitMachine").innerHTML = esc(RECIT_MACHINE) + '<span class="maj">recalculé sur 8 fragments · à l\u2019instant</span>';
+
+  /* Une pile signée générique (Synthèse / Hypothèse) */
+  function rendreStack(listId, data){
+    $(listId).innerHTML = data.map(function(o,i){
+      return '<div class="item'+(i===0?' tete':'')+'"><div class="d">'+esc(o.d)+' · '+esc(o.par)+'</div><div class="t">'+esc(o.t)+'</div></div>';
+    }).join("");
+  }
+  function brancherActe(cfg){
+    rendreStack(cfg.list, cfg.data);
+    $(cfg.bt).addEventListener("click", function(){
+      $(cfg.ta).value = cfg.prefill();
+      $(cfg.edit).classList.add("on"); $(cfg.actes).style.display = "none"; $(cfg.ta).focus();
+    });
+    $(cfg.annul).addEventListener("click", function(){
+      $(cfg.edit).classList.remove("on"); $(cfg.actes).style.display = "";
+    });
+    $(cfg.signer).addEventListener("click", function(){
+      var txt = $(cfg.ta).value.trim(); if(!txt) return;
+      cfg.data.unshift({ d:"aujourd\u2019hui", par:cfg.par, t:txt });
+      $(cfg.edit).classList.remove("on"); $(cfg.actes).style.display = "";
+      rendreStack(cfg.list, cfg.data);
+    });
+  }
+  brancherActe({ bt:"btSynth", edit:"editS", actes:"actesS", ta:"taS", signer:"btSignerS", annul:"btAnnulS",
+                 prefill:function(){ return RECIT_MACHINE; }, data:SYNTHESES, list:"listS", par:"équipe" });
+  brancherActe({ bt:"btHyp", edit:"editH", actes:"actesH", ta:"taH", signer:"btSignerH", annul:"btAnnulH",
+                 prefill:function(){ return SYNTHESES.length ? SYNTHESES[0].t : ""; }, data:HYPOTHESES, list:"listH", par:"collège · 2 sign." });
+
+})();
+</script>
+</body>
+</html>
