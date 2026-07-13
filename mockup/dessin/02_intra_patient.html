@@ -187,10 +187,9 @@
     <div class="secHead"><div class="secTitre">Récit</div>
       <span id="actesR"><button class="trigIco" id="btRecit" title="prendre la plume" aria-label="prendre la plume">✎</button></span></div>
     <div class="secSub">L'histoire qui s'en dégage</div>
-    <div class="recit machine" id="recitMachine"></div>
     <div class="edit" id="editR">
       <textarea id="taR" placeholder="l'histoire qui s'en dégage…"></textarea>
-      <div class="sig">on part de la lecture machine · on signe en équipe</div>
+      <div class="sig">brouillon recalculé sur 8 fragments · on reprend, on signe en équipe</div>
       <div class="actes"><button class="pri" id="btSignerR">signer en équipe</button><button id="btAnnulR">annuler</button></div>
     </div>
     <div class="stack" id="listR"></div>
@@ -385,9 +384,6 @@ import { creerNoeud } from '../noeud.js';
     $("chaine").innerHTML = s;
     [].forEach.call($("chaine").querySelectorAll(".clk"), function(e){ e.addEventListener("click", function(){ alert("→ ouvre le(s) dépôt(s) de ce point"); }); });
   })();
-
-  /* Récit (lecture machine) */
-  $("recitMachine").innerHTML = esc(RECIT_MACHINE) + '<span class="maj">recalculé sur 8 fragments · à l\u2019instant</span>';
 
   /* Une pile signée générique (Synthèse / Hypothèse) */
   function rendreStack(listId, data){
