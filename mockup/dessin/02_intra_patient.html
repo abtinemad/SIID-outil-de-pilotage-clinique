@@ -273,6 +273,9 @@ import { creerNoeud } from '../noeud.js';
   var SYNTHESES = [
     { d:"4 juil.", par:"équipe", t:"Alliance tenue par la sœur. Traitement pris. Réinvestissement possible du côté du travail à explorer. Pas d'inquiétude aiguë." }
   ];
+  // Le brouillon machine — pré-mâché sur critères cliniques, à reprendre puis signer (≠ carte signée).
+  var SYNTHESE_MACHINE =
+    "Alliance tenue par la sœur, qui s'épuise. Traitement pris hors le soir. Le travail reste un appui vivant à réinvestir. Pas d'inquiétude aiguë — vigilance sur le rendez-vous manqué.";
   // Hypothèse = ce qui se joue, une QUESTION. L'équipe pose d'abord : vide au départ.
   var HYPOTHESES = [];
   // L'hypothèse machine — un autre angle, révélé APRÈS la signature, jamais une correction.
@@ -282,6 +285,9 @@ import { creerNoeud } from '../noeud.js';
   var ACCOMPAGNEMENTS = [
     { d:"4 juil.", par:"équipe", t:"On accompagne le desserrage du lien fraternel sans le rompre ; on ouvre doucement le versant travail comme appui. On ne force pas le traitement du soir — on attend qu'il en reparle." }
   ];
+  // Le brouillon machine — pré-mâché sur critères cliniques, à reprendre puis signer (≠ carte signée).
+  var ACCOMPAGNEMENT_MACHINE =
+    "Desserrer le lien fraternel sans le rompre ; ouvrir doucement le versant travail comme appui ; ne pas forcer le traitement du soir — attendre qu'il en reparle.";
 
   var esc = function(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); };
   var $ = function(id){ return document.getElementById(id); };
@@ -403,9 +409,9 @@ import { creerNoeud } from '../noeud.js';
   }
   // Récit — même mécanisme que la synthèse : la machine propose (au-dessus), l'équipe signe → historique.
   brancherActe({ bt:"btRecit", edit:"editR", actes:"actesR", ta:"taR", signer:"btSignerR", annul:"btAnnulR",
-                 prefill:function(){ return ""; }, data:RECITS, list:"listR", par:"équipe" });
+                 prefill:function(){ return RECIT_MACHINE; }, data:RECITS, list:"listR", par:"équipe" });
   brancherActe({ bt:"btSynth", edit:"editS", actes:"actesS", ta:"taS", signer:"btSignerS", annul:"btAnnulS",
-                 prefill:function(){ return ""; }, data:SYNTHESES, list:"listS", par:"équipe" });
+                 prefill:function(){ return SYNTHESE_MACHINE; }, data:SYNTHESES, list:"listS", par:"équipe" });
   // Hypothèse — l'équipe pose SA question (champ vide) ; l'angle machine ne se révèle qu'APRÈS la signature.
   $("hypMachineTxt").innerHTML = esc(HYP_MACHINE) + '<span class="maj">hypothèse machine · un autre angle, jamais une correction</span>';
   brancherActe({ bt:"btHyp", edit:"editH", actes:"actesH", ta:"taH", signer:"btSignerH", annul:"btAnnulH",
@@ -413,7 +419,7 @@ import { creerNoeud } from '../noeud.js';
                  afterSign:function(){ $("hypMachine").style.display = ""; } });
   // Accompagnement — où on va : signé en équipe, révisable (on reprend le fil en cours).
   brancherActe({ bt:"btAcc", edit:"editA", actes:"actesA", ta:"taA", signer:"btSignerA", annul:"btAnnulA",
-                 prefill:function(){ return ""; }, data:ACCOMPAGNEMENTS, list:"listA", par:"équipe" });
+                 prefill:function(){ return ACCOMPAGNEMENT_MACHINE; }, data:ACCOMPAGNEMENTS, list:"listA", par:"équipe" });
 
 })();
 </script>
