@@ -54,14 +54,13 @@
   .mot.dit{color:var(--ink-soft)}
 
   /* ── barre basse ─────────────────────────────────────────── */
-  /* le navigateur (nœud + fente + tenu) FLOTTE au-dessus de la liste : plus de fond porteur,
+  /* le bas (loupe + fente + tenu) FLOTTE au-dessus de la liste : plus de fond porteur,
      couche relevée (5 : au-dessus de .liste, sous le guichet 7 et la clarté 8).
-     pointer-events:none → le calque laisse passer le scroll ; seuls nœud et fente captent. */
+     pointer-events:none → le calque laisse passer le scroll ; seuls loupe/fente/tenu captent. */
   .barre{position:absolute;left:0;right:0;bottom:0;height:126px;z-index:5;
          display:flex;align-items:center;gap:12px;padding:0 16px 18px;
          background:none;pointer-events:none}
-  /* nœud agrandi (régler ~150–190px). align-self:flex-end → il s'ancre sur la ligne du bas
-     et déborde vers le HAUT au-dessus de la liste, sans être rogné par le cadre (overflow:hidden). */
+  /* le nœud : bilobe fixe, ancré en haut à droite du cadre (position:absolute ; ~66px). */
   .noeud{position:absolute;top:12px;right:12px;z-index:5;width:66px;height:66px;cursor:pointer;touch-action:none;pointer-events:auto}
   .noeud svg{width:66px;height:66px;display:block;overflow:visible}
   #fil2{stroke:var(--ink)}
@@ -86,8 +85,6 @@
   .onde.on{opacity:1}
   .onde i{width:3px;background:var(--red);border-radius:2px;animation:o 1.05s ease-in-out infinite}
   @keyframes o{0%,100%{height:5px;opacity:.4}50%{height:26px;opacity:1}}
-  .strate{position:absolute;top:88px;right:16px;text-align:right;font-family:var(--slate);font-size:8.5px;
-          letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);opacity:.65}
 
   /* ── le guichet ──────────────────────────────────────────── */
   .guichet{position:absolute;inset:0;z-index:7;background:rgba(233,236,239,.97);
@@ -155,7 +152,7 @@
   </div>
   <div class="liste" id="liste"></div>
 
-  <div class="noeud" id="noeud" title="clic : le fil se dénoue · appui long : la voix · double-clic : strate">
+  <div class="noeud" id="noeud" title="le nœud — l'œil : le guichet du patient tenu · maintien : la voix">
       <svg id="knot" viewBox="0 0 420 420" aria-label="le nœud">
         <defs>
           <mask id="cut" maskUnits="userSpaceOnUse" x="-90" y="-90" width="600" height="600">
@@ -194,11 +191,10 @@
       <div class="lgd"><svg viewBox="0 0 34 20"><path d="M4 10 L30 10" stroke="var(--trait)" stroke-width="1.3" stroke-dasharray="1.8 4" opacity=".55"/></svg><span>depuis quand plus rien</span></div>
       <h5>les cinq boucles</h5>
       <p class="lobes">Familiale · Sociale · Professionnelle · Amoureuse · Soi</p>
-      <p class="ges">touche une <b>boucle</b> : la strate change · touche <b>l'œil</b> : le fil se dénoue ·
+      <p class="ges">touche <b>l'œil</b> : le guichet, si un patient est tenu ·
          <b>maintiens</b> : la voix · <b>double-touche</b> : ceci</p>
     </div>
   </div>
-  <div class="strate" id="strate">récolte · 5</div>
 
   <div class="guichet" id="guichet">
     <h4 id="g-nom">—</h4>
@@ -281,9 +277,9 @@
   <h3>gestes</h3>
   <p>Le cercle pointillé, en haut à droite : <b>un filtre</b>, pas un onglet. Personne n'est déplacé de terrain.
      Il meurt à la fermeture.</p>
-  <p><b>Les boucles sont les strates, l'œil est la poignée.</b> Touche une boucle : la strate morphe.
-     Touche l'œil : le fil se dénoue (recherche, ou guichet si un patient est tenu) — <b>on écrit au
-     nœud</b>. Maintiens : la voix. Double-touche : la clarté — labels et légende. Le nœud ne parle
+  <p><b>Le nœud veille en haut à droite — un bilobe fixe.</b> Il ne morphe plus.
+     Touche <b>l'œil</b> : le guichet s'ouvre si un patient est tenu — <b>on écrit au
+     nœud</b>. Maintiens : la voix. Double-touche : la clarté — la légende. Le nœud ne parle
      jamais le premier ; on le convoque.</p>
   <p>Dans le guichet : <b>pas de date</b> ouvre l'écriture obligatoire. Le champ ne dit pas
      « justification » — ce mot appelle une défense, et on se défend devant une autorité.</p>
@@ -444,8 +440,8 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   var NS="http://www.w3.org/2000/svg", POOL2=22, hP=[], oP=[], k;
   for(k=0;k<POOL2;k++){ var a=document.createElementNS(NS,"path"); holesG.appendChild(a); hP.push(a);
                         var b2=document.createElementNS(NS,"path"); oversG.appendChild(b2); oP.push(b2); }
-  var STRATES=[{s:2,lab:"récolte · 5"},{s:1,lab:"métabolisation · 3"},{s:0,lab:"institutionnel · 2"}];
-  var iS=0, targetS=STRATES[0].s, currentS=STRATES[0].s, T=0, hop=0, FRQ2=Math.round(0.2*N/TAU);
+  // nœud FIGÉ en bilobe (s=0, institutionnel) : plus de strates, plus de morph, boucle inerte.
+  var targetS=0, currentS=0, T=0, hop=0, FRQ2=Math.round(0.2*N/TAU);
   function livePts2(){ var P=shapeAt(currentS), pu=1+0.012*Math.sin(T*1.4), o=[],i;
     for(i=0;i<P.length;i++){ var x=P[i][0]-CX,y=P[i][1]-CY,fr=1+0.010*Math.sin(T*2.1+i*TAU*FRQ2/N);
       x*=fr;y*=fr;o.push([CX+x*pu,CY+y*pu]); } return o; }
@@ -469,7 +465,7 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
         oP[i].setAttribute("stroke-linecap","round"); oP[i].style.display="";
       } else { hP[i].style.display="none"; oP[i].style.display="none"; }
     }
-    var e=redXY2(), r=8.5*1.35; eyePos=e;
+    var e=redXY2(), r=25*1.35; eyePos=e;
     ptHalo.setAttribute("cx",e[0]);ptHalo.setAttribute("cy",e[1]);ptHalo.setAttribute("r",(r*1.1).toFixed(1));
     pt.setAttribute("cx",e[0]);pt.setAttribute("cy",e[1]);pt.setAttribute("r",r.toFixed(1));pt.setAttribute("fill","url(#ptSphere)");
     ptPup.setAttribute("cx",e[0]);ptPup.setAttribute("cy",e[1]);ptPup.setAttribute("r",(r*0.36).toFixed(1));ptPup.setAttribute("fill",INK);
@@ -487,7 +483,7 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   for(k=0;k<18;k++){ var o=document.createElement("i"); o.style.animationDelay=(k*0.06)+"s"; onde.appendChild(o); }
 
   function tenir(i){
-    tenuIdx=i; targetS=2; iS=0; document.getElementById("strate").textContent=STRATES[0].lab; cadre();
+    tenuIdx=i;                                              /* le nœud reste figé en bilobe (s=0) */
     fente.classList.add("ferme"); tenu.classList.remove("off");
     tenu.innerHTML = esc(FILE[i].n)+"<small>touche le nœud pour déposer</small>";
     dessineListe("");
@@ -525,10 +521,7 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   noeud.addEventListener("pointerup", function(){
     clearTimeout(longT);
     if(parle){ voixOff(); return; }
-    if(!oeil){                                              /* une BOUCLE : la strate morphe */
-      iS=(iS+1)%STRATES.length; targetS=STRATES[iS].s;
-      document.getElementById("strate").textContent=STRATES[iS].lab; cadre(); return;
-    }
+    if(!oeil) return;                                       /* nœud figé : une boucle ne fait rien (plus de morph) */
     var now=Date.now();
     if(now-clicT<280){ clarte.classList.add("on"); clicT=0; return; }   /* double-touche : la clarté */
     clicT=now;
