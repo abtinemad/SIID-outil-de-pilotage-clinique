@@ -98,6 +98,34 @@
   .over h4{font-family:var(--prose);font-weight:700;font-size:19px;margin:0 0 12px}
   .over .tr{font-family:var(--prose);font-size:14px;padding:9px 0;border-bottom:1px solid var(--faint)}
   .over .fer{background:0;border:0;font-family:var(--slate);font-size:11px;color:var(--ink-soft);cursor:pointer;margin-top:16px;text-decoration:underline;text-underline-offset:3px}
+
+  /* Guichet — dépôt d'observation en fenêtre (bottom-sheet), importé de la file active. z:10 > #over (9) */
+  .guichet{position:absolute;inset:0;z-index:10;background:rgba(233,236,239,.97);
+           transform:translateY(101%);transition:transform .3s cubic-bezier(.2,.9,.2,1);
+           display:flex;flex-direction:column;padding:26px 22px 22px}
+  .guichet.on{transform:none}
+  .guichet h4{font-family:var(--prose);font-weight:700;font-size:19px;margin:0 0 2px}
+  .guichet .who{font-size:11.5px;color:var(--ink-soft);margin-bottom:14px}
+  .guichet textarea{width:100%;height:140px;border:1px solid var(--faint);border-radius:14px;
+    background:rgba(255,255,255,.6);padding:13px 15px;font-family:var(--prose);font-size:15px;
+    color:var(--ink);resize:none;outline:0;line-height:1.5}
+  .pf{margin-top:16px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink-soft)}
+  .pf input[type=date]{border:1px solid var(--faint);border-radius:9px;background:rgba(255,255,255,.6);
+    padding:6px 9px;font-family:var(--slate);font-size:12px;color:var(--ink)}
+  .pf button{background:0;border:0;color:var(--ink-soft);font-size:11.5px;cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px;font-family:var(--word);margin-left:auto}
+  .sortie{margin-top:14px;border-top:1px solid var(--faint);padding-top:14px;display:none}
+  .sortie.on{display:block}
+  .sortie label{display:block;font-family:var(--prose);font-weight:700;font-size:14.5px;margin-bottom:8px}
+  .sortie input[type=text]{width:100%;border:0;border-bottom:1px solid var(--faint);background:0;
+    padding:7px 2px;font-family:var(--word);font-size:14px;outline:0;color:var(--ink)}
+  .sortie .ex{margin-top:14px;font-size:11.5px;color:var(--ink-soft)}
+  .sortie .ex div{margin-top:7px;font-family:var(--prose);font-style:italic;color:#3B424A;font-size:12px}
+  .sortie .ex span{font-family:var(--slate);font-style:normal;font-size:10px;opacity:.7;margin-left:5px}
+  .fin{margin-top:auto;display:flex;gap:12px;align-items:center}
+  .fin button{flex:1;height:48px;border-radius:24px;border:0;background:var(--ink);color:var(--paper);
+    font-family:var(--word);font-size:14.5px;font-weight:600;cursor:pointer}
+  .fin .annul{flex:0 0 auto;background:0;color:var(--ink-soft);font-weight:400;width:auto;padding:0 8px}
 </style>
 </head>
 <body>
@@ -175,11 +203,6 @@
       <span id="actesO"><button class="trigIco" id="btObs" title="ajouter un fragment" aria-label="ajouter un fragment">+</button></span></div>
     <div class="secSub">La perception brute sur le terrain</div>
     <div id="frags"></div>
-    <div class="edit" id="editO">
-      <textarea id="taO" placeholder="ce qui s'observe sur le terrain…"></textarea>
-      <div class="sig">déposé par une personne · pas signé en équipe</div>
-      <div class="actes"><button class="pri" id="btDepO">déposer</button><button id="btAnnulO">annuler</button></div>
-    </div>
   </div>
 
   <!-- RÉCIT — lecture machine vivante + acte de signature d'équipe (même mécanique que la synthèse) -->
@@ -246,6 +269,24 @@
     <div class="tr">Valproate 500 mg — matin / soir</div>
     <div class="tr" style="color:var(--red)">NAP — Palipéridone LP, injection mensuelle · prochaine le 24</div>
     <button class="fer" onclick="document.getElementById('over').classList.remove('on')">fermer</button>
+  </div>
+
+  <div class="guichet" id="guichet">
+    <h4 id="g-nom">—</h4>
+    <div class="who">déposé par S.R. · aujourd'hui · <b>irrévocable</b></div>
+    <textarea id="g-txt" placeholder="ce que je dépose…"></textarea>
+    <div class="pf"><span>prochaine fois</span>
+      <input type="date" id="g-date" value="2026-07-24"><button id="g-sans">pas de date</button></div>
+    <div class="sortie" id="g-sortie">
+      <label for="g-relais">qui prend la suite ?</label>
+      <input type="text" id="g-relais" placeholder="">
+      <div class="ex">ce que le service a écrit, les trois dernières fois :
+        <div>« elle reprend au CMP de Colombes, le rendez-vous est pris pour le 3 »<span>K.D. · 12 juin</span></div>
+        <div>« retour chez ses parents, le CMP secteur les reçoit tous les deux »<span>L.M. · 2 juin</span></div>
+        <div>« SAMSAH, dossier accepté ; on reste joignables jusqu'en septembre »<span>A.B. · 28 mai</span></div>
+      </div>
+    </div>
+    <div class="fin"><button id="g-dep">Déposer</button><button class="annul" id="g-annul">annuler</button></div>
   </div>
 
 </div>
@@ -351,19 +392,23 @@ import { creerNoeud } from '../noeud.js';
   }
   FRAGS.forEach(function(f){ fr.appendChild(creerFrag(f)); });
 
-  /* Déposer une observation — un seul auteur, pas de signature d'équipe (d'où « déposer »).
-     La carte s'empile en tête (récent → ancien), datée aujourd'hui ; l'axe est laissé libre. */
+  /* Déposer une observation → le GUICHET (fenêtre bottom-sheet) monte par-dessus ; « Déposer » crée la carte-fragment.
+     Un seul auteur, pas de signature d'équipe (d'où « déposer »). La carte s'empile en tête, datée aujourd'hui. */
   $("btObs").addEventListener("click", function(){
-    $("taO").value = ""; $("editO").classList.add("on"); $("actesO").style.display = "none"; $("taO").focus();
+    $("g-nom").textContent = PATIENT.nom;
+    $("g-sortie").classList.remove("on");
+    $("g-txt").value = "";
+    $("guichet").classList.add("on");
+    setTimeout(function(){ $("g-txt").focus(); }, 260);
   });
-  $("btAnnulO").addEventListener("click", function(){
-    $("editO").classList.remove("on"); $("actesO").style.display = "";
+  $("g-annul").addEventListener("click", function(){ $("guichet").classList.remove("on"); });
+  $("g-dep").addEventListener("click", function(){
+    var txt = $("g-txt").value.trim();
+    if(txt){ fr.insertBefore(creerFrag({ t:txt, a:"moi", d:"aujourd’hui", ax:[] }), fr.firstChild); majLentille(); }
+    $("guichet").classList.remove("on");
   });
-  $("btDepO").addEventListener("click", function(){
-    var txt = $("taO").value.trim(); if(!txt) return;
-    fr.insertBefore(creerFrag({ t:txt, a:"moi", d:"aujourd’hui", ax:[] }), fr.firstChild);
-    $("editO").classList.remove("on"); $("actesO").style.display = "";
-    majLentille();   // la nouvelle carte respecte la lentille en cours
+  $("g-sans").addEventListener("click", function(){
+    $("g-sortie").classList.add("on"); $("g-date").value = ""; $("g-relais").focus();
   });
 
   /* La chaîne */
