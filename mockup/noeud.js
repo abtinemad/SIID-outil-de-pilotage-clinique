@@ -163,13 +163,13 @@ export function creerNoeud(svgEl, opts){
   var ondAmp=0, ondTarget=false;
   // ── VEILLEUSE (bilobe, en motion) : clic COURT → notif (cbEye) · clic LONG ≥500ms → oudjat (cbEyeLong). En reduce : clic direct oudjat (inchangé). ──
   var NT_LONG_MS=500, _ntTimer=0, _ntHandled=false, _ntDownXY=null;
-  var NT_REDRESSE_MS=0.5;   // oudjat 'on' : durée (unités de T) du redressement 180°→0° avant que la monture apparaisse
+  var NT_BOUNCE_DEG=8, NT_BOUNCE_MS=0.55;   // oudjat 'on' : petit rebond à l'ARRIVÉE du tour (ampleur °, durée) — un peu plus tenu
   var DASH_MODE=['compose','read','compose'];   // §19 : « deux lobes composent, un seul lit ». Le mode est la nature du lobe, non une humeur
                                                  // de l'œil : la lentille est l'organe de la seule Vigilante (idx1), pas un réglage disponible partout.
   var SCOUT={size:0.66, posX:-0.20, posY:0.02, dur:0.7, oriMin:-1, oriMax:12, montRest:-2, flipFrom:50};
   var scoutT=-9, wasScouting=false;   // mode DANS le lobe (§19, bloc B) : composer / lire. read=Vigilante = la boucle À DROITE (la plus grande, idx de tri 1 ; le tri top→droite→gauche interdit droite ET idx 2). Entrer dans le lobe read → scrutin (scouter).
   // ---- OUDJAT (2-lobes) : clic sur un lobe -> l'oeil parcourt le fil (sens selon le cote) -> la monture se pose ----
-  var OUDJAT={size:1.0, ori:0, orbitDur:1.6};   // se regle a l'oeil : size = echelle relative au globe ; ori = inclinaison ; orbitDur = duree du tour
+  var OUDJAT={size:1.0, ori:0, orbitDur:3.6};   // se regle a l'oeil : size = echelle relative au globe ; ori = inclinaison ; orbitDur = duree du tour (plus lente, solennelle)
   var oudjatPhase='off', oudjatT=-9, oudjatDir=1, oudjatStartIdx=0, oudjatOp=0, OUD_PUPX=737.5049, OUD_PUPY=693.7131;
   var FRQ=Math.round(0.2*N/TAU); // phase de frémissement périodique → le fil reste fermé au pixel près
 
@@ -218,7 +218,7 @@ export function creerNoeud(svgEl, opts){
     // OUDJAT - machine d'etat (2-lobes) : off -> orbit -> on ; quitter le 2-lobes reinitialise
     if(Math.round(currentS)!==0 && oudjatPhase!=='off') oudjatPhase='off';
     if(oudjatPhase==='orbit' && (T-oudjatT)>=OUDJAT.orbitDur){ oudjatPhase='on'; oudjatT=T; }
-    oudjatOp += (((oudjatPhase==='on' && (reduce || (T-oudjatT)>=NT_REDRESSE_MS))?1:0)-oudjatOp)*(reduce?1:0.14);   // monture APRÈS le redressement (reduce : immédiat, témoin sauf)
+    oudjatOp += (((oudjatPhase==='on')?1:0)-oudjatOp)*(reduce?1:0.14);   // la monture apparaît dès le début du redressement, s'aligne avec le fil
 
     // rotation continue 360° : le logo flotte, le sens n'importe pas tant que c'est cohérent
     var scouting = (Math.round(currentS)===1 && dashLobe>=0 && DASH_MODE[dashLobe]==='read' && !flipping);   // SCOUTER : entré dans la boucle Vigilante (read) → l'œil scrute, spin gelé (il se gare)
@@ -226,10 +226,15 @@ export function creerNoeud(svgEl, opts){
     if(oudjatPhase==='on'){ var _uT=Math.round(spinAcc/360)*360; spinAcc += (_uT-spinAcc)*0.06; }   // OUDJAT pose : la marque se redresse et se pose (repos)
     else if(!reduce && !interroLock && !scouting) spinAcc += 0.096;                            // 6°/s — gelé pendant l'interro OU le scrutin (l'œil s'arrête pour scruter)
     if(reduce){ spinDeg = 0; }                                           // témoin : inchangé
-    else if(Math.round(currentS)===0){                                    // BILOBE (veilleuse) : off au repos, DEMI-TOUR pendant l'oudjat
+    else if(Math.round(currentS)===0){                                    // BILOBE (veilleuse) : off au repos, TOUR COMPLET pendant l'oudjat
       if(oudjatPhase==='off') spinDeg = 0;
-      else if(oudjatPhase==='orbit') spinDeg = 180*smooth(Math.min(1,(T-oudjatT)/OUDJAT.orbitDur));  // rampe 0→180 pendant l'orbite
-      else spinDeg = 180*(1 - smooth(Math.min(1,(T-oudjatT)/NT_REDRESSE_MS)));   // 'on' : 180°→0°, le fil se REDRESSE (revient à l'endroit)
+      else if(oudjatPhase==='orbit'){ var _ot=Math.min(1,(T-oudjatT)/OUDJAT.orbitDur);
+        spinDeg = 360*(1-Math.pow(1-_ot,3)); }                                          // TOUR COMPLET 0→360, easeOut (ralentit à l'arrivée)
+      else { var _bt=(T-oudjatT);                                                       // 'on' = arrivée du tour : petit rebond puis blocage
+        spinDeg = (_bt<NT_BOUNCE_MS)
+          ? NT_BOUNCE_DEG*Math.sin(Math.PI*_bt/NT_BOUNCE_MS)*(1-_bt/NT_BOUNCE_MS)       // rebond amorti : petit dépassement (au-delà de 360) puis retour
+          : 0;                                                                          // BLOCAGE horizontal (0 = 360)
+      }
     } else { spinDeg = spinAcc%360; }                                     // currentS>0 : inchangé
     var spinRad=spinDeg*Math.PI/180;
     // direction de visée UNIQUE (partagée par le bec du fil et la lumière du reflet) :
