@@ -76,11 +76,18 @@
   .loupe:hover{background:rgba(255,255,255,.82)}
   .loupe svg{width:20px;height:20px;display:block}
   .tel:has(#fente:not(.ferme)) .loupe{display:none}   /* fente déployée → la loupe s'efface (repli auto) */
-  .fente.ferme{opacity:0;transform:scaleX(.02);pointer-events:none}
+  /* la bulle-micro : pastille SŒUR de la loupe, révélée quand un patient est tenu (dépôt d'observation) */
+  .micro{flex:0 0 auto;width:46px;height:46px;border-radius:23px;background:rgba(255,255,255,.6);
+         border:1px solid var(--faint);display:flex;align-items:center;justify-content:center;
+         cursor:pointer;pointer-events:auto;transition:background .15s}
+  .micro:hover{background:rgba(255,255,255,.82)}
+  .micro svg{width:20px;height:20px;display:block}
+  .micro.off{display:none}
+  .fente.ferme{opacity:0;transform:scaleX(.02);pointer-events:none;flex:0 0 0;min-width:0;padding:0;border-width:0;overflow:hidden}   /* fermée : ne prend AUCUNE place (sinon elle pousse le nom tenu hors cadre) */
   .tenu{flex:1;font-family:var(--prose);font-weight:700;font-size:16px;line-height:1.2}
   .tenu small{display:block;font-family:var(--word);font-weight:400;font-size:11.5px;color:var(--ink-soft)}
   .tenu.off{display:none}
-  .onde{position:absolute;top:44px;right:84px;width:84px;height:40px;display:flex;align-items:center;
+  .onde{position:absolute;bottom:80px;right:16px;width:130px;height:40px;display:flex;align-items:center;
         gap:3px;opacity:0;pointer-events:none;transition:opacity .18s}
   .onde.on{opacity:1}
   .onde i{width:3px;background:var(--red);border-radius:2px;animation:o 1.05s ease-in-out infinite}
@@ -173,6 +180,9 @@
   <div class="barre">
     <button class="loupe" id="loupe" type="button" aria-label="rechercher" title="rechercher">
       <svg viewBox="0 0 20 20" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round"><circle cx="8.4" cy="8.4" r="5.2"/><path d="M12.4 12.4 L17 17"/></svg>
+    </button>
+    <button class="micro off" id="micro" type="button" aria-label="déposer une observation" title="dépose une observation · appui long : dictée">
+      <svg viewBox="0 0 20 20" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7.3" y="2.6" width="5.4" height="9" rx="2.7"/><path d="M4.8 9.2a5.2 5.2 0 0 0 10.4 0"/><path d="M10 14.4L10 17.4M7 17.4L13 17.4"/></svg>
     </button>
     <div class="fente ferme" id="fente"><input id="q" placeholder="un nom, un IPP" autocomplete="off"><button class="fx" id="fx" type="button" aria-label="fermer la recherche">×</button></div>
     <div class="tenu off" id="tenu"></div>
@@ -525,20 +535,20 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   /* ══ tenir un patient · le guichet ════════════════════════════════════════ */
   var fente=document.getElementById("fente"), q=document.getElementById("q"),
       onde=document.getElementById("onde"), noeud=document.getElementById("noeud"),
-      tenu=document.getElementById("tenu"), guichet=document.getElementById("guichet");
+      tenu=document.getElementById("tenu"), guichet=document.getElementById("guichet"),
+      micro=document.getElementById("micro");
   for(k=0;k<18;k++){ var o=document.createElement("i"); o.style.animationDelay=(k*0.06)+"s"; onde.appendChild(o); }
 
   function tenir(i){
     tenuIdx=i;                                              /* le nœud reste figé en bilobe (s=0) */
-    fente.classList.add("ferme"); tenu.classList.remove("off");
-    tenu.innerHTML = esc(FILE[i].n)+"<small>touche le nœud pour déposer</small>";
+    fente.classList.add("ferme"); tenu.classList.remove("off"); micro.classList.remove("off");   // révèle la bulle-micro
+    tenu.innerHTML = esc(FILE[i].n)+"<small>dépose une observation</small>";
     dessineListe("");
   }
-  function lacher(){ tenuIdx=-1; tenu.classList.add("off"); dessineListe(""); }
+  function lacher(){ tenuIdx=-1; tenu.classList.add("off"); micro.classList.add("off"); dessineListe(""); }
 
   function ouvrirGuichet(){
-    if(tenuIdx<0){ fente.classList.contains("ferme") ? (fente.classList.remove("ferme"), q.focus())
-                                                     : (fente.classList.add("ferme"), q.value="", dessineListe("")); return; }
+    if(tenuIdx<0) return;                                    // la bulle-micro n'existe que patient tenu (la recherche, c'est la loupe)
     document.getElementById("g-nom").textContent = FILE[tenuIdx].n;
     document.getElementById("g-sortie").classList.remove("on");
     document.getElementById("g-txt").value="";
@@ -552,28 +562,21 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   });
 
   var clarte=document.getElementById("clarte"), eyePos=[CX,CY];
-  function surOeil(ev){
-    var r=knot.getBoundingClientRect(), vb=knot.getAttribute("viewBox").split(" ").map(Number);
-    var px=vb[0]+(ev.clientX-r.left)/r.width*vb[2], py=vb[1]+(ev.clientY-r.top)/r.height*vb[3];
-    return Math.hypot(px-eyePos[0], py-eyePos[1]) < 26;    /* la poignée : autour de l'œil */
-  }
-  var pressT=0,longT=null,parle=false,clicT=0,oeil=false;
+  var longT=null, parle=false, clicT=0;
   function voixOn(){ parle=true; onde.classList.add("on"); fente.classList.add("ferme"); }
   function voixOff(){ parle=false; onde.classList.remove("on"); }
-  noeud.addEventListener("pointerdown", function(ev){
-    oeil=surOeil(ev); pressT=Date.now();
-    if(oeil) longT=setTimeout(voixOn,420);                  /* la voix n'appartient qu'à l'œil */
-  });
+
+  // ── LE NŒUD est une veilleuse : il signale, il n'agit plus. Seule la double-touche montre sa légende. ──
   noeud.addEventListener("pointerup", function(){
-    clearTimeout(longT);
-    if(parle){ voixOff(); return; }
-    if(!oeil) return;                                       /* nœud figé : une boucle ne fait rien (plus de morph) */
     var now=Date.now();
     if(now-clicT<280){ clarte.classList.add("on"); clicT=0; return; }   /* double-touche : la clarté */
-    clicT=now;
-    setTimeout(function(){ if(clicT===0) return; if(now-pressT<420) ouvrirGuichet(); clicT=0; },290);
+    clicT=now;                                                          /* simple tap : inerte (la veilleuse ne fait que signaler) */
   });
-  noeud.addEventListener("pointerleave", function(){ clearTimeout(longT); if(parle) voixOff(); });
+
+  // ── LA BULLE-MICRO porte le dépôt (sorti du nœud) : tap court → guichet du patient tenu ; appui long → dictée. ──
+  micro.addEventListener("pointerdown", function(){ longT=setTimeout(voixOn,420); });
+  micro.addEventListener("pointerup", function(){ clearTimeout(longT); if(parle){ voixOff(); return; } ouvrirGuichet(); });
+  micro.addEventListener("pointerleave", function(){ clearTimeout(longT); if(parle) voixOff(); });
   clarte.addEventListener("click", function(){ clarte.classList.remove("on"); });
 
   q.addEventListener("input", function(){ dessineListe(q.value); });
