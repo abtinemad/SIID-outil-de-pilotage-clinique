@@ -120,7 +120,7 @@ export function creerNoeud(svgEl, opts){
     }
   }
   var ptRad=8.5, pupR=3, blinkStart=-99, blinkDur=0.3, nextBlink=2.5, pupFade=1;
-  var wFixed=12, wData=10, EYE=2.5, eyeK=1, clickPulse=0; // épaisseur fixe / données ; œil neutre + dynamique
+  var wFixed=(opts.epaisseur != null) ? opts.epaisseur : 12, wData=10, EYE=(opts.eye != null) ? opts.eye : 2.5, eyeK=1, clickPulse=0; // épaisseur fixe (opts.epaisseur) / données ; œil neutre (opts.eye) + dynamique
   var irisThick=0.5, eyeX=0, eyeY=0, eyePlaced=false;   // iris (socle 0.5, figé) ; position lissée de l'œil (anti-téléportation)
   var eyeState='repos', eyeStateT=0, pupDil=0, glowS=1, bounceT=-9, bounceDur=1.3, gestType='none', spinAcc=0, interroNode=-1;   // SIGNALÉTIQUE VIGIE : état tenu + geste ponctuel + accumulateur de spin (gelable) + nœud d'accroche interro
   var flipping=false, flipStart=0, flipDur=1.7, flipAxis=0, inspFade=0, lastInter=0, IDLE_IN=14;  // retournement (2 tours) + inspection (boucle tenue) + horloge d'inactivite
@@ -194,7 +194,6 @@ export function creerNoeud(svgEl, opts){
     if(ptParked!==null && ptParked<nodes.length) return nodes[ptParked];
     if(Math.round(currentS)===1) return (dashLobe>=0 ? dashBary(dashLobe) : [CX,CY]);   // DASHBOARD (Vigie) : au CENTRE il veille (méta) ; entré dans une boucle, il se tient au barycentre du lobe
     if(reduce) return nodes[0];
-    if(Math.round(currentS)===0) return nodes[0];   // bilobe : œil statique (veilleuse) — inchangé
     var lp=livePts(), M=lp.length;                   // l'œil parcourt TOUT le fil, pas seulement la portion centrale entre les nœuds
     hop += HOP_FIL;
     var f=(hop%1)*M, i=Math.floor(f)%M, t=smooth(f-i), j=(i+1)%M;
@@ -222,7 +221,7 @@ export function creerNoeud(svgEl, opts){
     var interroLock = (Math.round(currentS)===1 && eyeState==='interro' && !flipping);   // INTERRO (démo atelier) : on fige le nœud et on accroche l'œil dessus
     if(oudjatPhase==='on'){ var _uT=Math.round(spinAcc/360)*360; spinAcc += (_uT-spinAcc)*0.06; }   // OUDJAT pose : la marque se redresse et se pose (repos)
     else if(!reduce && !interroLock && !scouting) spinAcc += 0.096;                            // 6°/s — gelé pendant l'interro OU le scrutin (l'œil s'arrête pour scruter)
-    spinDeg = reduce?0:(spinAcc%360); var spinRad=spinDeg*Math.PI/180;
+    spinDeg = (reduce || Math.round(currentS)===0) ? 0 : (spinAcc%360); var spinRad=spinDeg*Math.PI/180;   // veilleuse : le fil ne tourne pas
     // direction de visée UNIQUE (partagée par le bec du fil et la lumière du reflet) :
     // suit la souris si le pointeur survole, sinon revient au bec réglé + dérive douce.
     var aimTarget = pointerActive ? cursorAngle : (nibBase + (reduce?0:0.30*Math.sin(T*0.13)));

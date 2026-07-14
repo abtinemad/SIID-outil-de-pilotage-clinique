@@ -375,9 +375,7 @@ import { creerNoeud } from '../noeud.js';
   if(qn){ PATIENT.nom = qn; $("nom").textContent = qn; $("usage").textContent = ""; $("admin").innerHTML = "—"; $("contacts").innerHTML = "—"; }
 
   /* Le vrai nœud — module partagé, sur sa propre forme (creerForme) */
-  var noeud = creerNoeud(document.getElementById('knot'), {
-    encre: getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()
-  });
+  var noeud = creerNoeud(document.getElementById('knot'), {});   // couleur défaut du module (#1F222A)
 
   /* La lentille : le nœud émet l'axe tenu (onLobe), la page trie les observations.
      Le module gère le toggle (re-clic sur la même boucle → index = -1 = relâché). */

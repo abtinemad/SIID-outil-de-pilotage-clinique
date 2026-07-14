@@ -449,7 +449,7 @@ var encre = getComputedStyle(document.documentElement).getPropertyValue('--ink')
   // la veilleuse est l'ŒIL ORIGINEL du module (regard, clignement, sphère 3D), gelée en bilobe.
   // (l'ancien rendu page-side de l'œil — notif/attente/dictée — a été retiré au pas 1b.)
   var noeud = creerNoeud(document.getElementById('knot'),
-    { labels:false, encre: getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() });
+    { labels:false, eye:3, epaisseur:16 });   // œil plus gros (8.5×3≈25) · fil plus épais (16) · couleur défaut du module (#1F222A)
   noeud.setStrate(0);   // bilobe (veilleuse) — pas de morph, l'œil vit dessus
   // DÉMO (maquette) : « n » rejoue le TOUR de notif (porté dans le module) ; « c » CONSULTE (retour repos).
   document.addEventListener("keydown", function(e){
