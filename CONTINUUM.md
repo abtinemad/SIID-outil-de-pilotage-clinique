@@ -994,7 +994,7 @@ possible ; découper au scalpel une phrase qui noue la sœur et le chômage, c'e
 ce qu'elle peut recalculer.* Rien n'est gravé, donc rien n'est faux pour toujours — on relance, le
 rangement change. Une erreur de rangement ne coûte rien, puisque **tout reparaît dans le pentalobe**
 de toute façon. C'est pourquoi on ne demande **aucune validation** au soignant : il écrit, ça
-s'écrit. Ce qu'**aucun** fragment ne recouvre va à la Vigilante, montré, jamais commenté.
+s'écrit. Ce qu'**aucun** fragment ne recouvre va à la Vigilante — **l'oublié, ce qui est resté dehors** : montré, et **nommé au tentatif**.
 
 *Conséquence géométrique* : une boucle grossit du **volume de fragments** rangés sur son axe, et
 « sa sœur, depuis qu'il ne travaille plus » est **un** croisement, non deux cases cochées.
