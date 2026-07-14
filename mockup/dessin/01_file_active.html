@@ -372,7 +372,7 @@ var encre = getComputedStyle(document.documentElement).getPropertyValue('--ink')
     var L=document.getElementById("liste");
     L.innerHTML = h || '<div class="lig"><span class="nom">personne</span></div>';
     [].slice.call(L.querySelectorAll(".lig[data-i]")).forEach(function(el){
-      el.addEventListener("click", function(){ (+el.dataset.i===tenuIdx) ? lacher() : tenir(+el.dataset.i); });   // re-clic sur le tenu → on lâche
+      el.addEventListener("click", function(){ var i=+el.dataset.i; if(i===tenuIdx){ location.href="02_intra_patient.html?p="+i; } else { tenir(i); } });   // 1er clic : tenir · re-clic : entrer dans l'intra-patient
     });
   }
   ["amb","hosp","dem"].forEach(function(t){
@@ -498,7 +498,7 @@ var encre = getComputedStyle(document.documentElement).getPropertyValue('--ink')
   function tenir(i){
     tenuIdx=i;                                              /* le nœud reste figé en bilobe (s=0) */
     fente.classList.add("ferme"); tenu.classList.remove("off"); micro.classList.remove("off");   // révèle la bulle-micro
-    tenu.innerHTML = esc(FILE[i].n)+"<small>tape le micro pour dicter</small>";
+    tenu.innerHTML = esc(FILE[i].n)+"<small>tape le micro pour dicter · re-clique pour entrer</small>";
     dessineListe("");
   }
   function lacher(){ if(parle) voixOff(); tenuIdx=-1; tenu.classList.add("off"); micro.classList.add("off"); dessineListe(""); }   // lâcher coupe la dictée en cours
