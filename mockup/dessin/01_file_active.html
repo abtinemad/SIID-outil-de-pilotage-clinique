@@ -143,7 +143,6 @@
         <g id="grp">
           <g mask="url(#cut)"><path id="fil2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g>
           <g id="overs"></g>
-          <g id="vu"></g>
           <g id="eyeG"><circle id="ptHalo" fill="#E9ECEF"/><circle id="pt" r="8.5"/><circle id="ptPup"/><circle id="ptCatch" fill="#F4F1EC"/></g>
         </g>
       </svg>
@@ -409,21 +408,14 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   var ATT_FLASH_MS=1800;            // attente : période du flash
   var FREMI_AMP=1.2, FREMI_HZ=13;   // attente : frémi (px, Hz) — petit tremblement, pas le bounce
   var RETOUR_MS=5000;               // attente : re-joue le tour tout seul (~5 s), jusqu'à consultation
-  var OND_AMP=0.06, OND_EASE=0.12, ondAmp=0;   // DICTÉE : amplitude (gate) de l'égaliseur, adoucie sur parle
-  var VU_N=16, VU_W=8, VU_LEN=40, VU_COL="#B0212F", VU_SPD_MIN=3.5, VU_SPD_MAX=8.5;   // ÉGALISEUR : nb de barres · épaisseur · longueur max · rouge · plage de fréquences par barre (désordre) — grossi pour être lisible à 66 px
+  var OND_AMP=0.09, OND_HZ=9, OND_ONDES=11, OND_EASE=0.12, ondAmp=0;   // DICTÉE : vagues sur le ∞ — amplitude · vitesse de défilement · nb de crêtes autour du ∞ · douceur (gate sur parle)
   var eyeState="repos", notifT0=0, NOTIF_MS=1600, ePhase=0, attenteT0=0, notifStartXY=[CX,CY], eyeUnder=false;
   var grp=document.getElementById("grp"), eyeG=document.getElementById("eyeG");
-  // égaliseur : pool de barres <line> dans #vu (sous l'œil, sur le fil) ; phase + fréquence FIXES par barre (désordre, nombre d'or)
-  var vuG=document.getElementById("vu"), vuL=[], vuPh=[], vuSpd=[];
-  for(k=0;k<VU_N;k++){ var _vl=document.createElementNS(NS,"line");
-    _vl.setAttribute("stroke",VU_COL); _vl.setAttribute("stroke-linecap","round"); _vl.setAttribute("stroke-width",VU_W);
-    vuG.appendChild(_vl); vuL.push(_vl);
-    vuPh.push(k*2.399); var _g=k*0.6180339; _g-=Math.floor(_g); vuSpd.push(VU_SPD_MIN+(VU_SPD_MAX-VU_SPD_MIN)*_g); }
   function lancerTour(){ eyeState="notif"; notifT0=Date.now(); notifStartXY=(eyePos||[CX,CY]).slice(); }   // depuis repos (n) ou re-tour d'attente
   function setUnder(u){ if(u!==eyeUnder){ if(u) grp.insertBefore(eyeG, grp.firstChild); else grp.insertBefore(eyeG, oversG.nextSibling); eyeUnder=u; } }   // z : sous le fil / par-dessus (module L280)
   function consulter(){ eyeState="repos"; pt.style.filter=""; setUnder(false); }   // effacer la notif → repos, filtre nettoyé, œil par-dessus
   function livePts2(){ var P=shapeAt(currentS), pu=1+0.012*Math.sin(T*1.4), o=[],i;
-    for(i=0;i<P.length;i++){ var x=P[i][0]-CX,y=P[i][1]-CY,fr=1+0.010*Math.sin(T*2.1+i*TAU*FRQ2/N);
+    for(i=0;i<P.length;i++){ var x=P[i][0]-CX,y=P[i][1]-CY,fr=1+0.010*Math.sin(T*2.1+i*TAU*FRQ2/N) + ondAmp*Math.sin(T*OND_HZ + i*OND_ONDES*TAU/N);
       x*=fr;y*=fr;o.push([CX+x*pu,CY+y*pu]); } return o; }
   function nodesic2(){ var nd=nodesAt(currentS), pu=1+0.012*Math.sin(T*1.4), o=[],i;
     for(i=0;i<nd.length;i++) o.push([CX+(nd[i][0]-CX)*pu, CY+(nd[i][1]-CY)*pu]); return o; }
@@ -485,17 +477,6 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
     pt.setAttribute("cx",e[0]);pt.setAttribute("cy",e[1]);pt.setAttribute("r",r.toFixed(1));pt.setAttribute("fill","url(#ptSphere)");
     ptPup.setAttribute("cx",e[0]);ptPup.setAttribute("cy",e[1]);ptPup.setAttribute("r",(r*0.36).toFixed(1));ptPup.setAttribute("fill",INK);
     ptCatch.setAttribute("cx",(e[0]-r*0.34).toFixed(1));ptCatch.setAttribute("cy",(e[1]-r*0.4).toFixed(1));ptCatch.setAttribute("r",(r*0.36*0.34).toFixed(1));
-    // ── ÉGALISEUR : barres rouges perpendiculaires au fil, réparties le long du ∞, gated sur ondAmp (dictée) ──
-    var vuGate = ondAmp/OND_AMP;                                      // 0 au repos → 1 en dictée (l'easing d'ondAmp est conservé)
-    for(k=0;k<VU_N;k++){ var _vl2=vuL[k];
-      if(vuGate<0.02){ _vl2.style.display="none"; continue; }          // repos : rien ne dépasse du fil
-      var _pi=Math.round(k*n/VU_N)%n, _p=lp[_pi], _q=lp[(_pi+1)%n];    // ancrage réparti + tangente
-      var _nx=-(_q[1]-_p[1]), _ny=(_q[0]-_p[0]), _nl=Math.hypot(_nx,_ny)||1; _nx/=_nl; _ny/=_nl;   // normale au fil
-      if(_nx*(_p[0]-CX)+_ny*(_p[1]-CY)<0){ _nx=-_nx; _ny=-_ny; }       // signe → SORTANTE (vers l'extérieur)
-      var _h=vuGate*VU_LEN*(0.28+0.72*(0.5+0.5*Math.sin(T*vuSpd[k]+vuPh[k])));   // hauteur : rebond propre à la barre
-      _vl2.setAttribute("x1",_p[0].toFixed(1)); _vl2.setAttribute("y1",_p[1].toFixed(1));
-      _vl2.setAttribute("x2",(_p[0]+_nx*_h).toFixed(1)); _vl2.setAttribute("y2",(_p[1]+_ny*_h).toFixed(1));
-      _vl2.style.display=""; }
     requestAnimationFrame(render2);
   }
   function cadre(){ var P=shapeAt(targetS),x0=1e9,y0=1e9,x1=-1e9,y1=-1e9,i;
