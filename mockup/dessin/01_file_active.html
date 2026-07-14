@@ -408,7 +408,7 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   var ATT_FLASH_MS=1800;            // attente : période du flash
   var FREMI_AMP=1.2, FREMI_HZ=13;   // attente : frémi (px, Hz) — petit tremblement, pas le bounce
   var RETOUR_MS=5000;               // attente : re-joue le tour tout seul (~5 s), jusqu'à consultation
-  var OND_AMP=0.09, OND_HZ=9, OND_ONDES=11, OND_EASE=0.12, ondAmp=0;   // DICTÉE : vagues sur le ∞ — amplitude · vitesse de défilement · nb de crêtes autour du ∞ · douceur (gate sur parle)
+  var OND_AMP=0.09, OND_HZ=9, OND_ONDES=16, OND_EASE=0.12, ondAmp=0;   // DICTÉE : vagues sur le ∞ — amplitude · vitesse de défilement · nb de crêtes autour du ∞ · douceur (gate sur parle)
   var eyeState="repos", notifT0=0, NOTIF_MS=1600, ePhase=0, attenteT0=0, notifStartXY=[CX,CY], eyeUnder=false;
   var grp=document.getElementById("grp"), eyeG=document.getElementById("eyeG");
   function lancerTour(){ eyeState="notif"; notifT0=Date.now(); notifStartXY=(eyePos||[CX,CY]).slice(); }   // depuis repos (n) ou re-tour d'attente
