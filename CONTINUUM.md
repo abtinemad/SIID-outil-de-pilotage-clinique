@@ -927,9 +927,10 @@ reproduire dans le remède la maladie qu'on prétend soigner.
    l'environnement, il ne rend pas de jugement. La machine qui score ne fait jamais face au
    soignant ; la surface qui fait face ne score jamais.
 2. **Le chiffrement phénoménologique.** La Vigie montre la lumière — présence, distribution,
-   densité — mais **ne nomme pas à la place**. Le nom d'une chose reste chiffré tant qu'on ne
-   l'a pas traversée soi-même : on ne lit que ce qu'on a vécu en conscience. Elle déplace la
-   lumière ; elle laisse lire.
+   densité — et peut *proposer* un nom, tenu au tentatif et porté par le recul de l'agrégat ; elle ne
+   le **fige** pas à la place. Le nom *décidé* reste chiffré tant qu'on ne l'a pas traversé
+   soi-même : on ne lit que ce qu'on a vécu en conscience. Elle déplace la lumière et peut
+   l'esquisser ; elle laisse lire.
 
 Trois invariants tiennent ces mécanismes : la **mesure auto-effaçante** (elle crédite ce que
 le soignant fait, jamais ce qu'elle a suggéré de regarder — elle ne compte pas sa propre
@@ -1037,9 +1038,13 @@ récolté. Guichet des **coordinateurs**, en **synthèse collective signée**. T
   clôture prématurée** et signalerait comme fautive la lecture juste, restée inconfortable. Elle ne
   demande donc pas « est-ce cohérent ? » mais montre ce qui est resté dehors — sans le nommer.
 
-  **Le nom reste chiffré.** Elle dit ce que les mots *font*, jamais ce qu'ils veulent dire (« trois
-  notes disent la porte fermée, une dit la peur » — jamais « il y a de l'évitement »). Le mot
-  clinique est celui que le collège pose. **Tirée, jamais poussée** : elle est là, on la consulte ;
+  **Le nom reste chiffré — l'interdit est le verdict, pas le nom.** Par défaut elle dit ce que
+  les mots *font*, jamais ce qu'ils veulent dire (« trois notes disent la porte fermée, une dit
+  la peur »). Nommer le vécu — « de l'évitement ? » — ne lui est permis que **tenu au tentatif et
+  porté par un faisceau large** (le recul de l'agrégat, jamais un mot planté sur un fragment
+  isolé) : elle le *propose*, elle ne l'*affirme* pas. L'interdit, c'est de **figer** — « il y a
+  de l'évitement » comme fait établi. Le mot clinique décidé reste celui que le collège pose ; le
+  nom demeure chiffré tant que le collège ne l'a pas traversé. **Tirée, jamais poussée** : elle est là, on la consulte ;
   elle ne surgit pas pendant qu'on cherche ses mots. C'est ici que l'œil chausse la lentille (§19), et que joue sa fonction d'angle
   mort (il élargit vers le non-regardé, il ne détourne jamais du vif).
 
@@ -1200,7 +1205,7 @@ pensée.)*
   note. Le Lien n'en est pas un — scellé, anonyme, sans score, lu du dedans
   seulement : structurellement incapable de surveiller. L'interdit vise le surplomb, jamais le
   miroir horizontal qu'on rejoint.
-- Elle ne nomme jamais l'intérieur à la place de qui que ce soit.
+- Elle ne **fige** jamais un nom en verdict à la place de qui que ce soit — ni ne plante un mot définitif sur un fragment isolé. (Nommer au tentatif, porté par le recul, reste permis ; trancher, non.)
 
 ---
 
