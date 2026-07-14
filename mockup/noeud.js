@@ -161,6 +161,8 @@ export function creerNoeud(svgEl, opts){
   // ── DICTÉE (porté de la veilleuse page-side · pas 2b) : vagues TRANSVERSES, pilotées par l'API (aucun gating de strate). ──
   var OND_AMP=14, OND_HZ=9, OND_ONDES=16, OND_EASE=0.12;   // amplitude (unités) · vitesse · nb de crêtes · douceur (ease du gate 0→1)
   var ondAmp=0, ondTarget=false;
+  // ── VEILLEUSE (bilobe, en motion) : clic COURT → notif (cbEye) · clic LONG ≥500ms → oudjat (cbEyeLong). En reduce : clic direct oudjat (inchangé). ──
+  var NT_LONG_MS=500, _ntTimer=0, _ntHandled=false, _ntDownXY=null;
   var DASH_MODE=['compose','read','compose'];   // §19 : « deux lobes composent, un seul lit ». Le mode est la nature du lobe, non une humeur
                                                  // de l'œil : la lentille est l'organe de la seule Vigilante (idx1), pas un réglage disponible partout.
   var SCOUT={size:0.66, posX:-0.20, posY:0.02, dur:0.7, oriMin:-1, oriMax:12, montRest:-2, flipFrom:50};
@@ -526,25 +528,29 @@ export function creerNoeud(svgEl, opts){
 
     rafId = requestAnimationFrame(render);
   }
+  // 2-LOBES : le toggle oudjat (orbite → pose ; re-appui → la monture se lève), EXTRAIT pour être réutilisé par le long-press.
+  function _oudjatToggle(e){
+    var _r=svgEl.getBoundingClientRect();
+    var _mx=(e.clientX-_r.left)/_r.width*420, _my=(e.clientY-_r.top)/_r.height*420;
+    var _sr=spinDeg*Math.PI/180, _cc=Math.cos(-_sr), _ss=Math.sin(-_sr), _dx=_mx-CX, _dy=_my-CY;
+    _mx=CX+_dx*_cc-_dy*_ss; _my=CY+_dx*_ss+_dy*_cc;                     // de-rotation du spin
+    var _side=(_mx < (CX-10))?-1:1;                                     // < croisement (CX-10) = lobe gauche (C) ; sinon lobe droit (O)
+    if(oudjatPhase==='off'){
+      var _lp=livePts(), _nd=(nodesic()[0]||[CX,CY]), _bi=0, _bd=1e9;
+      for(var _i=0;_i<_lp.length;_i++){ var _ex=_lp[_i][0]-_nd[0], _ey=_lp[_i][1]-_nd[1], _d2=_ex*_ex+_ey*_ey; if(_d2<_bd){_bd=_d2;_bi=_i;} }
+      var _tx=_lp[(_bi+1)%_lp.length][0]-_lp[_bi][0];                   // tangente.x au point de depart
+      oudjatDir=(_side>0)?(_tx>=0?1:-1):(_tx>=0?-1:1);                  // partir VERS le lobe clique -> droite/gauche = sens opposes
+      oudjatStartIdx=_bi; oudjatPhase='orbit'; oudjatT=T;
+    } else { oudjatPhase='off'; oudjatT=T; }
+  }
   svgEl.addEventListener("click",function(e){
-    blinkStart=T; clickPulse=0.15; lastInter=T; // clin d'œil + petit sursaut vivant quand on touche le regard
-    // 2-LOBES : clic sur un lobe -> orbite (sens selon le cote) puis pose de l'oudjat ; re-clic -> la monture se leve. (Pas de flip ici.)
+    lastInter=T;
+    // 2-LOBES (veilleuse) : en MOTION, le pointer gère (clic court=notif / long=oudjat). En REDUCE, raccourci direct (inchangé, témoin sauf).
     if(Math.round(currentS)===0){
-      var _r=svgEl.getBoundingClientRect();
-      var _mx=(e.clientX-_r.left)/_r.width*420, _my=(e.clientY-_r.top)/_r.height*420;
-      var _sr=spinDeg*Math.PI/180, _cc=Math.cos(-_sr), _ss=Math.sin(-_sr), _dx=_mx-CX, _dy=_my-CY;
-      _mx=CX+_dx*_cc-_dy*_ss; _my=CY+_dx*_ss+_dy*_cc;                     // de-rotation du spin
-      var _side=(_mx < (CX-10))?-1:1;                                     // < croisement (CX-10) = lobe gauche (C) ; sinon lobe droit (O)
-      if(oudjatPhase==='off'){
-        if(reduce){ oudjatPhase='on'; oudjatT=T; return; }
-        var _lp=livePts(), _nd=(nodesic()[0]||[CX,CY]), _bi=0, _bd=1e9;
-        for(var _i=0;_i<_lp.length;_i++){ var _ex=_lp[_i][0]-_nd[0], _ey=_lp[_i][1]-_nd[1], _d2=_ex*_ex+_ey*_ey; if(_d2<_bd){_bd=_d2;_bi=_i;} }
-        var _tx=_lp[(_bi+1)%_lp.length][0]-_lp[_bi][0];                   // tangente.x au point de depart
-        oudjatDir=(_side>0)?(_tx>=0?1:-1):(_tx>=0?-1:1);                  // partir VERS le lobe clique -> droite/gauche = sens opposes
-        oudjatStartIdx=_bi; oudjatPhase='orbit'; oudjatT=T;
-      } else { oudjatPhase='off'; oudjatT=T; }
+      if(reduce){ blinkStart=T; clickPulse=0.15; if(oudjatPhase==='off'){ oudjatPhase='on'; oudjatT=T; } else { oudjatPhase='off'; oudjatT=T; } }
       return;
     }
+    blinkStart=T; clickPulse=0.15; // clin d'œil + petit sursaut vivant quand on touche le regard (pentalobe/trilobe)
     if(!reduce){ flipping=true; flipStart=T; flipAxis=Math.random()*2*Math.PI; }   // le clic fait tournoyer l'œil (sens aléatoire) — TOUTES les vues
     if(forme.lobeCount(currentS)<3) return;            // interface (2 lobes) : rien à viser
     var r=svgEl.getBoundingClientRect();
@@ -574,6 +580,27 @@ export function creerNoeud(svgEl, opts){
     ptParked=(ptParked===best)?null:best;        // PATIENT : l'œil se pose sur le nœud (bord), lecture du fil
     var _pb = ptParked!==null ? buildDuNoeud(ptParked) : -1;
     cbLobe(_pb, _pb>=0 ? axeDuBuild(_pb) : null);
+  });
+  // ── VEILLEUSE (bilobe, en MOTION) : clic COURT (notif) vs LONG ≥500ms (oudjat). N'agit QUE sur le bilobe non-reduce ; le "click" ci-dessus gère le reste. ──
+  svgEl.addEventListener("pointerdown",function(e){
+    if(Math.round(currentS)!==0 || reduce) return;                 // seulement bilobe en motion
+    blinkStart=T; clickPulse=0.15; lastInter=T;                    // clin d'œil + sursaut au CONTACT
+    _ntHandled=false; _ntDownXY=[e.clientX,e.clientY];
+    var _ex=e.clientX, _ey=e.clientY;                              // capture pour le timer
+    if(_ntTimer) clearTimeout(_ntTimer);
+    _ntTimer=setTimeout(function(){ _ntTimer=0;
+      if(Math.round(currentS)===0 && !reduce){ _oudjatToggle({clientX:_ex,clientY:_ey}); cbEyeLong(); _ntHandled=true; }   // LONG → oudjat (+ hook page pour plus tard)
+    }, NT_LONG_MS);
+  });
+  svgEl.addEventListener("pointermove",function(e){
+    if(!_ntTimer || !_ntDownXY) return;
+    if(Math.hypot(e.clientX-_ntDownXY[0], e.clientY-_ntDownXY[1])>10){ clearTimeout(_ntTimer); _ntTimer=0; _ntHandled=true; }   // drag → annule (ni court ni long)
+  });
+  svgEl.addEventListener("pointerup",function(e){
+    if(Math.round(currentS)!==0 || reduce) return;
+    if(_ntTimer){ clearTimeout(_ntTimer); _ntTimer=0; }
+    if(!_ntHandled){ cbEye(); }                                    // COURT → notif (la page câble consulter)
+    _ntHandled=false;
   });
   // la souris pilote la direction de visée (regard + bec + lumière) quand elle survole le nœud
   svgEl.addEventListener("mousemove",function(e){
