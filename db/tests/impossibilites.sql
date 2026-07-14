@@ -19,8 +19,8 @@
 -- impossibilités ci-dessus sont **les bonnes**, et non l'ombre d'une panne.
 --
 -- Cinq gestes de plus doivent réussir — non pour garder une impossibilité, mais pour
--- **prouver le trio additif** (geste_id, fil, natures rendez_vous/relais, commit 0666778) :
--- une valeur présente dans la grammaire mais jamais déposée n'est pas prouvée. Un rendez-vous
+-- **prouver le trio additif** (geste_id, fil, natures jalon/relais, commit 0666778) :
+-- une valeur présente dans la grammaire mais jamais déposée n'est pas prouvée. Un jalon
 -- se pose et se lève, deux dépôts d'un même geste partagent l'agrafe, un fil 'soin' passe, un
 -- relais ferme par un nom.
 --
@@ -342,30 +342,30 @@ SELECT test.doit_reussir(
 
 -- ══════════════════════════════════════════════════════════════════════════════
 --  CINQ GESTES QUI PROUVENT LE TRIO ADDITIF
---  geste_id, fil, natures rendez_vous/relais : présents dans la grammaire (commit 0666778),
+--  geste_id, fil, natures jalon/relais : présents dans la grammaire (commit 0666778),
 --  jamais encore déposés. Un ajout non exercé n'est pas prouvé — c'est le trou du tour précédent,
 --  déplacé d'un cran. On le ferme ici, par des dépôts réels.
 -- ══════════════════════════════════════════════════════════════════════════════
 
--- Un rendez-vous se pose. Nature neuve, `contenu` requis comme partout, aucune
+-- Un jalon se pose. Nature neuve, `contenu` requis comme partout, aucune
 -- position, aucun nombre. L'id est figé : le report qui suit le vise.
 SELECT test.doit_reussir(
-  'un rendez-vous se dépose',
+  'un jalon se dépose',
   'continuum_soignant',
   $$INSERT INTO depot.depots (id, ipp, auteur_id, cadre, nature, contenu)
     VALUES ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','IPP-TEST-001',
-            '11111111-1111-1111-1111-111111111111','seul','rendez_vous','Revu le 24 mars.')$$,
+            '11111111-1111-1111-1111-111111111111','seul','jalon','Revu le 24 mars.')$$,
   '11111111-1111-1111-1111-111111111111');
 
 -- Le report : lever n'est pas effacer — c'est déposer une `levee` qui vise le rendez-vous. Le CHECK
--- n'ouvre la levée qu'à hypothese_clinique/inquietude/temporalite/rendez_vous ; la nature neuve devait y entrer.
--- `ref_depot_id` n'a pas de FK : on prouve la forme (rendez_vous est levable), pas l'existence.
+-- n'ouvre la levée qu'à hypothese_clinique/inquietude/temporalite/jalon ; la nature neuve devait y entrer.
+-- `ref_depot_id` n'a pas de FK : on prouve la forme (jalon est levable), pas l'existence.
 SELECT test.doit_reussir(
-  'un rendez-vous se lève — le report',
+  'un jalon se lève — le report',
   'continuum_soignant',
   $$INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, ref_depot_id, ref_nature, contenu)
     VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','levee',
-            'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','rendez_vous','Reporté au 7 avril.')$$,
+            'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','jalon','Reporté au 7 avril.')$$,
   '11111111-1111-1111-1111-111111111111');
 
 -- L'agrafe : une observation ET la date qu'elle fixe, nées du même geste, partagent le geste_id.
@@ -378,7 +378,7 @@ SELECT test.doit_reussir(
       VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','observation',
               'cccccccc-cccc-cccc-cccc-cccccccccccc','Vu à domicile, posé.');
     INSERT INTO depot.depots (ipp, auteur_id, cadre, nature, geste_id, contenu)
-      VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','rendez_vous',
+      VALUES ('IPP-TEST-001','11111111-1111-1111-1111-111111111111','seul','jalon',
               'cccccccc-cccc-cccc-cccc-cccccccccccc','Prochain passage le 2 avril.')$$,
   '11111111-1111-1111-1111-111111111111');
 

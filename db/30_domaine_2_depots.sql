@@ -78,7 +78,7 @@ CREATE TABLE depot.depots (
       -- tournés vers l'avant (§ chaîne). Un dépôt, jamais une colonne : reprendre date,
       -- c'est déposer ; annuler, c'est lever. Le relais ferme par un nom (dans `contenu`,
       -- déjà NOT NULL partout → pas de sortie dans le vide, sans règle neuve).
-      'rendez_vous','relais',
+      'jalon','relais',
       -- décidée en équipe, mais hors grille : le temps qu'on choisit de respecter :
       'temporalite',
       -- le nouage (jamais seul) :
@@ -168,7 +168,7 @@ CREATE TABLE depot.depots (
   CONSTRAINT depots_levee_reference
     CHECK (nature <> 'levee'
            OR (ref_depot_id IS NOT NULL
-               AND ref_nature IN ('hypothese_clinique','inquietude','temporalite','rendez_vous'))),
+               AND ref_nature IN ('hypothese_clinique','inquietude','temporalite','jalon'))),
   -- Fermer une hypothèse clinique est un acte d'équipe : sa levée suit le collège.
   CONSTRAINT depots_levee_hypothese_clinique_en_college
     CHECK (nature <> 'levee'
