@@ -534,8 +534,8 @@ var encre = getComputedStyle(document.documentElement).getPropertyValue('--ink')
   });
 
   // file active : nœud en mode plume (ruban plein)
-  SET.plume = false;
-  SET.w     = 12;    // épaisseur du trait stroké (à régler à l'œil)
+  SET.plume = true;
+  SET.w     = 12;    // calibre du ruban
   SET.gap   = 1.5;   // réserve du dessous au croisement
   dessineListe(""); cadre(); render2();
 })();
