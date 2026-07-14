@@ -87,11 +87,6 @@
   .tenu{flex:1;font-family:var(--prose);font-weight:700;font-size:16px;line-height:1.2}
   .tenu small{display:block;font-family:var(--word);font-weight:400;font-size:11.5px;color:var(--ink-soft)}
   .tenu.off{display:none}
-  .onde{position:absolute;bottom:80px;right:16px;width:130px;height:40px;display:flex;align-items:center;
-        gap:3px;opacity:0;pointer-events:none;transition:opacity .18s}
-  .onde.on{opacity:1}
-  .onde i{width:3px;background:var(--red);border-radius:2px;animation:o 1.05s ease-in-out infinite}
-  @keyframes o{0%,100%{height:5px;opacity:.4}50%{height:26px;opacity:1}}
 
   /* ── le guichet ──────────────────────────────────────────── */
   .guichet{position:absolute;inset:0;z-index:7;background:rgba(233,236,239,.97);
@@ -187,7 +182,6 @@
     <div class="fente ferme" id="fente"><input id="q" placeholder="un nom, un IPP" autocomplete="off"><button class="fx" id="fx" type="button" aria-label="fermer la recherche">×</button></div>
     <div class="tenu off" id="tenu"></div>
   </div>
-  <div class="onde" id="onde"></div>
   <div class="clarte" id="clarte">
     <div class="cl-in">
       <h5>la ligne</h5>
@@ -461,13 +455,14 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
   var ATT_FLASH_MS=1800;            // attente : période du flash
   var FREMI_AMP=1.2, FREMI_HZ=13;   // attente : frémi (px, Hz) — petit tremblement, pas le bounce
   var RETOUR_MS=5000;               // attente : re-joue le tour tout seul (~5 s), jusqu'à consultation
+  var OND_AMP=0.06, OND_HZ=7, OND_ONDES=3, OND_EASE=0.12, ondAmp=0;   // DICTÉE : le nœud ondule (ampl. radiale ±6% · vitesse · nb d'ondes autour du ∞ · douceur · amplitude courante)
   var eyeState="repos", notifT0=0, NOTIF_MS=1600, ePhase=0, attenteT0=0, notifStartXY=[CX,CY], eyeUnder=false;
   var grp=document.getElementById("grp"), eyeG=document.getElementById("eyeG");
   function lancerTour(){ eyeState="notif"; notifT0=Date.now(); notifStartXY=(eyePos||[CX,CY]).slice(); }   // depuis repos (n) ou re-tour d'attente
   function setUnder(u){ if(u!==eyeUnder){ if(u) grp.insertBefore(eyeG, grp.firstChild); else grp.insertBefore(eyeG, oversG.nextSibling); eyeUnder=u; } }   // z : sous le fil / par-dessus (module L280)
   function consulter(){ eyeState="repos"; pt.style.filter=""; setUnder(false); }   // effacer la notif → repos, filtre nettoyé, œil par-dessus
   function livePts2(){ var P=shapeAt(currentS), pu=1+0.012*Math.sin(T*1.4), o=[],i;
-    for(i=0;i<P.length;i++){ var x=P[i][0]-CX,y=P[i][1]-CY,fr=1+0.010*Math.sin(T*2.1+i*TAU*FRQ2/N);
+    for(i=0;i<P.length;i++){ var x=P[i][0]-CX,y=P[i][1]-CY,fr=1+0.010*Math.sin(T*2.1+i*TAU*FRQ2/N)+ondAmp*Math.sin(T*OND_HZ+i*OND_ONDES*TAU/N);
       x*=fr;y*=fr;o.push([CX+x*pu,CY+y*pu]); } return o; }
   function nodesic2(){ var nd=nodesAt(currentS), pu=1+0.012*Math.sin(T*1.4), o=[],i;
     for(i=0;i<nd.length;i++) o.push([CX+(nd[i][0]-CX)*pu, CY+(nd[i][1]-CY)*pu]); return o; }
@@ -476,6 +471,7 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
     return [lerp(nd[i][0],nd[j][0],t), lerp(nd[i][1],nd[j][1],t)]; }
   function render2(){
     T+=0.016; currentS += (targetS-currentS)*0.07;
+    ondAmp += ((parle?OND_AMP:0) - ondAmp) * OND_EASE;               // l'ondulation d'enregistrement enfle sur parle, retombe en douceur
     var P=livePts2(), sc=composeScene(P,1.35), i, rib=(sc.mode==="ribbon");
     fil.setAttribute("d",sc.baseD); fil.setAttribute("fill",rib?INK:"none");
     fil.setAttribute("stroke",INK); fil.setAttribute("stroke-width",rib?"0.7":sc.w.toFixed(1));
@@ -534,10 +530,9 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
 
   /* ══ tenir un patient · le guichet ════════════════════════════════════════ */
   var fente=document.getElementById("fente"), q=document.getElementById("q"),
-      onde=document.getElementById("onde"), noeud=document.getElementById("noeud"),
+      noeud=document.getElementById("noeud"),
       tenu=document.getElementById("tenu"), guichet=document.getElementById("guichet"),
       micro=document.getElementById("micro");
-  for(k=0;k<18;k++){ var o=document.createElement("i"); o.style.animationDelay=(k*0.06)+"s"; onde.appendChild(o); }
 
   function tenir(i){
     tenuIdx=i;                                              /* le nœud reste figé en bilobe (s=0) */
@@ -563,8 +558,8 @@ import { CX, CY, N, TAU, INK, lerp, smooth, shapeAt, nodesAt, slice, composeScen
 
   var clarte=document.getElementById("clarte"), eyePos=[CX,CY];
   var longT=null, parle=false, clicT=0;
-  function voixOn(){ parle=true; onde.classList.add("on"); fente.classList.add("ferme"); }
-  function voixOff(){ parle=false; onde.classList.remove("on"); }
+  function voixOn(){ parle=true; fente.classList.add("ferme"); }   // enregistrement : le NŒUD ondule (voir render2/livePts2)
+  function voixOff(){ parle=false; }
 
   // ── LE NŒUD est une veilleuse : il signale, il n'agit plus. Seule la double-touche montre sa légende. ──
   noeud.addEventListener("pointerup", function(){
