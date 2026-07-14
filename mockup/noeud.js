@@ -158,6 +158,9 @@ export function creerNoeud(svgEl, opts){
   var NT_OVER=0.5, NT_UNDER=-0.42, NT_LIFT=18, NT_GONFLE=0.8, NT_MS=2000;   // corde à sauter : over enfle+saute · under rétrécit · settle = gonflement final (×1,8 → repos)
   var NT_FLASH_A=0.55, NT_FLASH_K=4.5, NT_ATT_FLASH_MS=1800, NT_FREMI_AMP=1.2, NT_FREMI_HZ=13, NT_RETOUR_MS=5000;   // attente : flash net + frémi HF + re-tour
   var notifTour=false, notifTourT0=0, ntAttenteT0=0, notifStartXY=[CX,CY], ntFlash=1;
+  // ── DICTÉE (porté de la veilleuse page-side · pas 2b) : vagues TRANSVERSES, pilotées par l'API (aucun gating de strate). ──
+  var OND_AMP=14, OND_HZ=9, OND_ONDES=16, OND_EASE=0.12;   // amplitude (unités) · vitesse · nb de crêtes · douceur (ease du gate 0→1)
+  var ondAmp=0, ondTarget=false;
   var DASH_MODE=['compose','read','compose'];   // §19 : « deux lobes composent, un seul lit ». Le mode est la nature du lobe, non une humeur
                                                  // de l'œil : la lentille est l'organe de la seule Vigilante (idx1), pas un réglage disponible partout.
   var SCOUT={size:0.66, posX:-0.20, posY:0.02, dur:0.7, oriMin:-1, oriMax:12, montRest:-2, flipFrom:50};
@@ -174,6 +177,10 @@ export function creerNoeud(svgEl, opts){
       if(!reduce){ var fr=1+0.010*Math.sin(T*2.1 + i*TAU*FRQ/N); x*=fr; y*=fr; }
       out.push([CX+x*pulse, CY+y*pulse]);
     }
+    if(ondAmp>0.001 && !reduce){ var b=out.slice(),a,c,tx,ty,tl,nx,ny,d,M=out.length;   // DICTÉE : onde TRANSVERSE (normale au fil) → amplitude uniforme sur TOUT le ∞, nœud compris
+      for(i=0;i<M;i++){ a=b[(i-1+M)%M];c=b[(i+1)%M];tx=c[0]-a[0];ty=c[1]-a[1];tl=Math.hypot(tx,ty)||1;
+        nx=-ty/tl;ny=tx/tl;d=ondAmp*OND_AMP*Math.sin(T*OND_HZ + i*OND_ONDES*TAU/N);
+        out[i]=[b[i][0]+nx*d,b[i][1]+ny*d]; } }
     return out;
   }
 
@@ -202,6 +209,7 @@ export function creerNoeud(svgEl, opts){
   function render(){
     if(mort) return;
     T+=0.016;
+    ondAmp += ((ondTarget?1:0) - ondAmp) * OND_EASE;   // DICTÉE : gate 0→1 (parle), retombe en douceur — lu par livePts
     currentS += (targetS-currentS)*0.06;
     if(Math.abs(targetS-currentS)<0.001) currentS=targetS;
     // OUDJAT - machine d'etat (2-lobes) : off -> orbit -> on ; quitter le 2-lobes reinitialise
@@ -610,6 +618,8 @@ export function creerNoeud(svgEl, opts){
   // ── TOUR DE NOTIF (pas 2a) : démarre le tour (bilobe uniquement) · consulter → arrêt, repos ──
   function signalerNotif(){ if(Math.round(currentS)!==0) return; notifTour=true; notifTourT0=Date.now(); ntAttenteT0=0; notifStartXY=[eyeX,eyeY]; }
   function consulter(){ notifTour=false; ntAttenteT0=0; ntFlash=1; if(pt&&pt.style) pt.style.filter=""; if(eyeUnder){ grp.insertBefore(eyeG, oversG.nextSibling); eyeUnder=false; } }
+  // ── DICTÉE (pas 2b) : allume/éteint les vagues transverses (ease piloté par la boucle) ──
+  function setOndulation(on){ ondTarget = !!on; }
   // ── densité par lobe (page → forme) : écrit la forme de CETTE instance, relabellise ──
   function setGrain(d){
     densites = (d && d.slice) ? d.slice() : [0,0,0,0,0];
@@ -634,6 +644,7 @@ export function creerNoeud(svgEl, opts){
     signaler: signaler,
     signalerNotif: signalerNotif,
     consulter: consulter,
+    setOndulation: setOndulation,
     setGrain: setGrain,
     axes: axes,
     setEpaisseur: setEpaisseur,

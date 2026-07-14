@@ -421,8 +421,8 @@ var encre = getComputedStyle(document.documentElement).getPropertyValue('--ink')
 
   var clarte=document.getElementById("clarte");
   var parle=false, clicT=0;
-  function voixOn(){ parle=true; fente.classList.add("ferme"); micro.classList.add("rec"); }   // enregistrement : le NŒUD ondule (VU) + pastille rouge
-  function voixOff(){ parle=false; micro.classList.remove("rec"); }
+  function voixOn(){ parle=true; fente.classList.add("ferme"); micro.classList.add("rec"); noeud.setOndulation(true); }   // enregistrement : le NŒUD ondule (vagues transverses) + pastille rouge
+  function voixOff(){ parle=false; micro.classList.remove("rec"); noeud.setOndulation(false); }
 
   // ── LE NŒUD est une veilleuse : il signale, il n'agit plus. Seule la double-touche montre sa légende. ──
   noeud.addEventListener("pointerup", function(){
