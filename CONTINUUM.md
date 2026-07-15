@@ -1036,7 +1036,7 @@ récolté. Guichet des **coordinateurs**, en **synthèse collective signée**. T
   qui distingue le tissage du délire n'est ni le sens ni la continuité, c'est qu'il **lâche devant
   le fait qui résiste**. Une machine qui noterait la cohérence d'une formulation **récompenserait la
   clôture prématurée** et signalerait comme fautive la lecture juste, restée inconfortable. Elle ne
-  demande donc pas « est-ce cohérent ? » mais montre ce qui est resté dehors — sans le nommer.
+  demande donc pas « est-ce cohérent ? » mais montre ce qui est resté dehors — **nommé au tentatif**, jamais déterminé.
 
   **Le nom reste chiffré — l'interdit est le verdict, pas le nom.** Par défaut elle dit ce que
   les mots *font*, jamais ce qu'ils veulent dire (« trois notes disent la porte fermée, une dit
@@ -1706,7 +1706,7 @@ pas par la couleur — §ci-dessus).
   (surinvesti/sous-investi = énoncé sur *le soin*, jamais sur le patient). **Intrication**
   affectif↔réflexif : deux lectures côte à côte, **jamais un ratio**. **Deux mécanismes** :
   séparation des rôles (score muré, jamais verdict) + chiffrement phénoménologique (montre la
-  lumière, ne nomme pas à la place). **Invariants** : mesure auto-effaçante, dépôt brut
+  lumière, nomme au tentatif, ne détermine pas). **Invariants** : mesure auto-effaçante, dépôt brut
   intouché, **abstention d'issue** (jamais de mesure d'efficacité). **Deux dérives**
   symétriques — rigidification / dissolution ; visée = cadre vivant.
 - **Compte rendu & frontière-signature** (§18 bis / §3 / §4 / §5) : la machine **reformule le
