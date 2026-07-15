@@ -93,6 +93,18 @@
   .trigIco{background:0;border:0;padding:0;width:24px;height:24px;line-height:22px;text-align:center;
            font-family:var(--word);font-size:17px;color:var(--red);opacity:.85;cursor:pointer;transition:opacity .15s,color .15s}
   .trigIco:hover{opacity:1;color:var(--red)}
+  /* VIGILANCE — deux colonnes posées côte à côte, rien entre elles (témoin pur) */
+  .vigPaire{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+  .vigCol{border:1px solid var(--faint);border-radius:12px;background:rgba(255,255,255,.4);padding:9px 10px}
+  .vigCol.defile{max-height:230px;overflow-y:auto;overscroll-behavior:contain}
+  .vigLab{font-family:var(--slate);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:5px}
+  .vigTxt{font-family:var(--prose);font-size:11.5px;line-height:1.42}
+  .vigTxt .src{display:block;font-family:var(--slate);font-size:8.5px;color:var(--ink-soft);
+    opacity:.75;margin:2px 0 8px}
+  .vigDeh{border-left:2px dashed var(--creux);padding:2px 0 2px 10px;margin-bottom:9px;
+    font-family:var(--prose);font-size:12.5px;line-height:1.42}
+  .vigDeh .src{display:block;font-family:var(--slate);font-size:8.5px;color:var(--ink-soft);opacity:.75;margin-top:2px}
   .edit{display:none;margin-top:10px}
   .edit.on{display:block}
   .edit textarea{width:100%;height:140px;border:1px solid var(--faint);border-radius:12px;background:rgba(255,255,255,.7);padding:12px 13px;font-family:var(--prose);font-size:13px;line-height:1.5;color:var(--ink);outline:0;resize:vertical}
@@ -285,6 +297,27 @@
     </div>
     <div class="stack" id="listA"></div>
   </div>
+
+  <!-- ══ VIGILANCE — la boucle Vigilante ouverte. TÉMOIN PUR : on la lit, on n'y dépose pas.
+       Aucun .trigIco dans ces secHead : aucun guichet n'existe (§4, second barrage) — c'est ce qui
+       lui donne le droit de parler. Une absence de chemin, jamais une règle. ══ -->
+  <div class="sec" data-mode="vigilance">
+    <div class="secHead"><div class="secTitre">L'écart</div></div>
+    <div class="secSub">Le matériau, mis en mots en clair — posé à côté de ce que le collège écrit</div>
+    <div id="vigEcart"></div>
+  </div>
+
+  <div class="sec" data-mode="vigilance">
+    <div class="secHead"><div class="secTitre">L'angle mort</div></div>
+    <div class="secSub">Ce qu'on éprouve, ce qu'on raisonne — tenus à l'écart, jamais un milieu</div>
+    <div id="vigAngle"></div>
+  </div>
+
+  <div class="sec" data-mode="vigilance" style="padding-bottom:26px">
+    <div class="secHead"><div class="secTitre">Ce qu'aucun fragment ne recouvre</div></div>
+    <div class="secSub">Écrit, et que personne n'a su ranger — montré, jamais commenté</div>
+    <div id="vigDehors"></div>
+  </div>
   </div><!-- /.ecran (fin du flux défilant) -->
 
   <!-- TRAITEMENTS -->
@@ -322,6 +355,8 @@
   <h2>02 · Fil de soi</h2>
   <p>Un patient, ouvert depuis la file active. Rien n'est réel : matériau de dessin. En haut, le
      nœud-lentille ; en dessous, deux modes qu'un même geste bascule.</p>
+  <p>L'onglet Vigilance n'est pas un troisième mode : c'est un focus sur une boucle — celle qui fait
+     le lien entre le trilobe et le bilobe. D'où sa position frontière.</p>
   <h3>récolte</h3>
   <p><b>Observations</b> — la perception brute sur le terrain. <b>Récit</b> — l'histoire qui s'en dégage.</p>
   <h3>métabolisation</h3>
@@ -361,6 +396,19 @@ import { creerNoeud } from '../noeud.js';
   var RECITS = [];   // l'historique des récits signés en équipe (la machine propose au-dessus, vivant)
   var SYNTHESES = [
     { d:"4 juil.", par:"équipe", t:"Alliance tenue par la sœur. Traitement pris. Réinvestissement possible du côté du travail à explorer. Pas d'inquiétude aiguë." }
+  ];
+  /* ⚠️ FICTION DE MAQUETTE, DE MA MAIN — à reprendre par Abtine. Le registre-garde s'applique :
+     les mots de la personne, zéro jargon, posture tentative, aucun verdict. */
+  var AFFECTIF = { par:"équipe", d:"4 juil.",
+    t:"On est inquiets pour sa sœur autant que pour lui. Quelque chose se referme et on n'arrive pas à le dire." };
+  var REFLEXIF = { par:"équipe", d:"4 juil.",
+    t:"On maintient le rythme. Pas d'indication à intensifier : l'alliance tient, le cadre est posé." };
+  /* portions_non_couvertes : des bouts d'observation que personne n'a rangés sur un axe.
+     Verbatim, jamais une réécriture (invariant 12). */
+  var NON_COUVERT = [
+    { t:"« il a demandé si on pouvait venir moins souvent, puis il a dit non, laissez tomber »", a:"Céline", d:"hier" },
+    { t:"« il a parlé de son père. Très vite. Puis il a changé de sujet »", a:"Karima", d:"11 juin" },
+    { t:"« il a dit qu'il ne savait pas pourquoi il était venu »", a:"Anthony", d:"2 juil." }
   ];
   // Le brouillon machine — pré-mâché sur critères cliniques, à reprendre puis signer (≠ carte signée).
   var SYNTHESE_MACHINE =
@@ -442,6 +490,34 @@ import { creerNoeud } from '../noeud.js';
     return el;
   }
   FRAGS.forEach(function(f){ fr.appendChild(creerFrag(f)); });
+
+  /* ══ VIGILANCE (schema.md : vigilante_recolte · portions_non_couvertes ; §18bis : le différentiel
+     Affectif↔Réflexif — l'angle mort). Elle écrit ce qui est là, ATTRIBUÉ ET DATÉ. Elle ne signale
+     rien, ne compare rien, ne conclut rien : bien écrit, ce qui se contredit se contredit visiblement
+     (§1 — l'outil montre en RETIRANT ; poser une analyse par-dessus serait un recouvrement de plus). */
+  function ligne(t, src){ return t + '<span class="src">' + src + '</span>'; }
+
+  $("vigEcart").innerHTML =
+    '<div class="vigPaire">' +
+      '<div class="vigCol defile"><div class="vigLab">ce qui est là</div><div class="vigTxt">' +
+        FRAGS.map(function(f){ return ligne(f.t, f.a + " · " + f.d); }).join("") +
+      '</div></div>' +
+      '<div class="vigCol"><div class="vigLab">ce que le collège écrit</div><div class="vigTxt">' +
+        SYNTHESES.map(function(s){ return ligne(s.t, "synthèse · " + s.par + " · " + s.d); }).join("") +
+      '</div></div>' +
+    '</div>';
+
+  $("vigAngle").innerHTML =
+    '<div class="vigPaire">' +
+      '<div class="vigCol"><div class="vigLab">ce qu\'on éprouve</div><div class="vigTxt">' +
+        ligne(AFFECTIF.t, "affectif · " + AFFECTIF.par + " · " + AFFECTIF.d) + '</div></div>' +
+      '<div class="vigCol"><div class="vigLab">ce qu\'on raisonne</div><div class="vigTxt">' +
+        ligne(REFLEXIF.t, "réflexif · " + REFLEXIF.par + " · " + REFLEXIF.d) + '</div></div>' +
+    '</div>';
+    /* rien entre les deux colonnes : l'écart est TENU, jamais résolu en ratio ni en milieu */
+
+  $("vigDehors").innerHTML = NON_COUVERT.map(function(p){
+    return '<div class="vigDeh">' + p.t + '<span class="src">' + p.a + " · " + p.d + '</span></div>'; }).join("");
 
   /* Déposer une observation → le GUICHET (fenêtre bottom-sheet) monte par-dessus ; « Déposer » crée la carte-fragment.
      Un seul auteur, pas de signature d'équipe (d'où « déposer »). La carte s'empile en tête, datée aujourd'hui. */
