@@ -177,6 +177,9 @@ anonyme — jamais un score, jamais un nom collé sur une personne.
 Ce fichier déplace des curseurs que la doctrine gravée pose plus rigidement. À corriger
 dans CONTINUUM.md quand le principe sera reposé — pas dans le même souffle qu'on le trouve :
 
+- **DESCENDU** (2026-07-15) — les deux agrégats, le poids collectif, la mécanique (le poids dit
+  combien, le climat dit de quel côté) et les textures du climat sont dans CONTINUUM.md, section
+  institutionnelle du §18bis. Ce fichier ne les porte plus seul.
 - **RÉSOLU** (2026-07-15) — collision de noms, pas contradiction : « elle écrit, elle ne signale
   pas » est la **Vigilante** (boucle du trilobe) ; §8 est la **Vigie** (le bilobe). Deux organes,
   deux gestes.

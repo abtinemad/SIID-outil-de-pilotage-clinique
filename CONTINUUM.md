@@ -1066,6 +1066,40 @@ veille sur une situation ; *surveillance*, c'est le contrôle. La Vigie veille s
 elle ne surveille pas le sujet : l'attention de soin retournée sur nous, l'inverse exact du
 contrôle qui infantilise.
 
+**Ce qui le nourrit — l'agrégat total, lavé et anonymisé.** Deux agrégats, jamais le même : celui du
+dépôt d'un patient nourrit le pentalobe et le trilobe (il n'agrège qu'à l'intérieur d'un patient) ;
+l'agrégat **total** nourrit le bilobe — **lavé** du contenu patient et **anonymisé** des deux
+identités, celle du patient *et* celle de qui a déposé. Laver et anonymiser ne sont pas le même
+geste : laver retire le **contenu** (il ne reste que la forme des pratiques), anonymiser retire
+l'**identité**. Le bilobe reçoit les deux.
+
+**Le poids collectif.** Tout objet peut recevoir du **poids** : un geste simple — un +1 — par lequel
+quelqu'un signale que cet objet **résonne**. Anonyme au bilobe. Le poids ne dit pas la vérité (le plus
+pesé n'a pas raison) ni la direction (le plus pesé n'est pas la voie) : c'est un **signal de
+résonance**, une matière pour l'analyse. Il **ne trie pas l'écran** — l'objet le plus pesé ne remonte
+pas en haut, sinon le nombre deviendrait la cible. Il **ne fait bouger aucune boucle** : la taille
+reste le volume de matière (§19). Il dit **où l'équipe met son poids** — et le recul sert à le
+répartir autrement, petit à petit. L'outil le **transcrit**, il ne le fabrique jamais (§1).
+
+**Le poids dit combien, le climat dit de quel côté.** Aucun objet n'appartient à une face : c'est la
+même source qui éclaire et qui assombrit. Un objet pesé ne tombe donc pas dans un plateau — **son
+poids se répartit entre les deux**, selon la lecture du climat, dépôt par dépôt. Un relais très pesé
+met l'essentiel du côté de la Continuité et une part du côté de la Fragmentation : il rend continu,
+*et* il coûte. Deux gestes, deux mains : **combien** vient de l'humain (le +1), **de quel côté** vient
+du climat (la lecture sémantique du mot cru). L'outil ne pèse pas et ne range pas — il transcrit
+l'un et lit l'autre.
+
+**Le climat — ce qu'il lit.** Des textures, jamais des personnes : la **désaffection clinique**
+(l'observation en mots de métier, sans personne dedans), la **colère** (ce qui déborde de ce qu'on
+écrit), l'**automatisme** (le même geste, le même rythme, la même phrase), et la **cohérence** — mais
+à l'envers de ce qu'on croit. *La récolte **est** la diffraction* : des observations qui ne collent
+pas entre elles sont le **bon état** de la récolte, la vision de tout le monde conservée. Le signal
+n'est donc pas l'incohérence — c'est l'incohérence que **personne ne recueille**, ou la cohérence
+**trop lisse** : quatre regards qui disent la même chose n'ont pas convergé, ils ont fondu. Et
+**aucune texture n'est d'un seul côté** : la désaffection fige *et* protège (le mot clinique est une
+armure — il aveugle, il permet de durer) ; la colère use *et* porte (une équipe sans colère n'est pas
+apaisée, elle est partie) ; l'automatisme fige *et* tient (sans lui, personne n'absorbe le volume).
+
 **Comment la métabolisation est nourrie — deux sources.** (1) Un **eval** — *le cerveau du
 Collègue* — lit la **récolte brute** (5-lobes) d'un patient et en projette un **condensé** dans
 l'Affectif et le Réflexif : une re-projection prémâchée et ergonomique de *tout* le brut (le
