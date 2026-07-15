@@ -459,7 +459,8 @@ var encre = getComputedStyle(document.documentElement).getPropertyValue('--ink')
   var noeud = creerNoeud(document.getElementById('knot'),
     { labels:false, eye:5, epaisseur:20 });   // œil plus gros (8.5×5≈42) · fil plus épais (20) · couleur défaut du module (#1F222A)
   noeud.setStrate(0);   // bilobe (veilleuse) — pas de morph, l'œil vit dessus
-  noeud.onEye(function(){ noeud.consulter(); });   // clic COURT sur la veilleuse → finit la notif (retour repos). (onEyeLong = long-press oudjat, non câblé ici.)
+  noeud.onEye(function(){ noeud.consulter(); });   // clic COURT sur la veilleuse → finit la notif (retour repos).
+  noeud.onEyeLong(function(){ setTimeout(function(){ location.href='03_filigrane.html'; }, 4200); });   // appui LONG : la séquence oudjat joue d'abord (tour complet lent + rebond + monture), puis on ouvre le Filigrane (page 3)
   // DÉMO (maquette) : « n » rejoue le TOUR de notif (porté dans le module) ; « c » CONSULTE (retour repos).
   document.addEventListener("keydown", function(e){
     if(/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName)) return;

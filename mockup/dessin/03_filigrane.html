@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cahier de dessin — 03 · Filigrane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;800&family=Spectral:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9ECEF; --ink:#15191E; --red:#8E1C2B; --ink-soft:#565E66;
+    --trait:rgba(21,25,30,.34);
+    --plein:rgba(21,25,30,.80);
+    --creux:rgba(21,25,30,.46);
+    --faint:rgba(21,25,30,.12); --ghost:rgba(21,25,30,.05);
+    --prose:"Spectral",Georgia,serif;
+    --slate:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --word:"Nunito","Avenir Next",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#D6DADE;color:var(--ink);font-family:var(--word);
+       -webkit-font-smoothing:antialiased;display:flex;gap:36px;justify-content:center;
+       align-items:flex-start;padding:40px 24px 80px;flex-wrap:wrap}
+
+  .tel{width:390px;height:812px;background:var(--paper);position:relative;overflow:hidden;
+       border-radius:34px;box-shadow:0 30px 70px rgba(0,0,0,.28),0 0 0 9px #22262b;flex:0 0 auto}
+  .tel::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.35),transparent 60%)}
+
+  /* ── header : la grammaire des pages 1 et 2, au pixel ── */
+  .pageHead{position:absolute;top:0;left:0;right:0;z-index:5;background:var(--paper)}
+  .titreLigne{position:relative;padding:24px 22px 2px}
+  .titre{font-family:var(--prose);font-weight:700;font-size:22px;padding-left:38px}
+  .ret{position:absolute;left:22px;top:22px;width:30px;height:30px;border-radius:15px;border:0;padding:0;
+       background:rgba(255,255,255,.6);color:var(--ink-soft);cursor:pointer;
+       display:flex;align-items:center;justify-content:center;transition:background .2s}
+  .ret:hover{background:rgba(255,255,255,.95)}
+  /* la bande du header ne porte PAS d'onglets : la page tient ses deux faces dans un même regard
+     (§18bis — un outil qui tairait sa propre fragmentation serait lui-même morcelé).
+     Elle porte la MAILLE : le cadre de la lecture — où on lit, et depuis quand. */
+  .maille{display:flex;gap:8px;align-items:center;padding:9px 22px 10px;border-bottom:1px solid var(--faint);
+    font-family:var(--slate);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .maille b{font-weight:400;color:var(--ink);opacity:.9}
+  .ecran{position:absolute;top:100px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+
+  /* ── le nœud : l'∞ institutionnel, à contre-jour ── */
+  .noeudCase{position:relative;display:flex;justify-content:center;padding:2px 0 0}
+  /* LA BALANCE : le ∞ pivote sur son croisement — le nœud EST le point d'appui (noyau : CX/CY=210 sur un viewBox 420). */
+  #knot{width:274px;height:274px;cursor:pointer;overflow:visible;transform-origin:50% 50%;will-change:transform}
+  /* le module ne peint que les overs : le fil, le nœud et les libellés sont au CSS de la page (= page 2, verbatim) */
+  #fil{stroke:var(--ink);fill:none}
+  #filR{fill:var(--ink);stroke:var(--ink);stroke-width:.7;stroke-linejoin:round}
+  #labels text{fill:var(--ink-soft);font-family:var(--word);font-weight:700}
+  /* LE CLAIR-OBSCUR — une seule source : la même variable éclaire à gauche (Continuité)
+     et creuse l'ombre à droite (Fragmentation). On ne peut pas baisser l'ombre sans éteindre la lumière. */
+  .jour{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;transition:opacity .6s}
+  .lueur{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;transition:opacity .6s}
+
+  .source{font-family:var(--prose);font-size:12.5px;line-height:1.5;color:var(--ink-soft);
+    text-align:center;padding:0 30px 2px;font-style:italic}
+
+  /* ── le contre-jour : il faut le geste pour voir ── */
+  .cj{display:block;margin:8px auto 4px;background:rgba(255,255,255,.5);border:1px solid var(--faint);
+    border-radius:14px;padding:7px 14px;font-family:var(--slate);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);cursor:pointer;user-select:none;transition:.18s}
+  .cj:hover{background:rgba(255,255,255,.85)}
+  .cj.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  /* ── les sections ── */
+  .sec{padding:14px 22px 0}
+  .secTitre{font-family:var(--prose);font-weight:700;font-size:16px;margin-bottom:2px}
+  .secSous{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px}
+
+  /* ── LE TRAIT : une ligne du filigrane. Le grain porte la masse — jamais un nombre, jamais une échelle. ── */
+  .trait{margin:0 0 13px}
+  .traitMot{font-family:var(--prose);font-size:13.5px;line-height:1.35;margin-bottom:5px}
+  .fg{height:13px;border-radius:2px;opacity:.16;transition:opacity .45s;
+      background-repeat:repeat;background-position:0 0}
+  .feuille.cj .fg{opacity:.82}          /* tenu à contre-jour : le filigrane se lève */
+  .traitNote{font-family:var(--slate);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);
+    margin-top:3px;opacity:0;transition:opacity .45s}
+  .feuille.cj .traitNote{opacity:.85}
+
+  /* ── la parole de la Vigie : le seul endroit où la machine a le droit de nommer ── */
+  .vigie{border-left:2px solid var(--red);padding:2px 0 2px 12px;margin:4px 0 16px}
+  .vigieTag{font-family:var(--slate);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--red);opacity:.85}
+  .vigieDit{font-family:var(--prose);font-size:14px;line-height:1.5;color:#3B424A;margin-top:4px}
+  .vigieDit b{font-weight:700;color:var(--ink)}
+  .vigieOut{font-family:var(--prose);font-style:italic;font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+
+  /* ── les deux visages de l'ombre ── */
+  .visage{border:1px solid var(--faint);border-radius:12px;padding:11px 13px;margin-bottom:10px;
+    background:rgba(255,255,255,.35)}
+  .visageNom{font-family:var(--prose);font-weight:700;font-size:13.5px}
+  .visageDit{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin:2px 0 8px}
+  .bord{font-family:var(--prose);font-size:12.5px;line-height:1.5;text-align:center;
+    color:var(--ink-soft);font-style:italic;padding:2px 6px 18px}
+
+  /* ── l'oublié ── */
+  .oubli{padding-bottom:24px}
+  .oubliMot{display:inline-block;font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;
+    border:1px dashed var(--creux);border-radius:9px;padding:4px 9px;margin:0 5px 6px 0;color:var(--ink-soft)}
+
+  /* ── la marge (colonne d'explications, comme les pages 1 et 2) ── */
+  .marge{max-width:392px;font-size:13.5px;line-height:1.62;color:#2B3138;padding-top:10px}
+  .marge h2{font-family:var(--prose);font-weight:700;font-size:19px;margin:0 0 4px}
+  .marge h3{font-family:var(--slate);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-soft);margin:16px 0 4px}
+  .marge p{margin:0 0 9px}
+  .marge .q{border-left:2px solid var(--red);padding-left:12px;color:#3B424A}
+</style>
+</head>
+<body>
+<div class="tel">
+  <div class="pageHead">
+    <div class="titreLigne">
+      <button class="ret" onclick="location.href='01_file_active.html'" aria-label="retour à la file active" title="retour à la file active"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="titre">Filigrane</div>
+    </div>
+    <div class="maille"><b>l'unité</b> · les trois derniers mois</div>
+  </div>
+
+  <div class="ecran feuille" id="feuille">
+    <div class="noeudCase">
+    <svg class="knot" id="knot" viewBox="0 0 420 420" role="img" aria-label="Un nœud d'un seul fil continu qui se vrille : chaque boucle se croise à sa base, le fil passe dessus-dessous.">
+        <defs>
+          <mask id="cut" maskUnits="userSpaceOnUse" x="-90" y="-90" width="600" height="600">
+            <rect x="-90" y="-90" width="600" height="600" fill="#fff"/>
+            <g id="holes"></g>
+          </mask>
+          <radialGradient id="ptSphere" cx="42%" cy="40%" r="66%">
+            <stop offset="0%" stop-color="#A62A3A"/><stop offset="62%" stop-color="#8E1C2B"/><stop offset="100%" stop-color="#5E0F1B"/>
+          </radialGradient>
+          <mask id="scLensHole" maskUnits="userSpaceOnUse" x="0" y="0" width="2048" height="1799"><rect width="2048" height="1799" fill="#fff"/><path d="M130.1269 1153.09C108.0013 1144.4223 98.363 1130.7758 92.9775 1107.9018 83.3319 1066.9224 83.9016 1025.6032 82.6671 983.884 80.2283 905.8843 80.6703 827.8326 83.9921 749.8729 85.9058 707.6289 87.9113 640.7493 120.7573 612.0058 142.4935 593.6675 175.1345 581.1458 203.3105 577.6617 317.3955 563.5554 436.7675 567.4803 551.5275 567.5003L767.5695 567.4863C845.4925 566.7085 923.4215 567.9492 1001.2795 571.2084L1001.7395 583.5412C1003.5975 619.8187 1003.1855 659.4514 1003.1915 695.9319 1003.3955 745.732 1003.1855 795.533 1002.5625 845.3291L1001.5555 940.7453C1001.4975 964.4691 1001.9735 990.2424 1001.2135 1013.8163 986.6375 1031.2017 962.8125 1052.7461 946.3555 1069.7817 894.3735 1123.5977 861.9615 1152.3802 787.7805 1169.6457 762.7185 1175.3642 737.3055 1179.4232 711.7075 1181.7926 667.7595 1185.6416 627.2045 1185.7216 583.3675 1186.6813 506.3595 1188.3709 429.3615 1190.4903 352.3575 1186.4914 288.4865 1183.6221 223.8535 1182.2625 161.6875 1164.4971 153.8485 1162.2477 136.8105 1156.919 130.1269 1153.09Z" fill="#000"/></mask><clipPath id="montClip"><rect x="0" y="0" width="1005" height="1799"/></clipPath><clipPath id="ancClip"><rect x="1005" y="0" width="1043" height="1799"/></clipPath><g id="scoutArt"><path transform="translate(0,0)" style="stroke-width: 0; fill: rgb(0,0,0); fill-rule: evenodd" stroke-linecap="round" d="M1658.45 1011.45L1658.27 1012.06 1324.11 1029.85 1322.51 1030.21C1322.46 1029.54 1322.42 1028.86 1322.37 1028.17L1658.45 1011.45ZM1322.51 1030.21L1322.37 1030.24C1321.34 1029.22 1327.01 1097.41 1322.51 1030.21ZM85.3438 1118.61C83.1466 1111.91 81.3082 1104.31 79.7692 1096.1L978.775 1048.23C958.371 1069.38 934.655 1092.81 917.468 1109.14 898.341 1126.73 866.187 1150.01 842.263 1160.16 833.424 1163.91 824.219 1167.24 814.721 1170.2L457.323 1195.92 447.735 1195.92C363.866 1195.95 152.227 1196.02 100.88 1145.47 93.4934 1138.2 88.5426 1128.37 85.3438 1118.61Z"></path><path transform="translate(0,0)" style="stroke: rgb(0,0,0); fill: rgb(0,0,0); fill-rule: evenodd" stroke-linecap="round" d="M 457.823 1196.42 L 815.221 1170.7 C 742.196 1193.46 651.899 1194.37 578.205 1195.65 C 538.081 1196.29 497.951 1196.56 457.823 1196.42 Z"></path><path transform="translate(0,0)" style="stroke: rgb(0,0,0); fill: rgb(0,0,0); fill-rule: evenodd" stroke-linecap="round" d="M 1324.55 1029.33 L 1420.83 1025.23 L 1324.61 1030.35 C 1324.59 1030.01 1324.57 1029.67 1324.55 1029.33 Z M 80.2692 1096.6 C 79.9638 1094.97 79.6702 1093.32 79.3879 1091.64 L 982.554 1045.32 C 981.472 1046.45 980.378 1047.59 979.275 1048.73 L 80.2692 1096.6 Z"></path><path transform="translate(0,0)" style="stroke: rgb(0,0,0); fill: rgb(0,0,0); fill-rule: evenodd" stroke-linecap="round" d="M 1685.32 858.884 L 1647.42 1011.23 L 1324.47 1027.79 C 1324.44 1027.28 1324.42 1026.76 1324.39 1026.25 C 1240.7 1029.83 1154.58 1028.19 1070.29 1026.58 L 1069.59 1026.57 C 1062.18 1026.42 1054.78 1026.28 1047.39 1026.14 C 1044.97 1026.1 1042.4 1026.08 1039.74 1026.06 C 1027.62 1025.98 1013.64 1025.89 1003.3 1023.12 C 997.316 1029.76 990.217 1037.34 982.554 1045.32 L 79.3879 1091.64 C 72.4106 1050.22 72.3484 995.344 72.1716 960.122 C 71.2081 892.799 71.8461 825.449 74.0851 758.147 C 75.5168 724.02 76.3624 693.362 83.5673 659.736 C 96.7603 598.162 148.236 575.156 206.055 567.184 C 250.635 561.036 297.767 559.375 343.134 558.207 C 400.382 556.476 457.658 555.851 514.929 556.334 L 979.034 561.551 C 979.5 561.56 979.974 561.57 980.457 561.58 C 985.248 561.68 990.808 561.795 995.334 561.127 C 1019.73 557.521 1043.76 557.092 1068.39 556.593 C 1156.68 555.456 1244.97 554.867 1333.26 554.825 L 1333.26 554.812 L 1631.58 562.646 L 1671.93 590.643 L 1685.63 857.31 L 1685.32 858.884 Z"></path><path transform="translate(0,0)" style="stroke: rgb(0,0,0); fill: rgb(0,0,0); fill-rule: evenodd" stroke-linecap="round" d="M 1647.42 1011.23 L 1655.1 1010.84 L 1685.32 858.884 L 1647.42 1011.23 Z"></path><path transform="translate(0,0)" style="stroke: rgb(0,0,0); stroke-width: 3; fill: rgb(242,136,168)" stroke-linecap="round" d="M130.1269 1153.09C108.0013 1144.4223 98.363 1130.7758 92.9775 1107.9018 83.3319 1066.9224 83.9016 1025.6032 82.6671 983.884 80.2283 905.8843 80.6703 827.8326 83.9921 749.8729 85.9058 707.6289 87.9113 640.7493 120.7573 612.0058 142.4935 593.6675 175.1345 581.1458 203.3105 577.6617 317.3955 563.5554 436.7675 567.4803 551.5275 567.5003L767.5695 567.4863C845.4925 566.7085 923.4215 567.9492 1001.2795 571.2084L1001.7395 583.5412C1003.5975 619.8187 1003.1855 659.4514 1003.1915 695.9319 1003.3955 745.732 1003.1855 795.533 1002.5625 845.3291L1001.5555 940.7453C1001.4975 964.4691 1001.9735 990.2424 1001.2135 1013.8163 986.6375 1031.2017 962.8125 1052.7461 946.3555 1069.7817 894.3735 1123.5977 861.9615 1152.3802 787.7805 1169.6457 762.7185 1175.3642 737.3055 1179.4232 711.7075 1181.7926 667.7595 1185.6416 627.2045 1185.7216 583.3675 1186.6813 506.3595 1188.3709 429.3615 1190.4903 352.3575 1186.4914 288.4865 1183.6221 223.8535 1182.2625 161.6875 1164.4971 153.8485 1162.2477 136.8105 1156.919 130.1269 1153.09Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M129.1269 1152.0903C107.0013 1143.4226 97.363 1129.7761 91.9775 1106.902 82.3319 1065.9227 82.9016 1024.6035 81.6671 982.8843 79.2283 904.8846 79.6703 826.8329 82.9921 748.8732 84.9058 706.6291 86.9113 639.7495 119.7573 611.006 141.4935 592.6678 174.1345 580.146 202.3105 576.6619 316.3955 562.5556 435.7675 566.4806 550.5275 566.5006L766.5695 566.4866C844.4925 565.7088 922.4215 566.9495 1000.2795 570.2086L1000.7395 582.5414 510.7085 584.5959C454.4535 584.8398 398.4805 585.6576 342.3005 587.5631 295.8805 589.1377 248.6945 588.12 202.7895 595.721 159.0015 602.9711 125.419 618.67 116.9795 665.4149 111.308 696.8277 110.2262 727.0408 108.8508 758.7636 105.9391 819.4398 105.21 880.201 106.6651 940.9252 108.0544 994.1814 111.287 1049.0171 114.1521 1102.2433 115.0187 1118.3391 126.8458 1137.1342 129.1269 1152.0903Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M905.0725 614.9778C910.9385 614.5929 926.4485 615.1888 930.2445 619.2747 936.7905 626.3199 936.2065 645.9698 936.7165 655.1214 937.4285 667.8751 937.7985 680.2829 938.1685 692.7356 938.9345 727.3366 939.9125 761.9326 941.1005 796.5226 943.6075 885.4885 951.5365 1013.4262 886.5905 1081.6385 834.9825 1135.8344 720.0425 1149.011 649.2565 1150.6905 639.8435 1151.1904 615.2005 1155.3593 612.7045 1144.1822 612.2045 1141.9528 613.3705 1137.7439 615.7145 1136.9941 634.2825 1131.0456 654.5025 1129.796 673.1195 1122.9277 716.4875 1108.8014 788.1465 1079.549 822.5805 1050.5466 836.8825 1038.3897 848.9535 1023.8335 858.2485 1007.5278 885.6335 959.9501 882.6795 895.4369 883.4545 841.6799 884.6555 785.2895 885.3005 728.8892 885.3905 672.4859 885.4515 658.0096 884.3535 643.5424 884.1465 629.0472 883.9485 615.1768 894.1215 615.9196 905.0725 614.9778Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M313.8685 610.9639C324.7935 609.7742 372.4325 607.6907 370.2995 626.4809 369.4285 634.1479 353.4135 638.3298 346.7775 639.5365 306.6965 646.8236 264.7885 649.9907 230.0525 673.7176 187.2405 703.5058 177.5035 765.3108 168.6345 813.4672 159.6435 855.9182 140.7115 846.0818 139.1895 814.6129 137.0555 770.4984 137.6085 685.7554 163.8415 650.3377 186.2385 620.0985 277.6245 613.3903 313.8685 610.9639Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M436.6225 609.0054C445.9965 609.1364 457.4995 608.1826 462.3245 617.9111 463.3085 629.4481 446.6015 632.0324 438.0595 632.7742 430.6205 632.8142 403.0655 632.1324 413.1415 614.8679 416.5275 609.0664 430.0525 609.1954 436.6225 609.0054Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(250,250,251)" stroke-linecap="round" d="M1007.8895 568.0392C1021.0565 565.7868 1041.2325 566.3976 1055.1125 566.3876L1124.3625 566.2077 1268.4325 564.2752C1287.1625 564.1932 1306.2025 563.4704 1324.9025 564.2702 1329.9125 564.4841 1339.2525 564.759 1343.3725 567.5183 1357.2625 576.8029 1363.5725 591.6141 1365.9125 607.6179 1367.8725 620.9874 1367.1325 676.7509 1374.3125 682.9183 1379.5625 687.4331 1395.3125 687.7401 1402.4225 688.5988 1403.9025 756.1933 1402.1625 827.2318 1402.3125 895.2271 1389.0825 895.427 1381.1225 894.8672 1368.4025 898.6562 1367.1325 923.4298 1368.2425 966.8585 1360.5925 989.3726 1349.9225 1021.8842 1333.7525 1016.9055 1304.2025 1018.1151 1279.8625 1019.1549 1255.5025 1019.6247 1231.1325 1019.5148 1186.3025 1019.5948 1142.1125 1018.635 1097.3225 1017.4553 1067.8625 1016.6855 1038.5425 1016.8955 1009.0285 1015.5658 1011.3525 998.3303 1009.7805 979.2053 1010.3425 961.8498 1011.6665 920.9404 1008.6715 873.7437 1011.2025 833.3842L1011.2235 674.5175C1011.1665 639.1657 1012.3225 603.0091 1007.8895 568.0392Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(166,171,172)" stroke-linecap="round" d="M1011.2025 833.3834C1012.3575 849.9481 1011.6205 872.7441 1011.5725 889.8377L1011.2605 993.4907C1041.0425 991.7712 1070.8725 990.7615 1100.7025 990.4515 1169.2525 990.1016 1237.5625 993.8407 1306.0425 991.4213 1324.2025 990.7815 1342.4525 990.3416 1360.5925 989.3718 1349.9225 1021.8834 1333.7525 1016.9047 1304.2025 1018.1143 1279.8625 1019.1541 1255.5025 1019.624 1231.1325 1019.514 1186.3025 1019.594 1142.1125 1018.6342 1097.3225 1017.4545 1067.8625 1016.6847 1038.5425 1016.8947 1009.0285 1015.565 1011.3525 998.3295 1009.7805 979.2045 1010.3425 961.849 1011.6665 920.9396 1008.6715 873.7429 1011.2025 833.3834Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(0,0,0)" stroke-linecap="round" d="M1269.1325 666.9362C1281.6425 666.0404 1324.6325 664.2819 1333.2025 670.5362 1352.5725 684.6666 1346.9525 736.796 1347.5725 759.3001 1348.3825 788.7075 1347.8625 817.1081 1346.4425 846.0686 1345.6825 861.4186 1342.8025 877.0405 1325.6025 879.3749 1312.8125 880.6086 1298.9925 880.5676 1286.4225 880.5646 1272.0225 880.5606 1255.3125 881.0985 1249.6825 864.9687 1247.4325 858.5263 1246.9025 853.2447 1246.8725 846.5115 1246.6525 795.6797 1248.6125 744.8059 1249.8025 693.9911 1249.9125 689.6353 1251.2625 681.9883 1253.0125 678.1513 1255.9125 671.7919 1263.0125 668.8167 1269.1325 666.9362Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(242,136,168); fill-rule: evenodd" stroke-linecap="round" d="M 1323.12 674.935 L 1323.12 872.276 C 1307.71 872.746 1292.56 873.117 1277.13 872.775 C 1257.92 872.787 1254.57 862.167 1254.68 844.963 C 1254.99 795.479 1257.36 745.875 1257.73 696.367 C 1257.81 685.528 1259.33 676.883 1270.96 673.857 C 1273.45 673.839 1276.54 673.766 1280.01 673.683 C 1293.2 673.368 1311.78 672.925 1323.12 674.935 Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(242,136,168); fill-rule: evenodd" stroke-linecap="round" d="M 1323.12 872.276 C 1323.24 872.272 1323.36 872.268 1323.48 872.265 C 1338.51 869.791 1339.28 859.841 1339.53 845.183 C 1340.43 794.592 1341.05 743.131 1338.48 692.654 C 1338.25 688.211 1331.7 678.177 1327.3 675.894 C 1326.06 675.525 1324.66 675.207 1323.12 674.935 L 1323.12 872.276 Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(0,0,0)" stroke-linecap="round" d="M1271.4525 696.1695L1272.8425 698.084C1273.6325 714.0068 1272.8525 742.6984 1272.3725 758.8912 1271.7925 778.879 1272.1325 820.7231 1268.1725 838.8174 1266.1825 836.0231 1268.9225 707.3296 1271.4525 696.1695Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(90,29,41)" stroke-linecap="round" d="M1290.2225 688.9664C1296.7125 688.3465 1311.4425 688.0226 1317.6525 689.0633L1318.9625 691.1188C1311.2625 691.5777 1302.1625 691.6067 1294.4225 691.1428 1291.1225 690.9449 1292.0725 691.1838 1290.2225 688.9664Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(250,250,251)" stroke-linecap="round" d="M1380.3025 564.6021C1390.0625 565.5029 1400.7225 564.6991 1410.8425 564.975 1483.1625 566.8715 1555.7225 565.8988 1627.8125 572.521 1661.4325 575.6112 1658.5825 629.2723 1658.9225 653.7259 1622.0725 652.7212 1583.8325 653.2121 1547.1025 653.35 1530.6825 654.2408 1501.1525 651.6385 1489.1825 665.091 1475.2025 680.7939 1478.4725 721.4193 1478.3525 742.0849 1478.0425 770.8914 1478.0325 799.7 1478.2925 828.5075 1478.6625 850.3088 1477.5925 871.4813 1505.2825 877.2958 1520.4125 880.4729 1534.1925 880.0281 1549.4325 881.3117 1587.2925 884.5009 1622.9725 881.8056 1660.6625 879.3772 1660.4225 903.7549 1658.1825 946.2638 1652.7525 969.1879 1649.0125 980.065 1645.1925 993.4716 1633.7725 998.6802 1602.3525 1013.0265 1433.5125 1015.7258 1390.8625 1015.6958 1398.7825 1002.5492 1400.8725 997.5705 1404.8325 982.7344 1411.7825 924.1696 1410.4325 859.1535 1410.8725 799.8459 1411.3025 742.8327 1412.1225 683.7701 1407.6125 627.0269 1405.3125 598.1904 1401.9325 582.6714 1380.3025 564.6021Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(166,171,172)" stroke-linecap="round" d="M1404.8325 982.7331L1405.7225 985.1625C1409.6725 986.8721 1463.4125 984.6926 1471.4625 984.2927 1504.0325 982.6832 1537.9125 980.5737 1570.5325 978.3243 1596.9925 976.4948 1627.1425 975.1051 1652.7525 969.1867 1649.0125 980.0638 1645.1925 993.4704 1633.7725 998.679 1602.3525 1013.0253 1433.5125 1015.7246 1390.8625 1015.6946 1398.7825 1002.548 1400.8725 997.5693 1404.8325 982.7331Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(242,136,168)" stroke-linecap="round" d="M1542.9425 660.9677C1572.1525 659.3922 1602.5325 661.3876 1631.8325 661.0397 1640.9125 660.9318 1650.4025 660.4769 1659.4325 661.1277 1662.3825 665.4486 1668.4625 673.6654 1668.7625 678.4392 1670.1725 700.8364 1669.5925 727.1095 1669.4425 749.4477L1668.9025 815.6365C1668.7925 826.8706 1669.8525 860.5858 1664.3225 868.9187 1655.2725 874.0613 1624.8925 873.6314 1613.6125 873.9634 1592.6525 874.4012 1510.6625 876.3147 1496.4225 864.2249 1488.1925 857.2387 1487.4425 848.551 1486.9125 838.5086 1485.4925 811.9465 1486.4825 784.8805 1486.5525 758.2634 1486.6125 737.1809 1485.2925 714.8477 1487.9025 693.9662 1488.7625 687.094 1490.5325 676.6057 1495.4925 671.487 1506.8925 659.7111 1527.9025 661.5646 1542.9425 660.9677Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(0,0,0)" stroke-linecap="round" d="M1527.6225 688.1986C1528.6225 692.0546 1524.5625 712.8992 1524.5225 718.8786 1524.3125 747.3362 1524.2125 775.7738 1524.3825 804.2424 1524.9425 818.4107 1523.1125 832.4741 1525.0825 846.5434 1526.7125 858.1804 1533.9025 857.3366 1537.8325 862.7042L1536.5525 863.621C1534.4925 862.8082 1532.2625 862.0074 1530.3225 860.9197 1525.9525 858.4683 1523.1925 854.8552 1521.7925 850.0685 1516.6925 832.625 1518.3625 740.0381 1520.5325 719.2135 1521.6325 708.6873 1522.7025 697.7061 1527.6225 688.1986Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(0,0,0)" stroke-linecap="round" d="M1554.9325 675.9038C1583.2325 674.1093 1638.1925 674.9591 1666.6925 677.3674 1660.4125 679.046 1657.0125 679.4589 1650.5225 680.2217 1629.6925 680.3966 1607.9925 679.5219 1587.0125 679.4879 1572.4225 679.4649 1550.4925 680.2517 1536.5025 679.119 1543.2325 677.5664 1548.0625 676.8166 1554.9325 675.9038Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(157,158,160)" stroke-linecap="round" d="M1380.2125 903.9138C1387.7125 903.404 1395.2825 903.414 1402.8025 903.334 1402.7525 911.142 1401.3125 949.7419 1399.5425 955.7104L1397.5525 956.5002 1374.3425 956.6501C1374.8625 948.4123 1375.4025 909.3424 1377.2625 904.7936L1380.2125 903.9138Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(157,158,160)" stroke-linecap="round" d="M1373.8825 961.4387L1399.7425 961.3087C1396.7425 983.323 1394.6125 997.3094 1381.2325 1016.0545 1372.7825 1016.0745 1364.3225 1016.0445 1355.8725 1015.9745 1368.9225 998.0592 1372.4125 983.203 1373.8825 961.4387Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(157,158,160)" stroke-linecap="round" d="M1376.1025 626.6878L1399.9325 627.0977C1401.2625 643.6373 1401.5325 664.14 1402.2525 681.1456 1396.7925 681.8394 1383.1325 679.3551 1377.6825 677.7555 1376.1025 661.8996 1376.2725 642.8406 1376.1025 626.6878Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(157,158,160)" stroke-linecap="round" d="M1353.7225 566.6865C1359.0925 566.1897 1366.7325 566.4576 1372.3225 566.4986L1373.2125 567.1834C1394.0625 583.4532 1396.3125 597.7425 1399.2725 622.489 1391.6125 622.765 1382.8425 622.606 1375.0925 622.654 1373.3025 598.3053 1370.6125 584.4139 1353.7225 566.6865Z"></path></g>
+        <clipPath id="ptClip"><circle id="ptClipC" r="0"/></clipPath>
+        </defs>
+        <g id="grp">
+          <g mask="url(#cut)">
+            <path id="fil" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path id="filR" style="display:none"/>
+          </g>
+          <g id="overs"></g>
+          <g id="eyeG"><circle id="ptHalo" fill="#E9ECEF"/>
+          <circle id="pt" r="8.5"/>
+          <ellipse id="ptIris" fill="#FFFFFF" pointer-events="none" opacity="0" clip-path="url(#ptClip)"/>
+          <ellipse id="ptPup" fill="#15191E" pointer-events="none" clip-path="url(#ptClip)"/>
+          <circle id="ptCatch" fill="#F4F1EC" pointer-events="none" opacity="0" clip-path="url(#ptClip)"/></g>
+        </g>
+        <g id="scouter" opacity="0" pointer-events="none" aria-hidden="true"><g transform="translate(1005 877) rotate(-2) scale(0.725 1.170) translate(-1005 -877)"><use href="#scoutArt" clip-path="url(#ancClip)"/></g><g id="scMonture"><use href="#scoutArt" clip-path="url(#montClip)" mask="url(#scLensHole)"/><path d="M130.1269 1153.09C108.0013 1144.4223 98.363 1130.7758 92.9775 1107.9018 83.3319 1066.9224 83.9016 1025.6032 82.6671 983.884 80.2283 905.8843 80.6703 827.8326 83.9921 749.8729 85.9058 707.6289 87.9113 640.7493 120.7573 612.0058 142.4935 593.6675 175.1345 581.1458 203.3105 577.6617 317.3955 563.5554 436.7675 567.4803 551.5275 567.5003L767.5695 567.4863C845.4925 566.7085 923.4215 567.9492 1001.2795 571.2084L1001.7395 583.5412C1003.5975 619.8187 1003.1855 659.4514 1003.1915 695.9319 1003.3955 745.732 1003.1855 795.533 1002.5625 845.3291L1001.5555 940.7453C1001.4975 964.4691 1001.9735 990.2424 1001.2135 1013.8163 986.6375 1031.2017 962.8125 1052.7461 946.3555 1069.7817 894.3735 1123.5977 861.9615 1152.3802 787.7805 1169.6457 762.7185 1175.3642 737.3055 1179.4232 711.7075 1181.7926 667.7595 1185.6416 627.2045 1185.7216 583.3675 1186.6813 506.3595 1188.3709 429.3615 1190.4903 352.3575 1186.4914 288.4865 1183.6221 223.8535 1182.2625 161.6875 1164.4971 153.8485 1162.2477 136.8105 1156.919 130.1269 1153.09Z" fill="rgb(242,136,168)" fill-opacity="0.70"/><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M129.1269 1152.0903C107.0013 1143.4226 97.363 1129.7761 91.9775 1106.902 82.3319 1065.9227 82.9016 1024.6035 81.6671 982.8843 79.2283 904.8846 79.6703 826.8329 82.9921 748.8732 84.9058 706.6291 86.9113 639.7495 119.7573 611.006 141.4935 592.6678 174.1345 580.146 202.3105 576.6619 316.3955 562.5556 435.7675 566.4806 550.5275 566.5006L766.5695 566.4866C844.4925 565.7088 922.4215 566.9495 1000.2795 570.2086L1000.7395 582.5414 510.7085 584.5959C454.4535 584.8398 398.4805 585.6576 342.3005 587.5631 295.8805 589.1377 248.6945 588.12 202.7895 595.721 159.0015 602.9711 125.419 618.67 116.9795 665.4149 111.308 696.8277 110.2262 727.0408 108.8508 758.7636 105.9391 819.4398 105.21 880.201 106.6651 940.9252 108.0544 994.1814 111.287 1049.0171 114.1521 1102.2433 115.0187 1118.3391 126.8458 1137.1342 129.1269 1152.0903Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M905.0725 614.9778C910.9385 614.5929 926.4485 615.1888 930.2445 619.2747 936.7905 626.3199 936.2065 645.9698 936.7165 655.1214 937.4285 667.8751 937.7985 680.2829 938.1685 692.7356 938.9345 727.3366 939.9125 761.9326 941.1005 796.5226 943.6075 885.4885 951.5365 1013.4262 886.5905 1081.6385 834.9825 1135.8344 720.0425 1149.011 649.2565 1150.6905 639.8435 1151.1904 615.2005 1155.3593 612.7045 1144.1822 612.2045 1141.9528 613.3705 1137.7439 615.7145 1136.9941 634.2825 1131.0456 654.5025 1129.796 673.1195 1122.9277 716.4875 1108.8014 788.1465 1079.549 822.5805 1050.5466 836.8825 1038.3897 848.9535 1023.8335 858.2485 1007.5278 885.6335 959.9501 882.6795 895.4369 883.4545 841.6799 884.6555 785.2895 885.3005 728.8892 885.3905 672.4859 885.4515 658.0096 884.3535 643.5424 884.1465 629.0472 883.9485 615.1768 894.1215 615.9196 905.0725 614.9778Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M313.8685 610.9639C324.7935 609.7742 372.4325 607.6907 370.2995 626.4809 369.4285 634.1479 353.4135 638.3298 346.7775 639.5365 306.6965 646.8236 264.7885 649.9907 230.0525 673.7176 187.2405 703.5058 177.5035 765.3108 168.6345 813.4672 159.6435 855.9182 140.7115 846.0818 139.1895 814.6129 137.0555 770.4984 137.6085 685.7554 163.8415 650.3377 186.2385 620.0985 277.6245 613.3903 313.8685 610.9639Z"></path><path transform="translate(0,0)" style="stroke: rgb(255,255,255); stroke-opacity: 0; fill: rgb(252,204,223)" stroke-linecap="round" d="M436.6225 609.0054C445.9965 609.1364 457.4995 608.1826 462.3245 617.9111 463.3085 629.4481 446.6015 632.0324 438.0595 632.7742 430.6205 632.8142 403.0655 632.1324 413.1415 614.8679 416.5275 609.0664 430.0525 609.1954 436.6225 609.0054Z"></path></g></g>
+        <g id="oudjat" opacity="0" pointer-events="none" aria-hidden="true"><path fill="#1F222A" fill-rule="evenodd" d="M792.694 902.525C801.944 900.231 811.639 899.173 821.22 897.465 844.258 893.355 867.699 890.8 890.732 886.637 918.202 881.526 945.528 875.667 972.679 869.067 1054.773 849.035 1127.72 818.979 1206 788.169 1222.97 781.489 1253.93 763.14 1267.26 760.446 1302.06 753.413 1339.89 756.95 1376.52 760.375 1392.64 761.882 1408.52 763.368 1423.82 763.922L1672.41 772.564C1725.94 774.804 1777.46 776.972 1830.81 783.123 1872.85 787.969 1915.59 790.328 1957.68 794.889 1965.77 795.64 1977.12 797.185 1984.97 799.029 1985.1 797.128 1985.32 794.461 1985.58 791.236 1987.36 769.411 1991.22 722.07 1984.12 714.358 1980.46 710.375 1970.01 710.609 1964.77 710.727L1964.39 710.736C1954.77 710.949 1945.19 711.353 1935.62 711.757L1935.6 711.758C1919.48 712.439 1903.37 713.119 1887.12 712.881 1799.8 711.604 1712.04 703.386 1624.9 697.699 1522.05 690.985 1429.2 691.703 1328.53 662.53 1304.64 655.606 1281.26 648.069 1259.1 636.587 1226.94 619.931 1197.66 598.142 1165.1 582.168 1042.483 522.005 845.91 471.061 710.824 474.108 670.027 474.59 611.139 476.092 572.153 486.177 514.675 501.045 440.804 517.915 399.105 563.024 377.333 586.577 358.926 610.114 339.91 635.733 313.391 671.47 287.369 705.742 258.468 739.759 226.844 777.959 185.628 808.627 156.8591 849.039 151.8641 856.055 147.4661 870.13 155.0941 875.82 169.894 886.229 194.574 884.707 215.05 883.444L215.053 883.444C219.922 883.144 224.554 882.858 228.758 882.751 238.598 882.501 248.531 882.039 258.51 881.576 297.501 879.763 337.189 877.919 374.714 888.536 378.012 889.469 381.065 890.462 383.874 891.557L792.694 902.525ZM1018.127 612.492C993.119 605.494 967.889 599.316 942.478 593.966 946.425 609.441 950.732 622.231 953.262 638.165 960.956 688.967 950.848 740.869 924.65 785.068 909.538 810.427 893.252 827.571 871.016 846.474 938.81 838.232 1008.751 825.306 1072.51 800.568 1122.69 780.144 1166.71 756.639 1200 712.665 1176.65 671.168 1126.26 652.439 1084.44 634.883 1063.04 625.902 1040.479 618.737 1018.127 612.492ZM612.003 856.432C562.375 822.23 528.698 773.86 517.195 714.146 512.513 688.885 512.091 663.018 515.947 637.617 516.233 635.791 517.285 630.999 518.486 625.534 520.637 615.747 523.262 603.8 522.805 602.857 442.527 641.524 414.262 680.823 361.121 750.132 340.864 776.554 313.401 799.989 294.888 829.103 315.707 836.97 341.129 837.439 363.402 839.913 378.752 841.617 395.398 843.7 410.694 845.055 453.59 849.307 496.583 852.504 539.635 854.642 555.579 855.395 585.011 855.541 604.141 856.801L612.003 856.432Z M563.7137 693.7131 a 173.7912 162.0288 0 1 0 347.5824 0 a 173.7912 162.0288 0 1 0 -347.5824 0 Z"/></g>
+        <g id="labels" font-size="10" letter-spacing="0" opacity="0"></g>
+      </svg>
+      <div class="lueur" id="lueur"></div>
+      <div class="jour" id="jour"></div>
+    </div>
+
+    <div class="source">Une seule source. Ce que tenir le fil rend possible,<br>et ce qu'il coûte.</div>
+    <button class="cj" id="cj" type="button">tenir à contre-jour</button>
+
+    <!-- ── la seule parole permise : anonyme, agrégée, elle ne tombe sur personne ── -->
+    <div class="sec">
+      <div class="vigie">
+        <div class="vigieTag">la vigie, au tentatif</div>
+        <div class="vigieDit">On dépose beaucoup. On lève peu. On se relaie peu.<br>
+          → <b>le fil tient parce que quelqu'un le tient</b> ; pas encore parce que l'équipe le tient ?</div>
+        <div class="vigieOut">Rien n'est conclu. Aucun nom, aucune note, personne n'est désigné.</div>
+      </div>
+      <div class="traitMot" style="color:var(--ink-soft);font-size:12.5px;line-height:1.5">
+        Les deux boucles ne s'opposent pas : elles viennent du même geste. Plus l'équipe tient,
+        plus elle projette son ombre — l'usure, la résonance, le coût de durer.
+        Baisser l'ombre, ici, ce serait éteindre la lumière.
+      </div>
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- ── PLATEAU GAUCHE — ce que le collectif rend possible ── -->
+    <div class="sec">
+      <div class="secTitre">Ce que ça rend possible</div>
+      <div class="secSous">Le plateau gauche : les gestes qui font qu'un fil survit à celui qui le tient.
+        Tenez la feuille à contre-jour : le grain est la masse, il n'y a pas d'échelle.</div>
+      <div id="traitsCont"></div>
+    </div>
+
+    <!-- ── PLATEAU DROIT — l'ombre, ses deux visages ── -->
+    <div class="sec">
+      <div class="secTitre">Ce que ça coûte</div>
+      <div class="secSous">Le plateau droit, en deux visages symétriques. La Vigie ne pousse dans aucun sens :
+        aucun des deux n'est le but, et l'ombre ne se réduit pas — on choisit seulement de voir où elle tombe.</div>
+
+      <div class="visage">
+        <div class="visageNom">Rigidification</div>
+        <div class="visageDit">fragmenter par <b>excès de cadre</b> — la routine qui fige, reproduit, fabrique du chronique.</div>
+        <div id="traitsRig"></div>
+      </div>
+
+      <div class="visage">
+        <div class="visageNom">Dissolution</div>
+        <div class="visageDit">fragmenter par <b>absence de cadre</b> — tout accepter, plus de bords, le cadre qui disparaît.</div>
+        <div id="traitsDis"></div>
+      </div>
+
+      <div class="bord">La visée n'est ni l'une ni l'autre : un cadre vivant qui transforme.<br>
+        Les bords sont le cadre ; les tenir vivants est le travail.</div>
+
+      <div class="oubli">
+        <div class="secTitre" style="font-size:14px">Ce qu'aucun dépôt ne recouvre</div>
+        <div class="secSous">L'oublié — ce qui est resté dehors. Montré, nommé au tentatif, jamais déterminé.</div>
+        <div id="oublis"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="marge">
+  <h2>03 · Filigrane</h2>
+  <p>Le dashboard institutionnel — lire entre les lignes de l'ensemble des dépôts. On ouvre depuis
+     la veilleuse de la file active : appui long, l'œil d'Horus se pose, la page s'ouvre.</p>
+  <p>Un filigrane est <i>dans</i> le papier : une épaisseur, pas une écriture. Il ne se voit qu'à
+     contre-jour. Le dépôt épaissit le fil — ici, on tient toute la masse à la lumière et on regarde
+     la forme de notre pratique dans l'épaisseur.</p>
+
+  <h3>une seule source</h3>
+  <p>Continuité et Fragmentation ne sont pas un bien et un mal dont l'un serait à réduire. C'est la
+     même source qui éclaire et qui assombrit : plus une équipe tient le fil, plus elle projette son
+     ombre. <span class="q">Une seule variable éclaire la boucle gauche et creuse la droite — on ne
+     peut pas baisser l'ombre sans éteindre la lumière. L'anti-Goodhart n'est pas une consigne
+     affichée : c'est la géométrie.</span></p>
+
+  <h3>la balance</h3>
+  <p>Le ∞ pivote sur son croisement : le nœud <i>est</i> le point d'appui. À gauche ce que tenir le
+     fil rend possible, à droite ce qu'il coûte. L'inclinaison est une <b>proportion</b>, jamais une
+     magnitude — on redresse aussi bien en tenant plus qu'en payant moins. L'œil leste : il pèse là
+     où il passe, et l'équilibre se tient quand il peut passer au nœud sans que la poutre bouge.</p>
+
+  <h3>montrée, jamais chiffrée</h3>
+  <p>Pas de « unité fragmentée à 40 % ». Les masses réelles pilotent le <b>grain</b> du filigrane —
+     le nombre est chiffré dans la forme. On compare à l'œil, sans échelle : une forme se regarde,
+     un nombre se pilote.</p>
+
+  <h3>le seul endroit où la machine parle</h3>
+  <p>Ailleurs, nommer tomberait sur quelqu'un. Ici : anonyme, agrégé, aucun chemin vers l'individuel
+     (le Lien de chacun n'a ni vue croisée ni agrégat — et n'en aura pas). Le recul de l'agrégat est
+     précisément ce niveau : la Vigie peut proposer un nom, tenu au tentatif. Jamais un verdict,
+     jamais une note, jamais un soignant désigné.</p>
+
+  <h3>pas d'onglets</h3>
+  <p>Les deux plateaux sont sous le même regard, en un seul défilé. <span class="q">Un outil dont la
+     thèse est la continuité et qui tairait sa propre fragmentation serait lui-même morcelé : tenir
+     les deux faces dans un même regard est sa cohérence avec ce qu'il affirme.</span> Et une balance
+     dont on ne verrait qu'un plateau ne serait plus une balance. La bande du header ne navigue pas :
+     elle porte la maille — où on lit, et depuis quand.</p>
+
+  <h3>lu du dedans</h3>
+  <p>Le filigrane est invisible à plat. Il faut tenir la feuille à contre-jour pour le lever : le
+     climat ne se lit qu'en étant dedans, et il faut le geste pour voir.</p>
+</div>
+
+<script type="module">
+import { creerNoeud } from '../noeud.js';
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+
+/* ── LA MATIÈRE (fiction de maquette — les natures sont celles de la DDL, db/30) ───────────
+   Ces masses ne sont JAMAIS affichées. Elles pilotent le grain du filigrane et la source
+   du clair-obscur. Le nombre est chiffré dans la forme (§18bis : montrée, jamais chiffrée). */
+var MASSE = {
+  observation:412, jalon:187, situation:96, lecture_clinique:96, ressenti:88,
+  demande:71, inquietude:63, compte_rendu:58, hypothese_clinique:41,
+  lien_travail:34, indication:28, levee:21, validation_typage:15,
+  diffraction:12, vide_info:9, relais:6, temporalite:3
+};
+var AGRAFE  = { seuls:604, noues:198 };          // gestes : un dépôt seul / plusieurs dépôts agrafés
+var FILS    = { rencontre:701, soin:283 };       // les deux chaînes (db/30 : elles ne se croisent pas)
+var OUVERTS = { ouverts:112, leves:21 };         // ce qu'on ouvre / ce qu'on ferme
+
+/* ── LA SOURCE : un seul scalaire. Il éclaire la Continuité ET creuse la Fragmentation.
+      Co-variation depuis une source unique — la doctrine, rendue exécutable. ── */
+var total = 0; for(var k in MASSE) total += MASSE[k];
+var TENUE = Math.min(1, total / 1400);           // combien l'équipe tient (0..1)
+
+/* ── le grain : la masse devient un pas de trame (dense = beaucoup). Aucune échelle affichée. ── */
+function grain(m, ref){
+  var d = Math.max(0.06, Math.min(1, m / ref));          // densité relative, bornée
+  var pas = (14 - 11 * d).toFixed(2);                     // 14px (rare) → 3px (dense)
+  var ep  = (0.6 + 1.5 * d).toFixed(2);                   // trait plus gras quand c'est dense
+  return "repeating-linear-gradient(78deg, var(--ink) 0 " + ep + "px, transparent " + ep + "px " + pas + "px)";
+}
+function trait(mot, masse, ref, note){
+  return '<div class="trait"><div class="traitMot">' + mot + '</div>' +
+         '<div class="fg" style="background-image:' + grain(masse, ref) + '"></div>' +
+         '<div class="traitNote">' + note + '</div></div>';
+}
+
+/* ── CONTINUITÉ — ce que tenir le fil rend possible ─────────────────────────────────── */
+$("traitsCont").innerHTML =
+  trait("le fil passe de main en main", MASSE.relais, 60, "relais — un nom ferme le passage") +
+  trait("on noue : plusieurs dépôts, un seul geste", AGRAFE.noues, 400, "l'agrafe — le nouage, jamais un dépôt seul") +
+  trait("on laisse le temps", MASSE.temporalite, 60, "temporalité — le temps qu'on choisit de respecter") +
+  trait("on ferme ce qu'on ouvre", OUVERTS.leves, 120, "levées — reprendre, c'est déposer ; annuler, c'est lever") +
+  trait("la chaîne soin tient", FILS.soin, 700, "le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite") +
+  trait("on écrit ce qu'on ne sait pas", MASSE.vide_info, 60, "vide d'info — le trou, déposé plutôt que comblé");
+
+/* ── FRAGMENTATION — rigidification (par excès de cadre) ────────────────────────────── */
+$("traitsRig").innerHTML =
+  trait("on dépose, on ne noue plus", AGRAFE.seuls, 700, "dépôts seuls, sans agrafe") +
+  trait("rien ne se lève", OUVERTS.ouverts, 140, "ouvert et jamais levé — la question qui devient décor") +
+  trait("le même geste, le même rythme", MASSE.observation + MASSE.jalon, 700, "observation + jalon — la routine qui reproduit");
+
+/* ── FRAGMENTATION — dissolution (par absence de cadre) ─────────────────────────────── */
+$("traitsDis").innerHTML =
+  trait("tout entre", MASSE.observation, 500, "l'entrée large — rien n'est trié, tout est reçu") +
+  trait("les écarts ne sont plus tenus", MASSE.diffraction, 90, "diffraction — les lectures tenues à l'écart, jamais un milieu") +
+  trait("les bords s'effacent", MASSE.indication, 120, "indication — ce qui borde, ce qui pose un cadre");
+
+/* ── L'OUBLIÉ — ce qu'aucun dépôt ne recouvre (nommé au tentatif) ───────────────────── */
+var SEUIL = 15;
+var mots = [];
+for(var n in MASSE){ if(MASSE[n] < SEUIL) mots.push(n.replace(/_/g," ")); }
+$("oublis").innerHTML = mots.map(function(m){ return '<span class="oubliMot">' + m + " ?</span>"; }).join("") ||
+  '<span class="oubliMot">rien ne manque ?</span>';
+
+/* ── LE NŒUD — l'∞ institutionnel (bilobe). Le module nomme déjà les boucles :
+      gauche = Continuité, droite = Fragmentation (LAB2). Appui long → l'œil d'Horus, la marque. ── */
+var noeud = creerNoeud($("knot"), { labels:true, eye:3, epaisseur:15 });
+noeud.setStrate(0);
+
+/* ── LA BALANCE ──────────────────────────────────────────────────────────────────────
+   Le ∞ est une balance et son pivot est le nœud — le croisement, là où le fil se traverse.
+   Plateau gauche : ce que tenir le fil rend possible. Plateau droit : ce qu'il coûte.
+
+   L'inclinaison est une PROPORTION, jamais une magnitude. La source (TENUE) fait monter les
+   DEUX faces ensemble (§18bis : « c'est la même source qui éclaire et qui assombrit ») ; seule
+   leur répartition penche. Conséquence : on redresse aussi bien en tenant PLUS qu'en payant
+   moins — la balance ne dit jamais « réduis l'ombre ».
+
+   ⚠️ ARBITRAIRES — POSÉS EN ATTENDANT. Les coefficients décident ce qui pèse, et combien : c'est une
+   NORME CLINIQUE, la main d'Abtine, pas celle de la machine. Rien ici n'est un réglage à optimiser :
+   tant qu'ils sont ceux de la machine, la poutre penche pour rien. À reprendre. */
+var POIDS_C = MASSE.relais*6 + MASSE.temporalite*6 + MASSE.levee*3 + MASSE.vide_info*4
+            + MASSE.diffraction*3 + AGRAFE.noues*1 + FILS.soin*0.5;
+var POIDS_F = AGRAFE.seuls*0.6 + OUVERTS.ouverts*2 + (MASSE.observation + MASSE.jalon)*0.4;
+var CHARGE  = (POIDS_C - POIDS_F) / (POIDS_C + POIDS_F);      // +1 penche à gauche · −1 penche à droite
+
+var INCL_MAX = 13, LEST_MAX = 3.2;                            // degrés
+/* une balance est sensible près de l'équilibre : la racine ouvre le milieu, là où se joue le travail */
+var ASSIETTE = -Math.sign(CHARGE) * Math.sqrt(Math.abs(CHARGE)) * INCL_MAX;
+
+/* LE LEST : l'œil pèse là où il passe. Le module écrit sa position dans le DOM (pt.cx) —
+   la page la lit, elle ne touche à rien. L'équilibre se tient quand l'œil peut passer au nœud
+   sans que la poutre bouge. */
+var knot = $("knot"), pt = $("pt"), CXV = 210, RAYV = 95;
+function lest(){
+  var cx = pt && parseFloat(pt.getAttribute("cx"));
+  if(!isFinite(cx)) return 0;
+  return Math.max(-1, Math.min(1, (cx - CXV) / RAYV)) * LEST_MAX;
+}
+var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(reduit){ knot.style.transform = "rotate(" + ASSIETTE.toFixed(2) + "deg)"; }
+else {
+  var incl = 0;
+  (function poutre(){
+    incl += ((ASSIETTE + lest()) - incl) * 0.045;              // la poutre est lourde : elle suit avec inertie
+    knot.style.transform = "rotate(" + incl.toFixed(3) + "deg)";
+    requestAnimationFrame(poutre);
+  })();
+}
+
+/* ── LE CLAIR-OBSCUR : la même TENUE éclaire à gauche et creuse à droite ── */
+$("lueur").style.background = "radial-gradient(48% 42% at 30% 50%, rgba(255,255,255," + (0.30*TENUE).toFixed(3) + "), transparent 70%)";
+$("jour").style.background  = "radial-gradient(52% 46% at 71% 52%, rgba(21,25,30," + (0.34*TENUE).toFixed(3) + "), transparent 72%)";
+
+/* ── LE CONTRE-JOUR : il faut le geste pour voir (appui maintenu, ou clic = bascule) ── */
+var f = $("feuille"), cj = $("cj"), tenu = false;
+function lever(on){ tenu = on; f.classList.toggle("cj", on); cj.classList.toggle("on", on);
+  cj.textContent = on ? "à contre-jour" : "tenir à contre-jour"; }
+cj.addEventListener("pointerdown", function(e){ e.preventDefault(); lever(true); });
+window.addEventListener("pointerup", function(){ if(tenu && !cj.dataset.verrou) lever(false); });
+cj.addEventListener("dblclick", function(){ cj.dataset.verrou = cj.dataset.verrou ? "" : "1"; lever(true); });
+
+/* Pas de vues, pas d'onglets : les deux plateaux sont sous le même regard, en un seul défilé.
+   Une balance dont on ne verrait qu'un plateau ne serait plus une balance. */
+})();
+</script>
+</body>
+</html>
