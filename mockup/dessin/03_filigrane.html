@@ -206,9 +206,13 @@
      pas une quantité — on la redresse aussi bien en tenant plus qu'en payant moins. La balance ne
      demande jamais de réduire l'ombre.</span></p>
   <h3>la balance</h3>
-  <p>Le ∞ pivote sur son croisement : le nœud <i>est</i> le point d'appui. À gauche ce que tenir le
-     fil rend possible, à droite ce qu'il coûte. L'œil leste : il pèse là où il passe, et l'équilibre
-     se tient quand il peut passer au nœud sans que la poutre bouge.</p>
+  <p>Le ∞ pivote sur son croisement : le nœud <i>est</i> le point d'appui. Il ne pèse pas ce que
+     l'outil décide : il pèse le <b>poids collectif</b> — un +1 par lequel quelqu'un signale que
+     quelque chose résonne, anonyme, remonté lavé. <span class="q">Le grain dit ce qu'on fait ;
+     l'inclinaison dit où on met notre poids. Les deux peuvent diverger — et c'est là qu'il y a
+     quelque chose à lire.</span> Le poids ne dit ni la vérité ni la direction : il dit où l'équipe
+     s'engage, et le recul sert à le répartir autrement, petit à petit. L'œil leste : il pèse là où
+     il passe.</p>
   <h3>deux fenêtres</h3>
   <p>La maille n'est plus un libellé : chaque geste porte deux masses — les trois derniers mois, et
      les trois d'avant. Sous chaque trait, la fenêtre précédente est le fantôme dans le papier : on
@@ -246,22 +250,22 @@ var $ = function(id){ return document.getElementById(id); };
    derniers mois. ref = l'ordre de grandeur du geste · fige = il n'a pas bougé depuis longtemps ·
    q = la question tentative que le mouvement ouvre. Le nombre est chiffré dans la forme (§18bis). */
 var TRAITS_CONT = [
- {id:"relais", mot:"le fil passe de main en main", ref:60, av:11, ap:6, fige:false, note:"relais — un nom ferme le passage", q:"on se relaie moins qu'avant ?"},
- {id:"noues", mot:"on noue : plusieurs dépôts, un seul geste", ref:400, av:214, ap:198, fige:false, note:"l'agrafe — le nouage, jamais un dépôt seul", q:"le nouage se défait ?"},
- {id:"temporalite", mot:"on laisse le temps", ref:60, av:3, ap:3, fige:true, note:"temporalité — le temps qu'on choisit de respecter", q:"on ne choisit plus d'attendre ?"},
- {id:"leves", mot:"on ferme ce qu'on ouvre", ref:120, av:34, ap:21, fige:false, note:"levées — reprendre, c'est déposer ; annuler, c'est lever", q:"on n'ose plus fermer ?"},
- {id:"soin", mot:"la chaîne soin tient", ref:700, av:291, ap:283, fige:false, note:"le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite", q:""},
- {id:"vide", mot:"on écrit ce qu'on ne sait pas", ref:60, av:9, ap:9, fige:true, note:"vide d'info — le trou, déposé plutôt que comblé", q:"on ne dépose plus nos trous ?"}
+ {id:"relais", poids:14, mot:"le fil passe de main en main", ref:60, av:11, ap:6, fige:false, note:"relais — un nom ferme le passage", q:"on se relaie moins qu'avant ?"},
+ {id:"noues", poids:9, mot:"on noue : plusieurs dépôts, un seul geste", ref:400, av:214, ap:198, fige:false, note:"l'agrafe — le nouage, jamais un dépôt seul", q:"le nouage se défait ?"},
+ {id:"temporalite", poids:21, mot:"on laisse le temps", ref:60, av:3, ap:3, fige:true, note:"temporalité — le temps qu'on choisit de respecter", q:"on ne choisit plus d'attendre ?"},
+ {id:"leves", poids:6, mot:"on ferme ce qu'on ouvre", ref:120, av:34, ap:21, fige:false, note:"levées — reprendre, c'est déposer ; annuler, c'est lever", q:"on n'ose plus fermer ?"},
+ {id:"soin", poids:4, mot:"la chaîne soin tient", ref:700, av:291, ap:283, fige:false, note:"le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite", q:""},
+ {id:"vide", poids:17, mot:"on écrit ce qu'on ne sait pas", ref:60, av:9, ap:9, fige:true, note:"vide d'info — le trou, déposé plutôt que comblé", q:"on ne dépose plus nos trous ?"}
 ];
 var TRAITS_RIG = [
- {id:"seuls", mot:"on dépose, on ne noue plus", ref:700, av:502, ap:604, fige:false, note:"dépôts seuls, sans agrafe", q:"la routine prend la place du nouage ?"},
- {id:"ouverts", mot:"rien ne se lève", ref:140, av:78, ap:112, fige:false, note:"ouvert et jamais levé — la question qui devient décor", q:"les questions deviennent du décor ?"},
- {id:"routine", mot:"le même geste, le même rythme", ref:700, av:557, ap:599, fige:false, note:"observation + jalon — la routine qui reproduit", q:""}
+ {id:"seuls", poids:18, mot:"on dépose, on ne noue plus", ref:700, av:502, ap:604, fige:false, note:"dépôts seuls, sans agrafe", q:"la routine prend la place du nouage ?"},
+ {id:"ouverts", poids:34, mot:"rien ne se lève", ref:140, av:78, ap:112, fige:false, note:"ouvert et jamais levé — la question qui devient décor", q:"les questions deviennent du décor ?"},
+ {id:"routine", poids:5, mot:"le même geste, le même rythme", ref:700, av:557, ap:599, fige:false, note:"observation + jalon — la routine qui reproduit", q:""}
 ];
 var TRAITS_DIS = [
- {id:"entree", mot:"tout entre", ref:500, av:386, ap:412, fige:false, note:"l'entrée large — rien n'est trié, tout est reçu", q:""},
- {id:"diffraction", mot:"les écarts ne sont plus tenus", ref:90, av:12, ap:12, fige:true, note:"diffraction — les lectures tenues à l'écart, jamais un milieu", q:"on ne tient plus les lectures à l'écart ?"},
- {id:"bords", mot:"les bords s'effacent", ref:120, av:31, ap:28, fige:false, note:"indication — ce qui borde, ce qui pose un cadre", q:""}
+ {id:"entree", poids:4, mot:"tout entre", ref:500, av:386, ap:412, fige:false, note:"l'entrée large — rien n'est trié, tout est reçu", q:""},
+ {id:"diffraction", poids:24, mot:"les écarts ne sont plus tenus", ref:90, av:12, ap:12, fige:true, note:"diffraction — les lectures tenues à l'écart, jamais un milieu", q:"on ne tient plus les lectures à l'écart ?"},
+ {id:"bords", poids:11, mot:"les bords s'effacent", ref:120, av:31, ap:28, fige:false, note:"indication — ce qui borde, ce qui pose un cadre", q:""}
 ];
 /* L'OUBLIÉ se lit maintenant sur la fenêtre courante des traits (fige && ap faible) — voir plus bas. */
 
@@ -294,8 +298,6 @@ $("traitsDis").innerHTML  = bande(TRAITS_DIS);
 /* ══ LA VIGIE — dérivée du mouvement, plus écrite à la main. Elle expose le mouvement daté et ce
       qui ne coulisse plus ; jamais si c'est bien ou mal (§15 borne c : « c'est le rouge FIGÉ qui parle »). ══ */
 var TOUS  = TRAITS_CONT.concat(TRAITS_RIG, TRAITS_DIS);
-/* une seule source : la balance lit la fenêtre courante des traits, elle ne la redit pas */
-var T = {}; TOUS.forEach(function(t){ T[t.id] = t; });
 var bouge = TOUS.slice().sort(function(a,b){ return Math.abs(sens(b).d) - Math.abs(sens(a).d); })[0];
 var figes = TOUS.filter(function(t){ return t.fige; });
 $("vigieDit").innerHTML =
@@ -322,15 +324,17 @@ noeud.setStrate(0);
    L'inclinaison est une PROPORTION, jamais une magnitude : elle ne dit pas combien l'équipe tient,
    mais comment ça se répartit. Conséquence — et c'est ce qui la garde fidèle au §18bis (« c'est la
    même source qui éclaire et qui assombrit ») : on redresse aussi bien en tenant PLUS qu'en payant
-   moins. La balance ne dit jamais « réduis l'ombre ».
+   moins. La balance ne dit jamais « réduis l'ombre ». */
 
-   ⚠️ ARBITRAIRES — POSÉS EN ATTENDANT. Les coefficients décident ce qui pèse, et combien : c'est une
-   NORME CLINIQUE, la main d'Abtine, pas celle de la machine. Rien ici n'est un réglage à optimiser :
-   tant qu'ils sont ceux de la machine, la poutre penche pour rien. À reprendre. */
-var POIDS_C = T.relais.ap*6 + T.temporalite.ap*6 + T.leves.ap*3 + T.vide.ap*4
-            + T.diffraction.ap*3 + T.noues.ap*1 + T.soin.ap*0.5;
-var POIDS_F = T.seuls.ap*0.6 + T.ouverts.ap*2 + T.routine.ap*0.4;
-var CHARGE  = (POIDS_C - POIDS_F) / (POIDS_C + POIDS_F);   // +1 penche à gauche · −1 penche à droite
+/* LE POIDS COLLECTIF (recherche/vigie_institutionnelle.md §5) : un +1 par lequel quelqu'un signale
+   que l'objet résonne. Anonyme, remonté lavé. La balance ne PONDÈRE rien — elle ADDITIONNE ce que
+   l'équipe a déposé : « l'outil transcrit le poids, il ne le fabrique pas » (§1, L141).
+   Le poids ne dit ni la vérité (le plus pesé n'a pas raison) ni la direction : il dit où l'équipe
+   met son poids — et le recul sert à le répartir autrement. */
+function somme(L){ return L.reduce(function(a,t){ return a + t.poids; }, 0); }
+var POIDS_C = somme(TRAITS_CONT);
+var POIDS_F = somme(TRAITS_RIG) + somme(TRAITS_DIS);
+var CHARGE  = (POIDS_C - POIDS_F) / (POIDS_C + POIDS_F);
 
 var INCL_MAX = 13, LEST_MAX = 3.2;                          // degrés
 /* une balance est sensible près de l'équilibre : la racine ouvre le milieu, là où se joue le travail */
