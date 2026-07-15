@@ -287,7 +287,7 @@ $("traits").innerHTML = GESTES.map(trait).join("");
    DEUX FENÊTRES (borne c : le sens prime la valeur) : poidsAv = d'avant, poids = courante. La
    poutre part de l'assiette d'avant et dérive vers la courante — le mouvement daté, montré par
    l'objet. Calculées ici, avant la Vigie qui les lit. ══ */
-var INCL_MAX = 13, LEST_MAX = 3.2;                          // degrés
+var INCL_MAX = 13, LEST_MAX = 0.8;   // un souffle, jamais plus que l'assiette : l'œil leste, il ne noie pas
 /* une balance est sensible près de l'équilibre : la racine ouvre le milieu, là où se joue le travail */
 function assiette(cle){
   var c = GESTES.reduce(function(a,g){ return a + g[cle] * g.cont; }, 0);

@@ -424,13 +424,21 @@ export function setRefreshStatics(fn){ refreshStatics = fn; }
     // grossir (≠ pentalobe, dont les 5 axes SE PARTAGENT les fragments ; le ∞ est déjà pleine largeur).
     var ASYM2 = { s:[1,1] };                     // le bilobe n'est pas dans ASYM (il a sa propre fonction)
     var K_BI = 0.10;   // ≤ 0,11 mesuré : au-delà, le lobe gauche sort du viewBox (x<0)
+    var K_GAIN = 0.22;                   // gain de la racine : le plafond K_BI est atteint à un ratio
+                                         // de 0,40/0,60 — un déséquilibre réel, pas un frémissement.
+                                         // Plus haut, l'échelle sature sur la plage normale (mesuré :
+                                         // à 0.34, un ratio de 0,468 consommait déjà 85 % de la course).
     // Le bilobe est déjà pleine largeur et ses DEUX faces sont nourries par chaque dépôt : la
     // matière ne le fait pas grossir, elle se RÉPARTIT — une boucle prend ce que l'autre perd.
     // Le ∞ garde son emprise ; ce qui se lit, c'est de quel côté la matière tombe.
     function setGrainBi(d){                       // d = [densité Continuité, densité Fragmentation]
       var a=(d&&d[0])||0, b=(d&&d[1])||0, t=a+b;
-      var p = t>0 ? a/t : 0.5;             // part de la Continuité, 0..1
-      var k = K_BI*(p-0.5)*2;              // ±10 % au maximum
+      var ch = t>0 ? (a-b)/t : 0;          // −1 (tout à droite) .. +1 (tout à gauche)
+      // racine : la même courbe que l'assiette de la balance. Le ratio de matière vit près de 0,5
+      // (chaque dépôt nourrit les deux faces) : une loi linéaire ne montrerait rien.
+      var k = Math.sign(ch) * Math.sqrt(Math.abs(ch)) * K_GAIN;
+      if(k >  K_BI) k =  K_BI;             // saturation : la géométrie ne permet pas plus
+      if(k < -K_BI) k = -K_BI;
       ASYM2.s[0] = 1+k; ASYM2.s[1] = 1-k;
       var K2b=buildKnot2(ASYM2.s, SYM); KF[0]=K2b.pts; KN[0]=xNodes(KF[0]).slice(0,1);
     }
