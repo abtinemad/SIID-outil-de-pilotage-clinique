@@ -102,6 +102,18 @@ async function capturer(pg, s) {
     await clicBoucle(pg, 0.32, 0.70); await attendre(1300);
     const ap5 = await oeil(pg);
     capt.modes.park_b5 = { avant: av5, apres: ap5, deplacement: Math.round(Math.hypot(ap5[0] - av5[0], ap5[1] - av5[1])) };
+
+    // ── GARDE GÉNÉRIQUE (pas un snapshot) : après rendu, aucun attribut numérique du SVG ne doit valoir NaN.
+    //    Le témoin ne capture que strates/modes ; ce trou-là est ce qui a laissé passer le NaN de l'iris en reduced-motion. ──
+    const nans = await pg.evaluate(() => {
+      const out = [];
+      document.querySelectorAll('#knot *').forEach(el => {
+        for (const a of el.attributes) if (/NaN/i.test(a.value)) out.push(el.id || el.tagName + ':' + a.name);
+      });
+      return out;
+    });
+    if (nans.length) { console.error('ROUGE — attributs NaN :', nans.join(', ')); process.exit(1); }
+    else console.log('  aucun attribut NaN ✓');
   } finally {
     await nav.close();
   }

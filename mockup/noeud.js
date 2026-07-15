@@ -349,7 +349,9 @@ export function creerNoeud(svgEl, opts){
     ptHalo.setAttribute("cx",P[0].toFixed(1)); ptHalo.setAttribute("cy",P[1].toFixed(1)); ptHalo.setAttribute("r",(ptRad*1.06).toFixed(2));
     pt.setAttribute("cx",P[0].toFixed(1)); pt.setAttribute("cy",P[1].toFixed(1)); pt.setAttribute("r",ptRad.toFixed(2));
     ptClipC.setAttribute("cx",P[0].toFixed(1)); ptClipC.setAttribute("cy",P[1].toFixed(1)); ptClipC.setAttribute("r",ptRad.toFixed(2));
-    var bf=1, cxp=P[0], cyp=P[1], breath=1, rx=pupR, ry=pupR, pupAng=0, pupVis=true;
+    var bf=1, cxp=P[0], cyp=P[1], breath=1, rx=pupR, ry=pupR, pupAng=0, pupVis=true, pbreath=pupR, gzv=1;
+    // pbreath/gzv sont lus par le bloc IRIS (plus bas), qui vit HORS de la branche vivante (SET.ptex && !reduce) :
+    // sans socle, ils sont undefined en reduced-motion → ptIris rx/ry NaN. Défauts = état « œil de face, pupille centrée ».
     if(SET.ptex && !reduce){
       // regard porté par un vecteur 3D (rgx,rgy,gzv). Trois états, distingués par le signe de gzv :
       //  · repos (aucune boucle)  → gzv>0 : l'œil FAIT FACE à l'utilisateur (dérive douce). Vers l'intérieur seulement après longue inactivité.
@@ -357,7 +359,7 @@ export function creerNoeud(svgEl, opts){
       //  · clic                   → deux tours de globe, puis bascule vers l'état ci-dessus.
       var rgx=gx, rgy=gy, rad2=rgx*rgx+rgy*rgy;
       if(rad2>0.9){ var kk=Math.sqrt(0.9/rad2); rgx*=kk; rgy*=kk; rad2=0.9; }
-      var gzv=Math.sqrt(1-rad2);                              // défaut : face à l'utilisateur
+      gzv=Math.sqrt(1-rad2);                              // défaut : face à l'utilisateur
       var idleFor=T-lastInter;                                // temps écoulé depuis la dernière interaction
       var _ci=Math.atan2(P[1]-CY, P[0]-CX);                   // azimuth : de l'œil vers l'EXTÉRIEUR — vers la boucle tenue, pas le centre (repère local)
       var wantInsp=((ptParked!==null || (dashLobe>=0 && Math.round(currentS)===1)) && !flipping)?1:0;   // regard SITUÉ : boucle patient tenue OU entré dans une boucle Dashboard
@@ -428,7 +430,7 @@ export function creerNoeud(svgEl, opts){
         else if(eyeState==='interro'){ var _ei=T-eyeStateT; _dilT=(_ei<0.5)?0.35:-0.28; }   // interro : DILATE (surprise) puis CONTRACTE (focus/scrutin)
       }
       pupDil += (_dilT-pupDil)*0.10;                        // dilatation lissée
-      var pbreath=pupR*breath*(1+pupDil);                   // rayon pupillaire effectif (socle × dilatation)
+      pbreath=pupR*breath*(1+pupDil);                   // rayon pupillaire effectif (socle × dilatation)
       // canal COULEUR : la luminosité du globe module selon l'état (éclaircir / pulser / scintiller). Gaté Vigie.
       var _glowT=1;
       if(_sig){ if(eyeState==='eveil') _glowT=1.10; else if(eyeState==='interro') _glowT=1.0+0.05*Math.sin(T*2.2); }
