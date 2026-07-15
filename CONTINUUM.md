@@ -181,7 +181,7 @@ Pas un point d'arrivée. L'hypothèse clinique est ce que l'équipe **noue à un
 
 **Le nouage.** L'hypothèse est le moment où l'équipe (médecin + coordinateur) noue en une synthèse *toutes* les données — factuelles, lecture clinique, ce que l'alliance et la temporalité ont permis, le patient et l'entourage comme **matière vivante**. Le patient n'est **pas co-auteur** (l'équipe rédige) ; il est intégré comme source, au titre de ce que l'alliance a ouvert. Ce nouage tient ensemble **où on en est et où on va**, dans le même texte. L'« où on en est » n'est pas un état psychique mesuré : c'est une lecture, datée, révisable.
 
-**La spirale — la chaîne de révisions.** Chaque hypothèse est à la fois le *fruit* du nouage précédent et la *condition* du suivant : parce qu'on a mieux compris, on peut regarder et nouer autrement qu'au départ (« ce ne sera pas la même lecture qu'à la base »). Cause et effet sur le même objet, à deux instants : une **spirale, pas un point**. C'est le nœud gordien — à chaque tour le fil n'est plus le même. Matériellement, cette spirale **est** la chaîne des révisions (`ref_id` → `ref_id`) : le récit du parcours s'écrit dans la suite des hypothèses qui se reprennent.
+**La spirale des révisions.** Chaque hypothèse est à la fois le *fruit* du nouage précédent et la *condition* du suivant : parce qu'on a mieux compris, on peut regarder et nouer autrement qu'au départ (« ce ne sera pas la même lecture qu'à la base »). Cause et effet sur le même objet, à deux instants : une **spirale, pas un point**. C'est le nœud gordien — à chaque tour le fil n'est plus le même. Matériellement, cette spirale **est** la chaîne des révisions (`ref_id` → `ref_id`) : le récit du parcours s'écrit dans la suite des hypothèses qui se reprennent.
 
 **Point de rebouclage, pas terminus.** Une hypothèse révisée **rétroagit sur les autres champs** : elle déplace la Situation, le Ressenti, la Demande qu'on lira au tour suivant. L'Hypothèse clinique n'est donc **pas le dernier des six** — c'est le point qui **renvoie au début, transformé** : elle rouvre la grille. C'est l'organe qui **réalise l'intrication** (§3) : la grille n'est pas une séquence qui finit, c'est une boucle que l'hypothèse fait tourner — et ce qui la fait tourner, c'est la **révision**, jamais l'atteinte d'un état.
 
@@ -949,6 +949,13 @@ métabolisé *par* nous (cf. « alimenté par le pentalobe *et* par les nouages 
 ci-dessous) ; au bilobe, l'**institution** — le patient singulier s'est effacé, ne demeure
 que la forme agrégée de nos pratiques. Le **lavage** du contenu patient se fait au passage
 au bilobe.
+
+**La spirale des strates.** Chaque tour prend un **patient différent** : au pentalobe, le patient ;
+au trilobe, l'équipe qui le prend en charge ; au bilobe, l'institution. Le schéma ne change pas — il
+se répète, un tour plus haut, sur un autre sujet : les **ressemblances entre strates ne sont pas des
+redondances** à corriger, elles sont la forme du mouvement. Elle ne se confond pas avec la **spirale
+des révisions** (§2), qui tourne dans le **temps** sur un seul patient : celle-ci tourne dans les
+**échelles**, et à chaque tour le **patient** n'est plus le même.
 
 **Récolte (5 lobes, par patient).** La donnée brute de terrain, par axe relationnel. Guichet des
 **soignants**. C'est le nœud-patient (§19). Deux natures s'y déposent : les **faits durs** —
