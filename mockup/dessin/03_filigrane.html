@@ -65,15 +65,9 @@
   .sec{padding:14px 22px 0}
   .secTitre{font-family:var(--prose);font-weight:700;font-size:16px;margin-bottom:2px}
   .secSous{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px}
-  /* LE TRAIT : une ligne du filigrane. Le grain porte la masse — jamais un nombre, jamais d'échelle. */
-  .trait{margin:0 0 13px}
+  /* LE TRAIT : une ligne du filigrane — le mot et sa note. La masse est passée sur le ∞. */
+  .trait{margin:0 0 9px}
   .traitMot{font-family:var(--prose);font-size:13.5px;line-height:1.35;margin-bottom:5px}
-  .fgPile{position:relative;height:13px}
-  .fg{position:absolute;inset:0;border-radius:2px;transition:opacity .45s;background-repeat:repeat}
-  .fgAv{opacity:.06}    /* la fenêtre d'avant : dans le papier, sous le présent */
-  .fgAp{opacity:.16}
-  .feuille.cj .fgAv{opacity:.26}
-  .feuille.cj .fgAp{opacity:.82}
   .traitNote{font-family:var(--slate);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);
     margin-top:3px;opacity:0;transition:opacity .45s}
   .feuille.cj .traitNote{opacity:.85}
@@ -162,8 +156,8 @@
     <!-- LE JEU UNIQUE -->
     <div class="sec">
       <div class="secTitre">Ce qu'on dépose</div>
-      <div class="secSous">Un seul jeu : aucun geste n'est d'un côté. Le grain est la masse, le fantôme
-        dessous est la fenêtre d'avant. Tenez la feuille à contre-jour — il n'y a pas d'échelle.</div>
+      <div class="secSous">Un seul jeu : aucun geste n'est d'un côté. La masse est passée sur le ∞ : les
+        boucles basculent du côté où la matière tombe. Ici, les mots et leur mouvement.</div>
       <div id="traits"></div>
     </div>
 
@@ -214,15 +208,15 @@
      direction : il dit où l'équipe met son poids — et le recul sert à le répartir autrement, petit
      à petit. L'œil leste : il pèse là où il passe.</p>
   <h3>deux fenêtres</h3>
-  <p>La maille n'est plus un libellé : chaque geste porte deux masses — les trois derniers mois, et
-     les trois d'avant. Sous chaque trait, la fenêtre précédente est le fantôme dans le papier : on
-     voit le grain s'épaissir ou s'amincir. <span class="q">Le sens de la variation prime la valeur :
-     c'est le mouvement qui est clinique, jamais le chiffre. Et ce qui parle, c'est le figé — le geste
-     qui ne coulisse plus. La page expose valeur, sens, durée dans l'état ; jamais bien ni mal.</span></p>
+  <p>La maille tient deux fenêtres — les trois derniers mois, et les trois d'avant. Le ∞ <b>ouvre sur
+     celle d'avant</b>, tient une seconde, puis dérive lentement vers la courante : on voit d'où le
+     poids vient. <span class="q">Le sens de la variation prime la valeur : c'est le mouvement qui est
+     clinique, jamais le chiffre. Et ce qui parle, c'est le figé — le geste qui ne coulisse plus. La
+     page expose sens et durée dans l'état ; jamais bien ni mal.</span></p>
   <h3>montrée, jamais chiffrée</h3>
-  <p>Pas de « unité fragmentée à 40 % ». Les masses réelles pilotent le <b>grain</b> du filigrane —
-     le nombre est chiffré dans la forme. On compare à l'œil, sans échelle : une forme se regarde,
-     un nombre se pilote.</p>
+  <p>Pas de « unité fragmentée à 40 % ». La masse réelle <b>bascule les boucles</b> du ∞ — le nombre
+     est chiffré dans la forme. On compare à l'œil, sans échelle : une forme se regarde, un nombre se
+     pilote.</p>
   <h3>le seul endroit où la machine parle</h3>
   <p>Ailleurs, nommer tomberait sur quelqu'un. Ici : anonyme, agrégé, aucun chemin vers l'individuel
      (le Lien de chacun n'a ni vue croisée ni agrégat — et n'en aura pas). Le recul de l'agrégat est
@@ -271,13 +265,6 @@ var GESTES = [
    solitaires ; elle le met maintenant sur la temporalité, les trous déposés, la diffraction. */
 /* L'OUBLIÉ se lit maintenant sur la fenêtre courante des traits (fige && ap faible) — voir plus bas. */
 
-/* ── le grain : la masse devient un pas de trame. Aucune échelle affichée. ── */
-function grain(m, ref){
-  var d = Math.max(0.06, Math.min(1, m / ref));
-  var pas = (14 - 11 * d).toFixed(2);
-  var ep  = (0.6 + 1.5 * d).toFixed(2);
-  return "repeating-linear-gradient(78deg, var(--ink) 0 " + ep + "px, transparent " + ep + "px " + pas + "px)";
-}
 function sens(t){
   if(t.fige) return {mot:"ne bouge pas depuis longtemps", d:0};
   var d = (t.ap - t.av) / Math.max(1, t.ref);
@@ -285,12 +272,7 @@ function sens(t){
   return {mot: d > 0 ? "s'épaissit" : "s'amincit", d:d};   // le SENS, jamais « mieux »/« pire » (borne c)
 }
 function trait(t){
-  return '<div class="trait"><div class="traitMot">' + t.mot + '</div>' +
-    '<div class="fgPile">' +
-      '<div class="fg fgAv" style="background-image:' + grain(t.av, t.ref) + '"></div>' +
-      '<div class="fg fgAp" style="background-image:' + grain(t.ap, t.ref) + '"></div>' +
-    '</div>' +
-    '<div class="traitNote">' + t.note + ' — ' + sens(t).mot + '</div></div>';
+  return '<div class="trait"><div class="traitMot">'+t.mot+'</div><div class="traitNote">'+t.note+' — '+sens(t).mot+'</div></div>';
 }
 $("traits").innerHTML = GESTES.map(trait).join("");
 
@@ -312,6 +294,19 @@ function assiette(cle){
 }
 var AP = assiette("poids"), AV = assiette("poidsAv");
 var ASSIETTE = AP.deg, ASSIETTE_AV = AV.deg;
+
+/* La MASSE (le volume déposé), répartie par la lecture du climat — descriptif, légitime :
+   « une boucle grossit du volume de fragments rangés sur son axe » (CONTINUUM.md §19).
+   Ce n'est PAS le poids : la masse ne pèse rien, elle ne fait que donner sa forme au fil (le RATIO
+   des boucles — de quel côté ça tombe). Le « combien » (le total) n'a pas de canal ici : à strate 0
+   l'épaisseur du module est verrouillée (pat=0), on ne montre que la répartition. */
+function matiere(cle){
+  var c = GESTES.reduce(function(a,g){ return a + g[cle] * g.cont; }, 0);
+  var f = GESTES.reduce(function(a,g){ return a + g[cle] * (1 - g.cont); }, 0);
+  return { c:c, f:f };
+}
+var M_AP = matiere("ap"), M_AV = matiere("av");
+/* setGrainBi ne lit qu'un RATIO (il normalise a/(a+b)) : passer les masses brutes suffit. */
 
 /* ══ LA VIGIE — dérivée du mouvement, plus écrite à la main. Elle expose le mouvement daté et ce
       qui ne coulisse plus ; jamais si c'est bien ou mal (§15 borne c : « c'est le rouge FIGÉ qui parle »). ══ */
@@ -361,9 +356,12 @@ function lest(){
   return Math.max(-1, Math.min(1, (cx - CXV) / RAYV)) * LEST_MAX;
 }
 var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if(reduit){ knot.style.transform = "rotate(" + ASSIETTE.toFixed(2) + "deg)"; }
+if(reduit){
+  knot.style.transform = "rotate(" + ASSIETTE.toFixed(2) + "deg)";
+  noeud.setGrainBi([M_AP.c, M_AP.f]);
+}
 else {
-  var incl = ASSIETTE_AV, t0 = performance.now();
+  var incl = ASSIETTE_AV, t0 = performance.now(), _formeK = -1;
   (function poutre(){
     var age = (performance.now() - t0) / 1000;
     /* 1,2 s tenue sur la fenêtre d'avant (on voit d'où on vient), puis la dérive, lente et
@@ -371,6 +369,14 @@ else {
        ne bouge : le figé se montre par l'absence de mouvement. */
     var k = (age < 1.2) ? 0 : (age < 8 ? 0.011 : 0.045);
     incl += ((ASSIETTE + lest()) - incl) * k;
+    /* la forme suit la même horloge que l'assiette : on ouvre sur la fenêtre d'avant, on dérive.
+       Si rien n'a bougé, rien ne bouge — le figé se montre par l'absence de mouvement. */
+    var u = (age < 1.2) ? 0 : Math.min(1, (age - 1.2) / 6.8);
+    var q = u*u*(3-2*u);                                   // lissage, même solennité que la poutre
+    if(Math.abs(q - _formeK) > 0.004){
+      _formeK = q;
+      noeud.setGrainBi([ M_AV.c + (M_AP.c - M_AV.c)*q, M_AV.f + (M_AP.f - M_AV.f)*q ]);
+    }
     knot.style.transform = "rotate(" + incl.toFixed(3) + "deg)";
     requestAnimationFrame(poutre);
   })();
