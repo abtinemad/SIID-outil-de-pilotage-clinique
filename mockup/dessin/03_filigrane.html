@@ -246,6 +246,13 @@
      s'écrit tout seul, les deux faces se lisent, la machine attend. <span class="q">Une seule
      hypothèse par personne, anonyme — et l'hypothèse de l'unité, quand elle se
      formule, demande <b>deux signatures égales</b> : aucune voix ne pèse plus qu'une autre.</span></p>
+  <h3>le quorum est la porte</h3>
+  <p>L'hypothèse de la machine ne s'ouvre pas sur un bouton : elle s'ouvre quand <b>deux hypothèses
+     au moins</b> ont été déposées. <span class="q">Sous le quorum, il n'y a pas de chemin vers elle —
+     pas un bouton grisé, pas de bouton. La garde n'est pas une consigne, c'est une absence.</span>
+     Deux, parce que réunir cinq personnes n'arrive pas ; le principe, lui, ne bouge pas : <b>aucune
+     voix ne pèse plus qu'une autre</b>, et le compte est anonyme — on voit qu'ils sont deux, jamais
+     qui ils sont.</p>
   <h3>elle peut citer, elle peut compter</h3>
   <p>L'interdit du chiffre protège <b>quelqu'un</b> : aucun nombre sur un patient ni un soignant
      nommé. Ici l'agrégat est anonyme — <b>il n'y a plus personne</b> : compter ce qu'on a déposé,
@@ -337,16 +344,15 @@ var HYPS = [
  { d:"il y a 2 j", t:"L'unité va bien. C'est le volume qui a changé, pas nous." },
  { d:"il y a 2 j", t:"On a arrêté de se contredire. Ça m'inquiète plus que la charge." }
 ];
-function renderHyps(){
+function rendHyps(){
   $("hyps").innerHTML = HYPS.map(function(h){
     return '<div class="hyp"><div class="hypTxt">'+h.t+'</div><div class="hypQui">'+h.d+'</div></div>'; }).join("");
 }
-renderHyps();
 
 /* ══ LE GUICHET — le seul geste de la page (vigie_institutionnelle §4, « Le geste de création »).
       Le « + » ouvre la fenêtre ; « déposer » ajoute MON hypothèse EN TÊTE, ANONYME (rien ne la
-      distingue des autres), puis re-rend et ferme. Texte vide → rien n'est déposé, on ferme.
-      Le scellé reste indépendant. ══ */
+      distingue des autres), puis re-rend #hyps ET #mach (le dépôt fait avancer le compte du
+      quorum) et ferme. Texte vide → rien n'est déposé, on ferme. ══ */
 $("btHyp").addEventListener("click", function(){
   $("g-txt").value = "";
   $("guichet").classList.add("on");
@@ -355,23 +361,42 @@ $("btHyp").addEventListener("click", function(){
 $("g-annul").addEventListener("click", function(){ $("guichet").classList.remove("on"); });
 $("g-dep").addEventListener("click", function(){
   var txt = $("g-txt").value.trim();
-  if(txt){ HYPS.unshift({ d:"à l'instant", t:txt }); renderHyps(); }  // aucun nom : elle rejoint le champ, rien ne la distingue
+  if(txt){ HYPS.unshift({ d:"à l'instant", t:txt }); rendHyps(); rendMach(); }  // aucun nom : elle rejoint le champ ; rendMach relit le compte
   $("guichet").classList.remove("on");
 });
 
-/* scellée tant qu'on n'a pas déposé la sienne : c'est une absence de chemin, pas une règle */
-$("mach").innerHTML = '<div class="scelle" id="sc">L\'hypothèse de la machine est <b>scellée</b>.<br>'+
-  'Elle s\'ouvre quand on a déposé la sienne — sinon elle nous ancre.<br><br>· toucher pour ouvrir ·</div>';
-$("sc").addEventListener("click", function(){
+/* ══ LE SCELLÉ — piloté par le COMPTE, pas par un bouton. Le quorum est anonyme, comme le poids
+      (vigie_institutionnelle §5 : « on voit le poids, jamais qui l'a posé »). QUORUM = 2 (Abtine,
+      15/07 : réunir cinq personnes est irréaliste ; le principe ne bouge pas — tout le monde égal). ══ */
+var QUORUM = 2;
+/* La porte est le COMPTE, pas un bouton : sous le quorum, il n'existe aucun chemin vers
+   l'hypothèse machine. Elle ne parle jamais la première — sinon elle nous ancre : on croirait
+   penser, on compléterait son brouillon. Le quorum est anonyme (un nombre, jamais des noms). */
+function ouvrirMach(){
   $("mach").innerHTML =
-   '<div class="hyp machine"><div class="hypTxt">On dirait que l\'unité absorbe de plus en plus et relie de moins en moins. '+
-   'Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, tenir un écart, '+
-   'écrire ce qu\'on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu\'on tient encore, ou est-ce qu\'on encaisse ?</div>'+
-   '<div class="hypQui">la machine · au tentatif · rien n\'est conclu</div></div>'+
-   '<div class="ecart"><div class="hypTxt">Quatre lectures, aucune identique. Deux disent la charge, une dit le lien, '+
-   'une dit qu\'il n\'y a rien. La machine dit l\'absorption.</div>'+
+   '<div class="hyp machine"><div class="hypTxt">On dirait que l\'unité absorbe de plus en plus et relie de moins '+
+   'en moins. Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, '+
+   'tenir un écart, écrire ce qu\'on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu\'on tient encore, ou '+
+   'est-ce qu\'on encaisse ?</div><div class="hypQui">la machine · au tentatif · rien n\'est conclu</div></div>'+
+   '<div class="ecart"><div class="hypTxt">'+HYPS.length+' lectures, aucune identique. Deux disent la charge, '+
+   'une dit le lien, une dit qu\'il n\'y a rien. La machine dit l\'absorption.</div>'+
    '<div class="hypQui">l\'écart — tenu, jamais résolu</div></div>';
-});
+}
+function rendMach(){
+  if(HYPS.length < QUORUM){
+    $("mach").innerHTML = '<div class="scelle" style="cursor:default">L\'hypothèse de la machine est <b>scellée</b>.'+
+      '<br>Il faut <b>'+QUORUM+' hypothèses</b> déposées. Il y en a <b>'+HYPS.length+'</b>.'+
+      '<br><br>· elle ne parle pas la première ·</div>';
+    return;
+  }
+  $("mach").innerHTML = '<div class="scelle" id="sc"><b>'+HYPS.length+' hypothèses</b> déposées — le quorum est atteint.'+
+    '<br>Elle peut s\'ouvrir.<br><br>· toucher pour ouvrir ·</div>';
+  $("sc").addEventListener("click", ouvrirMach);
+}
+/* ⚠️ DÉFAUT DE MAQUETTE (pas de doctrine) : si la machine est déjà ouverte, un nouveau dépôt la
+   re-scelle — rendMach() re-rend le scellé fermé/ouvert selon le compte, sans mémoire du fait
+   qu'elle était ouverte. Signalé, non corrigé. */
+rendHyps(); rendMach();
 
 $("cont").innerHTML =
  '<div class="tex"><div class="texNom">Le fil survit à celui qui le tient</div>'+
