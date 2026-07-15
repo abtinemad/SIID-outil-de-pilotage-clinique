@@ -253,19 +253,21 @@ var $ = function(id){ return document.getElementById(id); };
    LECTURE DU CLIMAT, pas un rangement. Aucun cont à 0 ni à 1 : la même source éclaire et assombrit
    (§1) — un relais rend continu ET coûte, la routine fige ET tient. */
 var GESTES = [
- {id:"relais", poids:14, cont:.78, mot:"le fil passe de main en main", ref:60, av:11, ap:6, fige:false, note:"relais — un nom ferme le passage", q:"on se relaie moins qu'avant ?"},
- {id:"noues", poids:9, cont:.72, mot:"on noue : plusieurs dépôts, un seul geste", ref:400, av:214, ap:198, fige:false, note:"l'agrafe — le nouage, jamais un dépôt seul", q:"le nouage se défait ?"},
- {id:"temporalite", poids:21, cont:.66, mot:"on laisse le temps", ref:60, av:3, ap:3, fige:true, note:"temporalité — le temps qu'on choisit de respecter", q:"on ne choisit plus d'attendre ?"},
- {id:"leves", poids:6, cont:.70, mot:"on ferme ce qu'on ouvre", ref:120, av:34, ap:21, fige:false, note:"levées — reprendre, c'est déposer ; annuler, c'est lever", q:"on n'ose plus fermer ?"},
- {id:"soin", poids:4, cont:.60, mot:"la chaîne soin tient", ref:700, av:291, ap:283, fige:false, note:"le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite", q:""},
- {id:"vide", poids:17, cont:.64, mot:"on écrit ce qu'on ne sait pas", ref:60, av:9, ap:9, fige:true, note:"vide d'info — le trou, déposé plutôt que comblé", q:"on ne dépose plus nos trous ?"},
- {id:"seuls", poids:18, cont:.35, mot:"on dépose, on ne noue plus", ref:700, av:502, ap:604, fige:false, note:"dépôts seuls, sans agrafe", q:"la routine prend la place du nouage ?"},
- {id:"ouverts", poids:34, cont:.28, mot:"rien ne se lève", ref:140, av:78, ap:112, fige:false, note:"ouvert et jamais levé — la question qui devient décor", q:"les questions deviennent du décor ?"},
- {id:"routine", poids:5, cont:.44, mot:"le même geste, le même rythme", ref:700, av:557, ap:599, fige:false, note:"observation + jalon — la routine qui reproduit", q:""},
- {id:"entree", poids:4, cont:.50, mot:"tout entre", ref:500, av:386, ap:412, fige:false, note:"l'entrée large — rien n'est trié, tout est reçu", q:""},
- {id:"diffraction", poids:24, cont:.55, mot:"les écarts ne sont plus tenus", ref:90, av:12, ap:12, fige:true, note:"diffraction — les lectures tenues à l'écart, jamais un milieu", q:"on ne tient plus les lectures à l'écart ?"},
- {id:"bords", poids:11, cont:.46, mot:"les bords s'effacent", ref:120, av:31, ap:28, fige:false, note:"indication — ce qui borde, ce qui pose un cadre", q:""}
+ {id:"relais", poids:14, poidsAv:9, cont:.78, mot:"le fil passe de main en main", ref:60, av:11, ap:6, fige:false, note:"relais — un nom ferme le passage", q:"on se relaie moins qu'avant ?"},
+ {id:"noues", poids:9, poidsAv:12, cont:.72, mot:"on noue : plusieurs dépôts, un seul geste", ref:400, av:214, ap:198, fige:false, note:"l'agrafe — le nouage, jamais un dépôt seul", q:"le nouage se défait ?"},
+ {id:"temporalite", poids:21, poidsAv:8, cont:.66, mot:"on laisse le temps", ref:60, av:3, ap:3, fige:true, note:"temporalité — le temps qu'on choisit de respecter", q:"on ne choisit plus d'attendre ?"},
+ {id:"leves", poids:6, poidsAv:11, cont:.70, mot:"on ferme ce qu'on ouvre", ref:120, av:34, ap:21, fige:false, note:"levées — reprendre, c'est déposer ; annuler, c'est lever", q:"on n'ose plus fermer ?"},
+ {id:"soin", poids:4, poidsAv:5, cont:.60, mot:"la chaîne soin tient", ref:700, av:291, ap:283, fige:false, note:"le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite", q:""},
+ {id:"vide", poids:17, poidsAv:6, cont:.64, mot:"on écrit ce qu'on ne sait pas", ref:60, av:9, ap:9, fige:true, note:"vide d'info — le trou, déposé plutôt que comblé", q:"on ne dépose plus nos trous ?"},
+ {id:"seuls", poids:18, poidsAv:26, cont:.35, mot:"on dépose, on ne noue plus", ref:700, av:502, ap:604, fige:false, note:"dépôts seuls, sans agrafe", q:"la routine prend la place du nouage ?"},
+ {id:"ouverts", poids:34, poidsAv:41, cont:.28, mot:"rien ne se lève", ref:140, av:78, ap:112, fige:false, note:"ouvert et jamais levé — la question qui devient décor", q:"les questions deviennent du décor ?"},
+ {id:"routine", poids:5, poidsAv:9, cont:.44, mot:"le même geste, le même rythme", ref:700, av:557, ap:599, fige:false, note:"observation + jalon — la routine qui reproduit", q:""},
+ {id:"entree", poids:4, poidsAv:7, cont:.50, mot:"tout entre", ref:500, av:386, ap:412, fige:false, note:"l'entrée large — rien n'est trié, tout est reçu", q:""},
+ {id:"diffraction", poids:24, poidsAv:10, cont:.55, mot:"les écarts ne sont plus tenus", ref:90, av:12, ap:12, fige:true, note:"diffraction — les lectures tenues à l'écart, jamais un milieu", q:"on ne tient plus les lectures à l'écart ?"},
+ {id:"bords", poids:11, poidsAv:8, cont:.46, mot:"les bords s'effacent", ref:120, av:31, ap:28, fige:false, note:"indication — ce qui borde, ce qui pose un cadre", q:""}
 ];
+/* la fenêtre d'avant : l'équipe mettait son poids sur les questions ouvertes et les dépôts
+   solitaires ; elle le met maintenant sur la temporalité, les trous déposés, la diffraction. */
 /* L'OUBLIÉ se lit maintenant sur la fenêtre courante des traits (fige && ap faible) — voir plus bas. */
 
 /* ── le grain : la masse devient un pas de trame. Aucune échelle affichée. ── */
@@ -291,12 +293,35 @@ function trait(t){
 }
 $("traits").innerHTML = GESTES.map(trait).join("");
 
+/* ══ LES DEUX ASSIETTES ═══════════════════════════════════════════════════════════════════
+   LE POIDS COLLECTIF (vigie_institutionnelle §5) : un +1 par lequel quelqu'un signale que l'objet
+   résonne — humain, anonyme, remonté lavé. LA RÉPARTITION (§3) : le climat lit de quel côté ça
+   tombe, dépôt par dépôt ; aucun objet n'appartient à une face. L'outil ne fabrique rien — il
+   transcrit le poids (CONTINUUM.md §1) et lit la texture.
+   DEUX FENÊTRES (borne c : le sens prime la valeur) : poidsAv = d'avant, poids = courante. La
+   poutre part de l'assiette d'avant et dérive vers la courante — le mouvement daté, montré par
+   l'objet. Calculées ici, avant la Vigie qui les lit. ══ */
+var INCL_MAX = 13, LEST_MAX = 3.2;                          // degrés
+/* une balance est sensible près de l'équilibre : la racine ouvre le milieu, là où se joue le travail */
+function assiette(cle){
+  var c = GESTES.reduce(function(a,g){ return a + g[cle] * g.cont; }, 0);
+  var f = GESTES.reduce(function(a,g){ return a + g[cle] * (1 - g.cont); }, 0);
+  var ch = (c - f) / (c + f);
+  return { deg: -Math.sign(ch) * Math.sqrt(Math.abs(ch)) * INCL_MAX, c:c, f:f };
+}
+var AP = assiette("poids"), AV = assiette("poidsAv");
+var ASSIETTE = AP.deg, ASSIETTE_AV = AV.deg;
+
 /* ══ LA VIGIE — dérivée du mouvement, plus écrite à la main. Elle expose le mouvement daté et ce
       qui ne coulisse plus ; jamais si c'est bien ou mal (§15 borne c : « c'est le rouge FIGÉ qui parle »). ══ */
 var TOUS  = GESTES;
 var bouge = TOUS.slice().sort(function(a,b){ return Math.abs(sens(b).d) - Math.abs(sens(a).d); })[0];
 var figes = TOUS.filter(function(t){ return t.fige; });
+var dAss = ASSIETTE - ASSIETTE_AV;
+var mvt = (Math.abs(dAss) < 0.8) ? "Notre poids n'a pas bougé."
+        : ("Notre poids s'est déplacé vers la <b>" + (dAss < 0 ? "Continuité" : "Fragmentation") + "</b>.");
 $("vigieDit").innerHTML =
+  mvt + "<br>" +
   "Ce qui a le plus bougé : <b>« " + bouge.mot + " »</b> — " + sens(bouge).mot + "." +
   (figes.length ? "<br>Ce qui ne bouge pas : " + figes.map(function(f){ return "« " + f.mot + " »"; }).join(" · ") + "." : "") +
   (bouge.q ? "<br>— " + bouge.q : "");
@@ -320,19 +345,8 @@ noeud.setStrate(0);
    L'inclinaison est une PROPORTION, jamais une magnitude : elle ne dit pas combien l'équipe tient,
    mais comment ça se répartit. Conséquence — et c'est ce qui la garde fidèle au §18bis (« c'est la
    même source qui éclaire et qui assombrit ») : on redresse aussi bien en tenant PLUS qu'en payant
-   moins. La balance ne dit jamais « réduis l'ombre ». */
-
-/* LE POIDS COLLECTIF (vigie_institutionnelle §5) : un +1 par lequel quelqu'un signale que l'objet
-   résonne — humain, anonyme, remonté lavé. LA RÉPARTITION (§3) : le climat lit de quel côté ça
-   tombe, dépôt par dépôt. Aucun objet n'appartient à une face.
-   L'outil ne fabrique rien : il transcrit le poids (CONTINUUM.md §1) et lit la texture. */
-var POIDS_C = GESTES.reduce(function(a,g){ return a + g.poids * g.cont; }, 0);
-var POIDS_F = GESTES.reduce(function(a,g){ return a + g.poids * (1 - g.cont); }, 0);
-var CHARGE  = (POIDS_C - POIDS_F) / (POIDS_C + POIDS_F);
-
-var INCL_MAX = 13, LEST_MAX = 3.2;                          // degrés
-/* une balance est sensible près de l'équilibre : la racine ouvre le milieu, là où se joue le travail */
-var ASSIETTE = -Math.sign(CHARGE) * Math.sqrt(Math.abs(CHARGE)) * INCL_MAX;
+   moins. La balance ne dit jamais « réduis l'ombre ».
+   (Les deux assiettes AV/AP sont calculées plus haut, avant la Vigie.) */
 
 /* LE LEST : l'œil pèse là où il passe. Le module écrit sa position dans le DOM (pt.cx) — la page la
    LIT, elle ne touche à rien. L'équilibre se tient quand l'œil peut passer au nœud sans que la
@@ -347,9 +361,14 @@ function lest(){
 var reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 if(reduit){ knot.style.transform = "rotate(" + ASSIETTE.toFixed(2) + "deg)"; }
 else {
-  var incl = 0;
+  var incl = ASSIETTE_AV, t0 = performance.now();
   (function poutre(){
-    incl += ((ASSIETTE + lest()) - incl) * 0.045;            // la poutre est lourde : elle suit avec inertie
+    var age = (performance.now() - t0) / 1000;
+    /* 1,2 s tenue sur la fenêtre d'avant (on voit d'où on vient), puis la dérive, lente et
+       solennelle, puis la réactivité normale pour le lest de l'œil. Si rien n'a bougé, rien
+       ne bouge : le figé se montre par l'absence de mouvement. */
+    var k = (age < 1.2) ? 0 : (age < 8 ? 0.011 : 0.045);
+    incl += ((ASSIETTE + lest()) - incl) * k;
     knot.style.transform = "rotate(" + incl.toFixed(3) + "deg)";
     requestAnimationFrame(poutre);
   })();
