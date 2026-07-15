@@ -54,36 +54,32 @@
   #filR{fill:var(--ink);stroke:var(--ink);stroke-width:.7;stroke-linejoin:round}
   #labels text{fill:var(--ink-soft);font-family:var(--word);font-weight:700}
 
-  .source{font-family:var(--prose);font-size:12.5px;line-height:1.5;color:var(--ink-soft);
-    text-align:center;padding:0 30px 2px;font-style:italic}
-  /* le contre-jour : il faut le geste pour voir */
-  .cj{display:block;margin:8px auto 4px;background:rgba(255,255,255,.5);border:1px solid var(--faint);
-    border-radius:14px;padding:7px 14px;font-family:var(--slate);font-size:10.5px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--ink-soft);cursor:pointer;user-select:none;transition:.18s}
-  .cj:hover{background:rgba(255,255,255,.85)}
-  .cj.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-  .sec{padding:14px 22px 0}
-  .secTitre{font-family:var(--prose);font-weight:700;font-size:16px;margin-bottom:2px}
-  .secSous{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px}
-  /* LE TRAIT : une ligne du filigrane — le mot et sa note. La masse est passée sur le ∞. */
-  .trait{margin:0 0 9px}
-  .traitMot{font-family:var(--prose);font-size:13.5px;line-height:1.35;margin-bottom:5px}
-  .traitNote{font-family:var(--slate);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);
-    margin-top:3px;opacity:0;transition:opacity .45s}
-  .feuille.cj .traitNote{opacity:.85}
-  /* la parole de la Vigie : le seul endroit où la machine a le droit de nommer */
-  .vigie{border-left:2px solid var(--red);padding:2px 0 2px 12px;margin:4px 0 16px}
-  .vigieTag{font-family:var(--slate);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);opacity:.85}
-  .vigieDit{font-family:var(--prose);font-size:14px;line-height:1.5;color:#3B424A;margin-top:4px}
-  .vigieDit b{font-weight:700;color:var(--ink)}
-  .vigieOut{font-family:var(--prose);font-style:italic;font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+  /* la grammaire de la page 2, verbatim (la spirale des strates, un tour plus haut) */
+  .sec{padding:14px 22px 8px;border-top:1px solid var(--faint)}
+  .secHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .secTitre{font-family:var(--prose);font-weight:700;font-size:17px}
+  .secSub{font-family:var(--slate);font-size:9.5px;color:var(--ink-soft);opacity:.8;margin:1px 0 10px}
+  .trigIco{background:0;border:0;padding:0;width:24px;height:24px;line-height:22px;text-align:center;
+    font-family:var(--word);font-size:17px;color:var(--red);opacity:.85;cursor:pointer}
+  /* propre à Filigrane */
+  .prose{font-family:var(--prose);font-size:13.5px;line-height:1.55}
+  .prose b{font-weight:700}
+  .prose p{margin-bottom:9px}
+  .hyp{border-left:2px solid var(--faint);padding:2px 0 2px 11px;margin-bottom:11px}
+  .hypTxt{font-family:var(--prose);font-size:13px;line-height:1.45}
+  .hypQui{font-family:var(--slate);font-size:8.5px;letter-spacing:.06em;color:var(--ink-soft);opacity:.8;margin-top:3px}
+  .hyp.machine{border-left-color:var(--red)}
+  .scelle{border:1px dashed var(--creux);border-radius:12px;padding:13px;text-align:center;cursor:pointer;
+    font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);line-height:1.7}
+  .scelle b{color:var(--ink);font-weight:400}
+  .ecart{background:rgba(255,255,255,.45);border:1px solid var(--faint);border-radius:12px;padding:11px 13px;margin-top:4px}
+  .tex{margin-bottom:13px}
+  .texNom{font-family:var(--prose);font-weight:700;font-size:13.5px}
+  .texCompte{font-family:var(--slate);font-size:9px;letter-spacing:.06em;color:var(--ink-soft);opacity:.85;margin:1px 0 5px}
+  .mots{font-family:var(--prose);font-size:12.5px;line-height:1.6;color:#3B424A}
   .visage{border:1px solid var(--faint);border-radius:12px;padding:11px 13px;margin-bottom:10px;background:rgba(255,255,255,.35)}
   .visageNom{font-family:var(--prose);font-weight:700;font-size:13.5px}
-  .visageDit{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin:2px 0 8px}
-  .bord{font-family:var(--prose);font-size:12.5px;line-height:1.5;text-align:center;color:var(--ink-soft);font-style:italic;padding:2px 6px 18px}
-  .oubli{padding-bottom:24px}
-  .oubliMot{display:inline-block;font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;
-    border:1px dashed var(--creux);border-radius:9px;padding:4px 9px;margin:0 5px 6px 0;color:var(--ink-soft)}
+  .visageDit{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:2px}
 
   /* la marge — règles verbatim de 02_intra_patient.html */
   .marge{max-width:392px;font-size:13.5px;line-height:1.62;color:#2B3138;padding-top:10px}
@@ -104,7 +100,7 @@
     <div class="maille"><b>l'unité</b> · les trois derniers mois</div>
   </div>
 
-  <div class="ecran feuille" id="feuille">
+  <div class="ecran">
     <div class="noeudCase">
       <svg class="knot" id="knot" viewBox="0 0 420 420" role="img" aria-label="Un nœud d'un seul fil continu qui se vrille : chaque boucle se croise à sa base, le fil passe dessus-dessous.">
         <defs>
@@ -135,63 +131,51 @@
         <g id="labels" font-size="10" letter-spacing="0" opacity="0"></g>
       </svg>
     </div>
-    <div class="source">Une seule source. Ce que tenir le fil rend possible,<br>et ce qu'il coûte.</div>
-    <button class="cj" id="cj" type="button">tenir à contre-jour</button>
-
-    <!-- la seule parole permise : anonyme, agrégée, elle ne tombe sur personne -->
+    <!-- ① LE RÉCIT — pas de guichet : il s'écrit tout seul, en permanence, au fil des dépôts -->
     <div class="sec">
-      <div class="vigie">
-        <div class="vigieTag">la vigie, au tentatif</div>
-        <div class="vigieDit" id="vigieDit"></div>
-        <div class="vigieOut">Rien n'est conclu. Aucun nom, aucune note, personne n'est désigné.</div>
-      </div>
-      <div class="traitMot" style="color:var(--ink-soft);font-size:12.5px;line-height:1.5">
-        Les deux boucles ne s'opposent pas : elles viennent du même geste. Plus l'équipe tient,
-        plus elle projette son ombre — l'usure, la résonance, le coût de durer.
-        Baisser l'ombre, ici, ce serait éteindre la lumière.
-      </div>
-      <div style="height:20px"></div>
+      <div class="secHead"><div class="secTitre">Récit</div></div>
+      <div class="secSub">L'histoire qui s'en dégage — il s'écrit tout seul, personne ne le signe</div>
+      <div class="prose" id="recit"></div>
     </div>
 
-    <!-- LE JEU UNIQUE -->
+    <!-- ② L'HYPOTHÈSE — chacun la sienne, sans voir celle des autres. Celle de la machine est SCELLÉE
+         tant qu'on n'a pas déposé : sinon elle nous ancre, on croirait penser et on compléterait son
+         brouillon. La récolte EST la diffraction, un tour plus haut. -->
     <div class="sec">
-      <div class="secTitre">Ce qu'on dépose</div>
-      <div class="secSous">Un seul jeu : aucun geste n'est d'un côté. La masse est sur le ∞ — les boucles
-        basculent du côté où elle tombe. Ici, les mots et leur mouvement.</div>
-      <div id="traits"></div>
+      <div class="secHead"><div class="secTitre">Hypothèse</div>
+        <button class="trigIco" id="btHyp" title="déposer la mienne" aria-label="déposer la mienne">+</button></div>
+      <div class="secSub">Ce qui se joue — chacun la sienne, sans voir celle des autres</div>
+      <div id="hyps"></div>
+      <div id="mach"></div>
     </div>
 
-    <!-- LES DEUX VISAGES DE L'OMBRE — texte, pas un tri -->
+    <!-- ③ CONTINUITÉ -->
     <div class="sec">
-      <div class="secTitre">Les deux visages de l'ombre</div>
-      <div class="secSous">Symétriques : aucun n'est le but, et l'ombre ne se réduit pas — on choisit
-        seulement de voir où elle tombe.</div>
-      <div class="visage">
-        <div class="visageNom">Rigidification</div>
-        <div class="visageDit">fragmenter par <b>excès de cadre</b> — la routine qui fige, reproduit, fabrique du chronique.</div>
-      </div>
-      <div class="visage">
-        <div class="visageNom">Dissolution</div>
-        <div class="visageDit">fragmenter par <b>absence de cadre</b> — tout accepter, plus de bords, le cadre qui disparaît.</div>
-      </div>
-      <div class="bord">La visée n'est ni l'une ni l'autre : un cadre vivant qui transforme.<br>
-        Les bords sont le cadre ; les tenir vivants est le travail.</div>
-      <div class="oubli">
-        <div class="secTitre" style="font-size:14px">Ce qu'aucun dépôt ne recouvre</div>
-        <div class="secSous">L'oublié — ce qui est resté dehors. Montré, nommé au tentatif, jamais déterminé.</div>
-        <div id="oublis"></div>
-      </div>
+      <div class="secHead"><div class="secTitre">Continuité</div></div>
+      <div class="secSub">Ce que le soin collectif rend possible</div>
+      <div id="cont"></div>
+    </div>
+
+    <!-- ④ FRAGMENTATION -->
+    <div class="sec" style="padding-bottom:26px">
+      <div class="secHead"><div class="secTitre">Fragmentation</div></div>
+      <div class="secSub">Ce qu'il coûte — l'usure, la résonance, le prix de durer</div>
+      <div id="frag"></div>
+      <div class="visage"><div class="visageNom">Rigidification</div>
+        <div class="visageDit">fragmenter par <b>excès de cadre</b> — la routine qui fige, reproduit, fabrique du chronique.</div></div>
+      <div class="visage"><div class="visageNom">Dissolution</div>
+        <div class="visageDit">fragmenter par <b>absence de cadre</b> — tout accepter, plus de bords, le cadre qui disparaît.</div></div>
     </div>
   </div>
 </div>
 
 <div class="marge">
   <h2>03 · Filigrane</h2>
-  <p>Le dashboard institutionnel — lire entre les lignes de l'ensemble des dépôts. On ouvre depuis
+  <p>Le point institutionnel — lire entre les lignes de l'ensemble des dépôts. On ouvre depuis
      la veilleuse de la file active : appui long, l'œil d'Horus se pose, la page s'ouvre.</p>
-  <p>Un filigrane est <i>dans</i> le papier : une épaisseur, pas une écriture. Il ne se voit qu'à
-     contre-jour. Le dépôt façonne le fil — ici, on tient toute la masse à la lumière et on regarde
-     la forme de notre pratique dans l'épaisseur.</p>
+  <p>Un filigrane est <i>dans</i> le papier : une épaisseur, pas une écriture. Le dépôt façonne le
+     fil — ici, on tient toute la masse à la lumière et on regarde la forme de notre pratique dans
+     l'épaisseur.</p>
   <h3>une seule source</h3>
   <p>Continuité et Fragmentation ne sont pas un bien et un mal dont l'un serait à réduire. C'est la
      même source qui éclaire et qui assombrit : plus une équipe tient le fil, plus elle projette son
@@ -220,20 +204,22 @@
      n'est montré nulle part, et c'est voulu : il se pomperait. Un ratio, non — pour le déplacer, il
      faut déposer autrement.</span> On compare à l'œil, sans échelle : une forme se regarde, un nombre
      se pilote.</p>
-  <h3>le seul endroit où la machine parle</h3>
-  <p>Ailleurs, nommer tomberait sur quelqu'un. Ici : anonyme, agrégé, aucun chemin vers l'individuel
-     (le Lien de chacun n'a ni vue croisée ni agrégat — et n'en aura pas). Le recul de l'agrégat est
-     précisément ce niveau : la Vigie peut proposer un nom, tenu au tentatif. Jamais un verdict,
-     jamais une note, jamais un soignant désigné.</p>
-  <h3>pas d'onglets</h3>
-  <p>Les deux plateaux sont sous le même regard, en un seul défilé. <span class="q">Un outil dont la
-     thèse est la continuité et qui tairait sa propre fragmentation serait lui-même morcelé : tenir
-     les deux faces dans un même regard est sa cohérence avec ce qu'il affirme.</span> Et une balance
-     dont on ne verrait qu'un plateau ne serait plus une balance. La bande du header ne navigue pas :
-     elle porte la maille — où on lit, et depuis quand.</p>
-  <h3>lu du dedans</h3>
-  <p>Le filigrane est invisible à plat. Il faut tenir la feuille à contre-jour pour le lever : le
-     climat ne se lit qu'en étant dedans, et il faut le geste pour voir.</p>
+  <h3>un moment, pas un écran</h3>
+  <p>Filigrane n'est pas un tableau de bord qu'on consulte : c'est le support du <b>point
+     institutionnel</b>, une fois par trimestre. D'où les deux fenêtres — « les trois derniers mois »
+     contre « les trois d'avant », c'est <i>ce qui a bougé depuis qu'on s'est vus</i>.</p>
+  <h3>l'hypothèse avant la machine</h3>
+  <p>Chacun dépose la sienne sans voir celle des autres, et l'hypothèse machine reste <b>scellée</b>
+     jusque-là. <span class="q">Si elle parlait la première, elle nous ancrerait : on croirait penser,
+     on compléterait son brouillon. La récolte <i>est</i> la diffraction — quatre regards qui disent
+     la même chose n'ont pas convergé, ils ont fondu.</span> L'écart se lit alors trois fois : entre
+     nous, entre nous et la machine, et entre le tout et ce que le récit montrait.</p>
+  <h3>elle peut citer, elle peut compter</h3>
+  <p>L'interdit du chiffre protège <b>quelqu'un</b> : aucun nombre sur un patient ni un soignant
+     nommé. Ici l'agrégat est anonyme — <b>il n'y a plus personne</b> : compter ce qu'on a déposé,
+     levé, ce qui a bougé, c'est notre trace. <span class="q">Ce qui reste interdit est ailleurs :
+     désigner, et conclure. Le patient peut apparaître dans les mots ; rien ne se conclut sur lui —
+     le sujet, ici, c'est nous.</span></p>
 </div>
 
 <script type="module">
@@ -266,18 +252,6 @@ var GESTES = [
 ];
 /* la fenêtre d'avant : l'équipe mettait son poids sur les questions ouvertes et les dépôts
    solitaires ; elle le met maintenant sur la temporalité, les trous déposés, la diffraction. */
-/* L'OUBLIÉ se lit maintenant sur la fenêtre courante des traits (fige && ap faible) — voir plus bas. */
-
-function sens(t){
-  if(t.fige) return {mot:"ne bouge pas depuis longtemps", d:0};
-  var d = (t.ap - t.av) / Math.max(1, t.ref);
-  if(Math.abs(d) < 0.02) return {mot:"ne bouge pas", d:0};
-  return {mot: d > 0 ? "s'épaissit" : "s'amincit", d:d};   // le SENS, jamais « mieux »/« pire » (borne c)
-}
-function trait(t){
-  return '<div class="trait"><div class="traitMot">'+t.mot+'</div><div class="traitNote">'+t.note+' — '+sens(t).mot+'</div></div>';
-}
-$("traits").innerHTML = GESTES.map(trait).join("");
 
 /* ══ LES DEUX ASSIETTES ═══════════════════════════════════════════════════════════════════
    LE POIDS COLLECTIF (vigie_institutionnelle §5) : un +1 par lequel quelqu'un signale que l'objet
@@ -311,25 +285,58 @@ function matiere(cle){
 var M_AP = matiere("ap"), M_AV = matiere("av");
 /* setGrainBi ne lit qu'un RATIO (il normalise a/(a+b)) : passer les masses brutes suffit. */
 
-/* ══ LA VIGIE — dérivée du mouvement, plus écrite à la main. Elle expose le mouvement daté et ce
-      qui ne coulisse plus ; jamais si c'est bien ou mal (§15 borne c : « c'est le rouge FIGÉ qui parle »). ══ */
-var TOUS  = GESTES;
-var bouge = TOUS.slice().sort(function(a,b){ return Math.abs(sens(b).d) - Math.abs(sens(a).d); })[0];
-var figes = TOUS.filter(function(t){ return t.fige; });
-var dAss = ASSIETTE - ASSIETTE_AV;
-var mvt = (Math.abs(dAss) < 0.8) ? "Notre poids n'a pas bougé."
-        : ("Notre poids s'est déplacé vers la <b>" + (dAss < 0 ? "Continuité" : "Fragmentation") + "</b>.");
-$("vigieDit").innerHTML =
-  mvt + "<br>" +
-  "Ce qui a le plus bougé : <b>« " + bouge.mot + " »</b> — " + sens(bouge).mot + "." +
-  (figes.length ? "<br>Ce qui ne bouge pas : " + figes.map(function(f){ return "« " + f.mot + " »"; }).join(" · ") + "." : "") +
-  (bouge.q ? "<br>— " + bouge.q : "");
+/* ══ LA FICTION — registre-garde : les mots de la personne, zéro jargon, tentatif, aucun verdict.
+      Le patient peut apparaître dans les mots ; rien ne se conclut sur lui (sujet = le soignant).
+      ⚠️ ENTIÈREMENT DE MA MAIN — à reprendre par Abtine. ══ */
+$("recit").innerHTML =
+ "<p>Ce trimestre, <b>quarante-sept personnes</b> ont été suivies. On a déposé <b>mille huit cents fois</b>. "+
+ "<b>Six fils</b> sont passés de main en main. On a ouvert <b>cent douze questions</b>, on en a refermé <b>vingt et une</b>.</p>"+
+ "<p>Depuis le dernier point, on dépose davantage et on noue moins : <b>un dépôt sur quatre</b> est agrafé à un autre, "+
+ "contre un sur trois il y a trois mois.</p>"+
+ "<p>Le mot « <b>épuisement</b> » est apparu <b>neuf fois</b>, sous <b>sept plumes différentes</b>. Il n'était pas là au dernier point.</p>"+
+ "<p><b>Trois gestes n'ont pas bougé depuis quatre trimestres</b> : on ne dépose presque jamais un vide d'information, "+
+ "on ne tient presque jamais un écart, on ne choisit presque jamais d'attendre.</p>";
 
-/* ══ L'OUBLIÉ — les gestes figés ET rares, ce qu'aucun dépôt ne recouvre. Nommé au tentatif. ══ */
-var oub = TOUS.filter(function(t){ return t.fige && (t.ap / t.ref) < 0.25; });
-$("oublis").innerHTML = (oub.length ? oub : []).map(function(t){
-    return '<span class="oubliMot">' + t.note.split(" — ")[0] + " ?</span>"; }).join("")
-  || '<span class="oubliMot">rien ne manque ?</span>';
+var HYPS = [
+ { qui:"Céline", d:"hier",     t:"On n'a plus le temps de se parler. Les transmissions sont devenues des dépôts." },
+ { qui:"Karima", d:"hier",     t:"Je crois qu'on protège les nouveaux en ne leur montrant pas ce que ça nous coûte." },
+ { qui:"Anthony", d:"il y a 2 j", t:"L'unité va bien. C'est le volume qui a changé, pas nous." },
+ { qui:"Abtine", d:"il y a 2 j",  t:"On a arrêté de se contredire. Ça m'inquiète plus que la charge." }
+];
+$("hyps").innerHTML = HYPS.map(function(h){
+  return '<div class="hyp"><div class="hypTxt">'+h.t+'</div><div class="hypQui">'+h.qui+' · '+h.d+' · signée</div></div>'; }).join("");
+
+/* scellée tant qu'on n'a pas déposé la sienne : c'est une absence de chemin, pas une règle */
+$("mach").innerHTML = '<div class="scelle" id="sc">L\'hypothèse de la machine est <b>scellée</b>.<br>'+
+  'Elle s\'ouvre quand on a déposé la sienne — sinon elle nous ancre.<br><br>· toucher pour ouvrir ·</div>';
+$("sc").addEventListener("click", function(){
+  $("mach").innerHTML =
+   '<div class="hyp machine"><div class="hypTxt">On dirait que l\'unité absorbe de plus en plus et relie de moins en moins. '+
+   'Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, tenir un écart, '+
+   'écrire ce qu\'on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu\'on tient encore, ou est-ce qu\'on encaisse ?</div>'+
+   '<div class="hypQui">la machine · au tentatif · rien n\'est conclu</div></div>'+
+   '<div class="ecart"><div class="hypTxt">Quatre lectures, aucune identique. Deux disent la charge, une dit le lien, '+
+   'une dit qu\'il n\'y a rien. La machine dit l\'absorption.</div>'+
+   '<div class="hypQui">l\'écart — tenu, jamais résolu</div></div>';
+});
+
+$("cont").innerHTML =
+ '<div class="tex"><div class="texNom">Le fil survit à celui qui le tient</div>'+
+ '<div class="texCompte">six relais · vingt et une levées · deux cent quatre-vingt-trois fils de soin qui tiennent</div>'+
+ '<div class="mots">« il a rappelé lui-même » · « elle a dit qu\'elle reviendrait » · '+
+ '« on s\'est passé le relais sans qu\'il ait à tout redire »</div></div>';
+
+$("frag").innerHTML =
+ '<div class="tex"><div class="texNom">La désaffection</div>'+
+ '<div class="texCompte">onze dépôts · neuf plumes · le mot de métier, sans personne dedans</div>'+
+ '<div class="mots">« l\'équipe décrit une intolérance à la frustration » · « majoration de l\'angoisse » · '+
+ '« adhésion partielle aux soins »</div></div>'+
+ '<div class="tex"><div class="texNom">La colère</div>'+
+ '<div class="texCompte">trois dépôts · ce qui déborde de ce qu\'on écrit</div>'+
+ '<div class="mots">« encore lui » · « il ne fait aucun effort »</div></div>'+
+ '<div class="tex"><div class="texNom">L\'automatisme</div>'+
+ '<div class="texCompte">la même phrase d\'ouverture dans quatre-vingt-douze observations</div>'+
+ '<div class="mots">« Patient vu ce jour. »</div></div>';
 
 /* ══ LE NŒUD — le vrai module, comme les pages 1 et 2. Bilobe : le module nomme déjà les boucles
       (LAB2 : gauche = Continuité, droite = Fragmentation). Appui long → l'œil d'Horus, la marque. ══ */
@@ -384,14 +391,6 @@ else {
     requestAnimationFrame(poutre);
   })();
 }
-
-/* ══ LE CONTRE-JOUR : il faut le geste pour voir (appui maintenu ; double-clic = verrou) ══ */
-var f = $("feuille"), cj = $("cj"), tenu = false;
-function lever(on){ tenu = on; f.classList.toggle("cj", on); cj.classList.toggle("on", on);
-  cj.textContent = on ? "à contre-jour" : "tenir à contre-jour"; }
-cj.addEventListener("pointerdown", function(e){ e.preventDefault(); lever(true); });
-window.addEventListener("pointerup", function(){ if(tenu && !cj.dataset.verrou) lever(false); });
-cj.addEventListener("dblclick", function(){ cj.dataset.verrou = cj.dataset.verrou ? "" : "1"; lever(true); });
 
 /* Pas de vues, pas d'onglets : les deux plateaux sont sous le même regard, en un seul défilé.
    Une balance dont on ne verrait qu'un plateau ne serait plus une balance. */
