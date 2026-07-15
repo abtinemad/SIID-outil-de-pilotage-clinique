@@ -956,7 +956,10 @@ au trilobe, l'équipe qui le prend en charge ; au bilobe, l'institution. Le sch�
 se répète, un tour plus haut, sur un autre sujet : les **ressemblances entre strates ne sont pas des
 redondances** à corriger, elles sont la forme du mouvement. Elle ne se confond pas avec la **spirale
 des révisions** (§2), qui tourne dans le **temps** sur un seul patient : celle-ci tourne dans les
-**échelles**, et à chaque tour le **patient** n'est plus le même.
+**échelles**, et à chaque tour le **patient** n'est plus le même. Le témoin en est le cas net : la
+**Vigilante** (trilobe) et la **Vigie** (bilobe) sont **le même organe à deux tours**. C'est pourquoi
+la règle des noms ne souffre aucune exception ici — quand l'organe est littéralement le même, le nom
+est **la seule chose** qui dise à quel tour on parle.
 
 **Récolte (5 lobes, par patient).** La donnée brute de terrain, par axe relationnel. Guichet des
 **soignants**. C'est le nœud-patient (§19). Deux natures s'y déposent : les **faits durs** —
@@ -1031,7 +1034,10 @@ récolté. Guichet des **coordinateurs**, en **synthèse collective signée**. T
 
   **Deux moments, un seul geste — l'écart.** (1) *À la formulation* : elle **met en mots, en clair,
   le matériau du pentalobe**, posé à côté de la grille que le collège écrit — écart **brut ↔
-  formulé**. (2) *Au trilobe* : écart **Affectif ↔ Réflexif**. Même organe, deux instants.
+  formulé**. (2) *Au trilobe* : écart **Affectif ↔ Réflexif**. Même organe, deux instants. Au tour
+  suivant — le bilobe — **ce même témoin est la Vigie** : le geste ne change pas, le patient oui
+  (l'institution, non plus l'équipe d'un patient). Deux noms parce que le **tour** diffère, jamais
+  parce que l'organe diffère.
 
   **Elle écrit ; elle ne signale pas.** Elle ne compare pas deux ensembles, ne pointe pas un oubli,
   ne rend pas d'avis : *mettre en mots correctement suffit* — bien écrit, ce qui manque manque
