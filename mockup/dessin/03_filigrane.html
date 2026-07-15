@@ -161,7 +161,7 @@
     <div class="sec">
       <div class="secHead"><div class="secTitre">Hypothèse</div>
         <button class="trigIco" id="btHyp" title="déposer la mienne" aria-label="déposer la mienne">+</button></div>
-      <div class="secSub">Ce qui se joue — chacun la sienne, sans voir celle des autres</div>
+      <div class="secSub">Ce qui se joue — chacun la sienne, sans voir celle des autres · anonymes</div>
       <div id="hyps"></div>
       <div id="mach"></div>
     </div>
@@ -185,11 +185,11 @@
     </div>
   </div>
 
-  <!-- LE GUICHET — le seul de Filigrane. Une hypothèse par personne, signée de son seul nom,
-       irrévocable. Reste hors de .ecran : c'est une fenêtre, pas un champ de plus. -->
+  <!-- LE GUICHET — le seul de Filigrane. Une hypothèse par personne, ANONYME, irrévocable.
+       Reste hors de .ecran : c'est une fenêtre, pas un champ de plus. -->
   <div class="guichet" id="guichet">
     <h4>Mon hypothèse sur l'unité</h4>
-    <div class="who">déposé par A.M. · aujourd'hui · <b>irrévocable</b> · signée de mon seul nom</div>
+    <div class="who">déposée <b>anonymement</b> · aujourd'hui · <b>irrévocable</b></div>
     <textarea id="g-txt" placeholder="ce qui se joue, selon moi…"></textarea>
     <div class="fin"><button id="g-dep">déposer</button><button class="annul" id="g-annul">annuler</button></div>
   </div>
@@ -239,10 +239,12 @@
      jusque-là. <span class="q">Si elle parlait la première, elle nous ancrerait : on croirait penser,
      on compléterait son brouillon. La récolte <i>est</i> la diffraction — quatre regards qui disent
      la même chose n'ont pas convergé, ils ont fondu.</span> L'écart se lit alors trois fois : entre
-     nous, entre nous et la machine, et entre le tout et ce que le récit montrait.</p>
+     nous, entre nous et la machine, et entre le tout et ce que le récit montrait. Elles sont
+     <b>anonymes</b> : signée, on lirait la personne (« c'est untel, il dit toujours ça ») ;
+     anonyme, on lit l'angle. Déposer, c'est perdre le sien — il devient un des quatre.</p>
   <p>C'est le seul geste de la page : <b>on ne dépose rien d'autre sur Filigrane</b>. Le récit
      s'écrit tout seul, les deux faces se lisent, la machine attend. <span class="q">Une seule
-     hypothèse par personne, signée de son seul nom — et l'hypothèse de l'unité, quand elle se
+     hypothèse par personne, anonyme — et l'hypothèse de l'unité, quand elle se
      formule, demande <b>deux signatures égales</b> : aucune voix ne pèse plus qu'une autre.</span></p>
   <h3>elle peut citer, elle peut compter</h3>
   <p>L'interdit du chiffre protège <b>quelqu'un</b> : aucun nombre sur un patient ni un soignant
@@ -327,21 +329,24 @@ $("recit").innerHTML =
  "<p><b>Trois gestes n'ont pas bougé depuis quatre trimestres</b> : on ne dépose presque jamais un vide d'information, "+
  "on ne tient presque jamais un écart, on ne choisit presque jamais d'attendre.</p>";
 
+/* Anonymes : au bilobe, on lit l'angle, pas la personne — c'est la diffraction (conserver la
+   vision de tout le monde), pas une mesure de discrétion. */
 var HYPS = [
- { qui:"Céline", d:"hier",     t:"On n'a plus le temps de se parler. Les transmissions sont devenues des dépôts." },
- { qui:"Karima", d:"hier",     t:"Je crois qu'on protège les nouveaux en ne leur montrant pas ce que ça nous coûte." },
- { qui:"Anthony", d:"il y a 2 j", t:"L'unité va bien. C'est le volume qui a changé, pas nous." },
- { qui:"Abtine", d:"il y a 2 j",  t:"On a arrêté de se contredire. Ça m'inquiète plus que la charge." }
+ { d:"hier",       t:"On n'a plus le temps de se parler. Les transmissions sont devenues des dépôts." },
+ { d:"hier",       t:"Je crois qu'on protège les nouveaux en ne leur montrant pas ce que ça nous coûte." },
+ { d:"il y a 2 j", t:"L'unité va bien. C'est le volume qui a changé, pas nous." },
+ { d:"il y a 2 j", t:"On a arrêté de se contredire. Ça m'inquiète plus que la charge." }
 ];
 function renderHyps(){
   $("hyps").innerHTML = HYPS.map(function(h){
-    return '<div class="hyp"><div class="hypTxt">'+h.t+'</div><div class="hypQui">'+h.qui+' · '+h.d+' · signée</div></div>'; }).join("");
+    return '<div class="hyp"><div class="hypTxt">'+h.t+'</div><div class="hypQui">'+h.d+'</div></div>'; }).join("");
 }
 renderHyps();
 
 /* ══ LE GUICHET — le seul geste de la page (vigie_institutionnelle §4, « Le geste de création »).
-      Le « + » ouvre la fenêtre ; « déposer » ajoute MON hypothèse EN TÊTE, signée de mon seul nom,
-      puis re-rend et ferme. Texte vide → rien n'est déposé, on ferme. Le scellé reste indépendant. ══ */
+      Le « + » ouvre la fenêtre ; « déposer » ajoute MON hypothèse EN TÊTE, ANONYME (rien ne la
+      distingue des autres), puis re-rend et ferme. Texte vide → rien n'est déposé, on ferme.
+      Le scellé reste indépendant. ══ */
 $("btHyp").addEventListener("click", function(){
   $("g-txt").value = "";
   $("guichet").classList.add("on");
@@ -350,7 +355,7 @@ $("btHyp").addEventListener("click", function(){
 $("g-annul").addEventListener("click", function(){ $("guichet").classList.remove("on"); });
 $("g-dep").addEventListener("click", function(){
   var txt = $("g-txt").value.trim();
-  if(txt){ HYPS.unshift({ qui:"A. Madjlessi", d:"à l'instant", t:txt }); renderHyps(); }
+  if(txt){ HYPS.unshift({ d:"à l'instant", t:txt }); renderHyps(); }  // aucun nom : elle rejoint le champ, rien ne la distingue
   $("guichet").classList.remove("on");
 });
 
