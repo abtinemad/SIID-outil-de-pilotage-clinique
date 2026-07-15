@@ -67,8 +67,12 @@
   /* LE TRAIT : une ligne du filigrane. Le grain porte la masse — jamais un nombre, jamais d'échelle. */
   .trait{margin:0 0 13px}
   .traitMot{font-family:var(--prose);font-size:13.5px;line-height:1.35;margin-bottom:5px}
-  .fg{height:13px;border-radius:2px;opacity:.16;transition:opacity .45s;background-repeat:repeat;background-position:0 0}
-  .feuille.cj .fg{opacity:.82}
+  .fgPile{position:relative;height:13px}
+  .fg{position:absolute;inset:0;border-radius:2px;transition:opacity .45s;background-repeat:repeat}
+  .fgAv{opacity:.06}    /* la fenêtre d'avant : dans le papier, sous le présent */
+  .fgAp{opacity:.16}
+  .feuille.cj .fgAv{opacity:.26}
+  .feuille.cj .fgAp{opacity:.82}
   .traitNote{font-family:var(--slate);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);
     margin-top:3px;opacity:0;transition:opacity .45s}
   .feuille.cj .traitNote{opacity:.85}
@@ -143,8 +147,7 @@
     <div class="sec">
       <div class="vigie">
         <div class="vigieTag">la vigie, au tentatif</div>
-        <div class="vigieDit">On dépose beaucoup. On lève peu. On se relaie peu.<br>
-          — <b>le fil tient parce que quelqu'un le tient</b> ; pas encore parce que l'équipe le tient ?</div>
+        <div class="vigieDit" id="vigieDit"></div>
         <div class="vigieOut">Rien n'est conclu. Aucun nom, aucune note, personne n'est désigné.</div>
       </div>
       <div class="traitMot" style="color:var(--ink-soft);font-size:12.5px;line-height:1.5">
@@ -206,6 +209,12 @@
   <p>Le ∞ pivote sur son croisement : le nœud <i>est</i> le point d'appui. À gauche ce que tenir le
      fil rend possible, à droite ce qu'il coûte. L'œil leste : il pèse là où il passe, et l'équilibre
      se tient quand il peut passer au nœud sans que la poutre bouge.</p>
+  <h3>deux fenêtres</h3>
+  <p>La maille n'est plus un libellé : chaque geste porte deux masses — les trois derniers mois, et
+     les trois d'avant. Sous chaque trait, la fenêtre précédente est le fantôme dans le papier : on
+     voit le grain s'épaissir ou s'amincir. <span class="q">Le sens de la variation prime la valeur :
+     c'est le mouvement qui est clinique, jamais le chiffre. Et ce qui parle, c'est le figé — le geste
+     qui ne coulisse plus. La page expose valeur, sens, durée dans l'état ; jamais bien ni mal.</span></p>
   <h3>montrée, jamais chiffrée</h3>
   <p>Pas de « unité fragmentée à 40 % ». Les masses réelles pilotent le <b>grain</b> du filigrane —
      le nombre est chiffré dans la forme. On compare à l'œil, sans échelle : une forme se regarde,
@@ -233,17 +242,40 @@ import { creerNoeud } from '../noeud.js';
 var $ = function(id){ return document.getElementById(id); };
 
 /* ══ LA MATIÈRE (fiction de maquette — natures réelles de la DDL, db/30) ═══════════════════
-   Jamais affichées. Elles pilotent le grain du filigrane et l'assiette de la balance.
-   Le nombre est chiffré dans la forme (§18bis : montrée, jamais chiffrée). */
+   Jamais affichées. Chaque geste porte DEUX fenêtres : av = les trois mois d'avant, ap = les trois
+   derniers mois. ref = l'ordre de grandeur du geste · fige = il n'a pas bougé depuis longtemps ·
+   q = la question tentative que le mouvement ouvre. Le nombre est chiffré dans la forme (§18bis). */
+var TRAITS_CONT = [
+ {mot:"le fil passe de main en main", ref:60, av:11, ap:6, fige:false, note:"relais — un nom ferme le passage", q:"on se relaie moins qu'avant ?"},
+ {mot:"on noue : plusieurs dépôts, un seul geste", ref:400, av:214, ap:198, fige:false, note:"l'agrafe — le nouage, jamais un dépôt seul", q:"le nouage se défait ?"},
+ {mot:"on laisse le temps", ref:60, av:3, ap:3, fige:true, note:"temporalité — le temps qu'on choisit de respecter", q:"on ne choisit plus d'attendre ?"},
+ {mot:"on ferme ce qu'on ouvre", ref:120, av:34, ap:21, fige:false, note:"levées — reprendre, c'est déposer ; annuler, c'est lever", q:"on n'ose plus fermer ?"},
+ {mot:"la chaîne soin tient", ref:700, av:291, ap:283, fige:false, note:"le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite", q:""},
+ {mot:"on écrit ce qu'on ne sait pas", ref:60, av:9, ap:9, fige:true, note:"vide d'info — le trou, déposé plutôt que comblé", q:"on ne dépose plus nos trous ?"}
+];
+var TRAITS_RIG = [
+ {mot:"on dépose, on ne noue plus", ref:700, av:502, ap:604, fige:false, note:"dépôts seuls, sans agrafe", q:"la routine prend la place du nouage ?"},
+ {mot:"rien ne se lève", ref:140, av:78, ap:112, fige:false, note:"ouvert et jamais levé — la question qui devient décor", q:"les questions deviennent du décor ?"},
+ {mot:"le même geste, le même rythme", ref:700, av:557, ap:599, fige:false, note:"observation + jalon — la routine qui reproduit", q:""}
+];
+var TRAITS_DIS = [
+ {mot:"tout entre", ref:500, av:386, ap:412, fige:false, note:"l'entrée large — rien n'est trié, tout est reçu", q:""},
+ {mot:"les écarts ne sont plus tenus", ref:90, av:12, ap:12, fige:true, note:"diffraction — les lectures tenues à l'écart, jamais un milieu", q:"on ne tient plus les lectures à l'écart ?"},
+ {mot:"les bords s'effacent", ref:120, av:31, ap:28, fige:false, note:"indication — ce qui borde, ce qui pose un cadre", q:""}
+];
+/* L'OUBLIÉ se lit maintenant sur la fenêtre courante des traits (fige && ap faible) — voir plus bas. */
+
+/* La BALANCE (intouchée) pèse la fenêtre COURANTE : ces scalaires sont exactement le `ap` des traits
+   ci-dessus (la masse des trois derniers mois). On les garde pour ne pas toucher POIDS_C/POIDS_F. */
 var MASSE = {
   observation:412, jalon:187, situation:96, lecture_clinique:96, ressenti:88,
   demande:71, inquietude:63, compte_rendu:58, hypothese_clinique:41,
   lien_travail:34, indication:28, levee:21, validation_typage:15,
   diffraction:12, vide_info:9, relais:6, temporalite:3
 };
-var AGRAFE  = { seuls:604, noues:198 };      // gestes : un dépôt seul / plusieurs dépôts agrafés
-var FILS    = { rencontre:701, soin:283 };   // les deux chaînes (db/30 : elles ne se croisent pas)
-var OUVERTS = { ouverts:112, leves:21 };     // ce qu'on ouvre / ce qu'on ferme
+var AGRAFE  = { seuls:604, noues:198 };
+var FILS    = { rencontre:701, soin:283 };
+var OUVERTS = { ouverts:112, leves:21 };
 
 /* ── le grain : la masse devient un pas de trame. Aucune échelle affichée. ── */
 function grain(m, ref){
@@ -252,35 +284,40 @@ function grain(m, ref){
   var ep  = (0.6 + 1.5 * d).toFixed(2);
   return "repeating-linear-gradient(78deg, var(--ink) 0 " + ep + "px, transparent " + ep + "px " + pas + "px)";
 }
-function trait(mot, masse, ref, note){
-  return '<div class="trait"><div class="traitMot">' + mot + '</div>' +
-         '<div class="fg" style="background-image:' + grain(masse, ref) + '"></div>' +
-         '<div class="traitNote">' + note + '</div></div>';
+function sens(t){
+  if(t.fige) return {mot:"ne bouge pas depuis longtemps", d:0};
+  var d = (t.ap - t.av) / Math.max(1, t.ref);
+  if(Math.abs(d) < 0.02) return {mot:"ne bouge pas", d:0};
+  return {mot: d > 0 ? "s'épaissit" : "s'amincit", d:d};   // le SENS, jamais « mieux »/« pire » (borne c)
 }
+function trait(t){
+  return '<div class="trait"><div class="traitMot">' + t.mot + '</div>' +
+    '<div class="fgPile">' +
+      '<div class="fg fgAv" style="background-image:' + grain(t.av, t.ref) + '"></div>' +
+      '<div class="fg fgAp" style="background-image:' + grain(t.ap, t.ref) + '"></div>' +
+    '</div>' +
+    '<div class="traitNote">' + t.note + ' — ' + sens(t).mot + '</div></div>';
+}
+function bande(L){ return L.map(trait).join(""); }
+$("traitsCont").innerHTML = bande(TRAITS_CONT);
+$("traitsRig").innerHTML  = bande(TRAITS_RIG);
+$("traitsDis").innerHTML  = bande(TRAITS_DIS);
 
-$("traitsCont").innerHTML =
-  trait("le fil passe de main en main", MASSE.relais, 60, "relais — un nom ferme le passage") +
-  trait("on noue : plusieurs dépôts, un seul geste", AGRAFE.noues, 400, "l'agrafe — le nouage, jamais un dépôt seul") +
-  trait("on laisse le temps", MASSE.temporalite, 60, "temporalité — le temps qu'on choisit de respecter") +
-  trait("on ferme ce qu'on ouvre", OUVERTS.leves, 120, "levées — reprendre, c'est déposer ; annuler, c'est lever") +
-  trait("la chaîne soin tient", FILS.soin, 700, "le fil soin — une rencontre qui s'allège et un soin qui tient : la réussite") +
-  trait("on écrit ce qu'on ne sait pas", MASSE.vide_info, 60, "vide d'info — le trou, déposé plutôt que comblé");
+/* ══ LA VIGIE — dérivée du mouvement, plus écrite à la main. Elle expose le mouvement daté et ce
+      qui ne coulisse plus ; jamais si c'est bien ou mal (§15 borne c : « c'est le rouge FIGÉ qui parle »). ══ */
+var TOUS  = TRAITS_CONT.concat(TRAITS_RIG, TRAITS_DIS);
+var bouge = TOUS.slice().sort(function(a,b){ return Math.abs(sens(b).d) - Math.abs(sens(a).d); })[0];
+var figes = TOUS.filter(function(t){ return t.fige; });
+$("vigieDit").innerHTML =
+  "Ce qui a le plus bougé : <b>« " + bouge.mot + " »</b> — " + sens(bouge).mot + "." +
+  (figes.length ? "<br>Ce qui ne bouge pas : " + figes.map(function(f){ return "« " + f.mot + " »"; }).join(" · ") + "." : "") +
+  (bouge.q ? "<br>— " + bouge.q : "");
 
-$("traitsRig").innerHTML =
-  trait("on dépose, on ne noue plus", AGRAFE.seuls, 700, "dépôts seuls, sans agrafe") +
-  trait("rien ne se lève", OUVERTS.ouverts, 140, "ouvert et jamais levé — la question qui devient décor") +
-  trait("le même geste, le même rythme", MASSE.observation + MASSE.jalon, 700, "observation + jalon — la routine qui reproduit");
-
-$("traitsDis").innerHTML =
-  trait("tout entre", MASSE.observation, 500, "l'entrée large — rien n'est trié, tout est reçu") +
-  trait("les écarts ne sont plus tenus", MASSE.diffraction, 90, "diffraction — les lectures tenues à l'écart, jamais un milieu") +
-  trait("les bords s'effacent", MASSE.indication, 120, "indication — ce qui borde, ce qui pose un cadre");
-
-/* ══ L'OUBLIÉ — ce qu'aucun dépôt ne recouvre, nommé au tentatif ══ */
-var SEUIL = 15, mots = [];
-for(var n in MASSE){ if(MASSE[n] < SEUIL) mots.push(n.replace(/_/g," ")); }
-$("oublis").innerHTML = mots.map(function(m){ return '<span class="oubliMot">' + m + " ?</span>"; }).join("") ||
-  '<span class="oubliMot">rien ne manque ?</span>';
+/* ══ L'OUBLIÉ — les gestes figés ET rares, ce qu'aucun dépôt ne recouvre. Nommé au tentatif. ══ */
+var oub = TOUS.filter(function(t){ return t.fige && (t.ap / t.ref) < 0.25; });
+$("oublis").innerHTML = (oub.length ? oub : []).map(function(t){
+    return '<span class="oubliMot">' + t.note.split(" — ")[0] + " ?</span>"; }).join("")
+  || '<span class="oubliMot">rien ne manque ?</span>';
 
 /* ══ LE NŒUD — le vrai module, comme les pages 1 et 2. Bilobe : le module nomme déjà les boucles
       (LAB2 : gauche = Continuité, droite = Fragmentation). Appui long → l'œil d'Horus, la marque. ══ */
