@@ -8,7 +8,7 @@
 //  la page décide. Témoin : mockup/testnoeud.mjs doit rester VERT.
 //
 //  API : creerNoeud(svgEl) → { setStrate(s), onStrateChange(cb), onLobe(cb), onEye(cb),
-//        onEyeLong(cb), signaler(eyeState,gestType), setGrain(d), axes(), setEpaisseur(w),
+//        onEyeLong(cb), signaler(eyeState,gestType), setGrain(d), setGrainBi(d), axes(), setEpaisseur(w),
 //        detruire() }
 // ═════════════════════════════════════════════════════════════════════════════════════
 import { creerForme, CX, CY, N, TAU, INK, RED, lerp, clamp, smooth, easeAngle, f1, xNodes, composeScene, SET, POOL } from './noyau.js';
@@ -668,6 +668,11 @@ export function creerNoeud(svgEl, opts){
     PET_BY[5] = petalsFor(forme.KF[2]);
     if(curLc===5) buildLabels(5);
   }
+  // ── densité des DEUX faces du bilobe (page → forme) : la matière, jamais le poids ──
+  function setGrainBi(d){
+    forme.setGrainBi(d);
+    if(curLc===2) buildLabels(2);
+  }
   function setEpaisseur(w){ wData = (typeof w==='number') ? w : wFixed; }
 
   // ── init : labels + œil + boucle RAF ──
@@ -687,6 +692,7 @@ export function creerNoeud(svgEl, opts){
     consulter: consulter,
     setOndulation: setOndulation,
     setGrain: setGrain,
+    setGrainBi: setGrainBi,
     axes: axes,
     setEpaisseur: setEpaisseur,
     detruire: function(){ mort = true; if(rafId) cancelAnimationFrame(rafId); }
