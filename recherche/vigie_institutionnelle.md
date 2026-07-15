@@ -31,6 +31,20 @@ vécue en dépend. Le climat ne lit pas *quel sujet est présent* mais *quelle t
 vécu traverse les dépôts sans qu'aucun lobe ne la nomme*. Lire entre les lignes : ce
 que la personne pense, son fonctionnement, ses émotions, à partir de ce qu'elle écrit.
 
+**Ce que le climat lit — des textures, jamais des personnes.** La **désaffection clinique** :
+l'observation en mots de métier, sans personne dedans. La **colère** : ce qui déborde de ce qu'on
+écrit. L'**automatisme** : le même geste, le même rythme, la même phrase. Et la **cohérence** —
+mais à l'envers de ce qu'on croit : quatre regards qui disent la même chose n'ont pas convergé,
+ils ont **fondu** (le cliché, §5). *La récolte **est** la diffraction* : des observations qui ne
+collent pas entre elles sont le **bon état** de la récolte — la vision de tout le monde conservée.
+Le signal n'est donc pas l'incohérence : c'est l'incohérence que **personne ne recueille** (restée
+dehors, jamais diffractée), ou la cohérence **trop lisse** (une seule voix pour quatre).
+
+**Aucune texture n'est d'un seul côté.** La désaffection **fige** et **protège** — le mot clinique
+est une armure : il aveugle, il permet de durer. La colère **use** et **porte** : une équipe sans
+colère n'est pas apaisée, elle est partie. L'automatisme **fige** et **tient** : sans lui, personne
+n'absorbe le volume. C'est la même source qui éclaire et qui assombrit (§1).
+
 Au collectif, le climat **re-collectivise** : le miroir individuel isole ; le climat
 relie. Il naît de l'**agrégation anonyme des lectures individuelles** — chaque lecture
 sémantique du mot cru de chacun monte, perd son nom, devient climat de l'équipe. Les
@@ -54,7 +68,14 @@ collectif) appliquée à la lecture affective/réflexive elle-même.
 
 Au bilobe, l'affectif et le réflexif institutionnels ne sont pas des lobes distincts (il
 n'y a que deux faces, Continuité / Fragmentation). Ils **alimentent** ces deux faces.
-*(La mécanique précise de cette alimentation reste à définir — laissée ouverte.)*
+
+**La mécanique — le poids dit combien, le climat dit de quel côté.** Aucun objet n'appartient à une
+face. Un objet pesé ne tombe pas dans un plateau : **son poids se répartit entre les deux**, selon la
+lecture du climat, dépôt par dépôt. Un relais très pesé met l'essentiel à gauche et une part à droite
+— il rend continu, *et* il coûte. Deux gestes, deux mains : **combien** vient du poids (humain, un
++1, §5) ; **de quel côté** vient du climat (la lecture sémantique du mot cru, §2). L'outil ne fabrique
+jamais le poids — il le **transcrit** (CONTINUUM.md §1 : « ce qui pèse pèse parce que l'humain l'a
+perçu comme tel ») ; il lit la texture, il ne la pèse pas.
 
 ## 4. Le geste de création — l'hypothèse institutionnelle
 
@@ -84,17 +105,29 @@ pour l'analyse — jamais un verdict collectif.
 **Le poids nourrit l'analyse, il ne trie pas l'écran.** Il n'est pas un tri d'affichage :
 l'objet le plus pesé ne remonte pas en haut. Sinon le nombre deviendrait la cible (on
 déposerait pour être pesé, le pesé remonterait, le pesé deviendrait la loi — Goodhart).
-Le poids épaissit la donnée que le climat lit ; il ne fait bouger aucune boucle. « Qu'est-ce
+Le poids épaissit la donnée que le climat lit ; il ne fait bouger aucune boucle — aucune ne
+change de taille (elle reste le volume de matière rangée) : ce qui bascule, c'est **l'assiette de
+l'∞** (§6). On ne peut pas engraisser une boucle en pesant ; on ne peut que déplacer le regard. « Qu'est-ce
 qui, dans ce qu'on dépose, fait écho au plus grand nombre ? » est une lecture du collectif
 entre ses lignes — donc une entrée du climat, pas une hiérarchie.
 
-## 6. L'écran bilobe — une lentille
+## 6. L'écran bilobe — une balance
 
-Un seul écran, le nœud bilobe en grand. Le bilobe **trie**, il n'affiche pas des données :
-c'est une **lentille**, exactement comme le nœud-patient sur la vue intra. Cliquer
-**Continuité** met en avant ce qui rend continu et grise le reste ; cliquer
-**Fragmentation** met en avant ce qui fragmente. Le même geste que le pentalobe patient
-(une boucle cliquée éclaire certaines cartes, pâlit les autres), transposé à l'unité.
+Un seul écran, le nœud bilobe en grand — **pas d'onglets** : les deux faces se tiennent dans un même
+regard (un outil qui tairait sa propre fragmentation serait lui-même morcelé, CONTINUUM.md §18bis).
+
+**Le ∞ est une balance, et son pivot est le nœud** — le croisement, là où le fil se traverse. À
+gauche la Continuité, à droite la Fragmentation (le module les nomme déjà). L'∞ **penche du côté où
+l'équipe met son poids**.
+
+**Ce qui penche, ce qui ne bouge pas.** Aucune boucle ne change de taille (§5) : la géométrie est
+intacte, c'est l'assiette qui bascule. L'inclinaison est une **proportion**, jamais une magnitude —
+on la redresse aussi bien en tenant plus qu'en payant moins ; elle ne demande jamais de réduire
+l'ombre. **L'œil leste** : il pèse là où il passe.
+
+*(Périmé le 2026-07-15 : la version précédente faisait de l'écran une lentille qui trie — cliquer
+Continuité mettait en avant ce qui rend continu et grisait le reste. Trier par face supposerait
+qu'un objet appartient à une face : §3 le refuse.)*
 
 ## 7. Ce que la machine a le droit de dire — nommer sans conclure
 
@@ -144,13 +177,12 @@ anonyme — jamais un score, jamais un nom collé sur une personne.
 Ce fichier déplace des curseurs que la doctrine gravée pose plus rigidement. À corriger
 dans CONTINUUM.md quand le principe sera reposé — pas dans le même souffle qu'on le trouve :
 
-- **1027, 1042** — « Elle écrit ; elle ne signale pas » / « tirée, jamais poussée, ne
-  surgit pas ». À réconcilier avec §8 : la Vigie transmet et signale le nouveau. La coupe
-  juste : *transmettre ce qui se perd* ≠ *sur-agir*. Consulter reste ; signaler s'ajoute.
-- **929-932, 1040** — « ne nomme pas à la place », « le nom reste chiffré ». À réconcilier
-  avec §7 : le curseur passe de *ne jamais nommer* à *nommer en tentative sur faisceau,
-  jamais conclure*. Ce n'est pas le nommage qui est interdit, c'est le déterminisme.
-- **911-913** — « la Vigie n'ajoute pas une action de plus ». À distinguer de §8 :
+- **RÉSOLU** (2026-07-15) — collision de noms, pas contradiction : « elle écrit, elle ne signale
+  pas » est la **Vigilante** (boucle du trilobe) ; §8 est la **Vigie** (le bilobe). Deux organes,
+  deux gestes.
+- **FAIT** — CONTINUUM.md §18bis harmonisé (l'interdit est le déterminisme, pas le nommage) ;
+  résidus L1039 / L1709 corrigés le 2026-07-15.
+- **911-913** — « **le Recul** n'ajoute pas une action de plus ». À distinguer de §8 :
   transmettre n'est pas ajouter une action — c'est faire atteindre ce qui existe déjà.
 
 Ce qui TIENT, inchangé : pas de verdict/score sur le patient, anonymat + lavage, montré
@@ -159,9 +191,8 @@ pas ; seul le curseur nommage/signalétique se précise.
 
 ## 10. Ce qui reste ouvert
 
-- La **mécanique** par laquelle l'affectif/réflexif institutionnels alimentent
-  Continuité / Fragmentation (§3).
-- Les **indicateurs précis** que montre l'écran bilobe, au-delà des deux faces.
+- Les **indicateurs précis** de l'écran bilobe : les textures sont posées (§2), leur **détection
+  sémantique** reste à spécifier (quel eval, quelles sorties, quel test de justesse).
 - La forme exacte de la **signalétique** (§8) — ce qui compte comme « nouveau » ou
   « important ».
 - La **DDL** de l'hypothèse institutionnelle (§4) et du poids collectif (§5) : natures /
