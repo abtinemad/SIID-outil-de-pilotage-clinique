@@ -162,10 +162,22 @@
   .actes a{color:var(--ink-soft);text-decoration:none;border-bottom:1px dotted var(--faint);cursor:pointer}
   .actes a:hover{color:var(--ink)}
   .nat{margin-left:10px;padding-left:10px;border-left:1px solid var(--faint)}
+  /* L'agrafé — .agr/.agrTxt copiés de la page 2. Le désaccord se lit SOUS son objet, en
+     retrait : il s'agrafe à ce qu'il conteste, détaché il ne veut plus rien dire. */
+  .agr{margin:6px 0 0 12px;border-left:2px solid var(--faint);padding:2px 0 2px 10px}
+  .agrTxt{font-family:var(--prose);font-size:12px;line-height:1.42;color:#3B424A}
+  /* Le récit porte plusieurs paragraphes : un <div> plutôt qu'un <p>, sinon le balisage
+     est invalide. Même corps, même interligne que .depot. */
+  div.depot p{margin:0 0 8px}
+  div.depot p:last-child{margin:0}
   .depot.nu{color:var(--ink-soft);font-style:italic}
   ul.fil li.gest::before{border-left:1px dotted var(--faint);background:none;width:0}
+  /* Les exemples poussent la note vers le bas : la Métabolisation débordait de 10px
+     (763 pour 753). Le filet reste — c'est lui qui sépare ce qu'on montre de ce qu'on
+     dit — mais son air passe de 24 à 14 (16+8 → 10+4). Ni le fil de la Récolte ni les
+     mots de la note n'ont bougé : il n'y avait que là à prendre. */
   .note-bas{font-family:var(--slate);font-size:11px;line-height:1.8;color:var(--ink-soft);
-            border-top:1px solid var(--faint);padding-top:16px;margin-top:8px}
+            border-top:1px solid var(--faint);padding-top:10px;margin-top:4px}
   .note-bas b{color:var(--ink);font-weight:400}
 
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
@@ -217,7 +229,8 @@
     <div class="switch" id="switch">
       <button data-s="2" class="on">Récolte</button>
       <button data-s="1">Métabolisation</button>
-      <button data-s="0">Institutionnel</button>
+      <!-- Le libellé change, la mécanique non : data-s="0" reste la strate 0. -->
+      <button data-s="0">Réflexivité</button>
     </div>
     <p class="tag" id="tag"></p>
     <p class="hint" id="hint">clique une boucle — l'œil s'y pose et déroule ce qu'elle porte ; relâche-la pour écrire</p>
@@ -321,6 +334,50 @@ import { creerNoeud } from '../noeud.js';
     {t:"Sa sœur pleure au téléphone. Elle dit qu’elle n’en peut plus, mais qu’elle ne lâchera pas."}
   ];
   DEPOTS.forEach(function(d,i){ d.h=new Date(Date.now()-(DEPOTS.length-i)*36e5); });
+
+  // ── Les exemples des deux autres strates ──────────────────────────────────────
+  // Rien n'est inventé : les textes viennent VERBATIM de Jouve (02_intra_patient) et de
+  // Filigrane (03_filigrane). L'anonymat se fait EN RETIRANT — la date seule, jamais qui :
+  // ni l'auteur d'une synthèse, ni celui d'un agrafé, ni « équipe ».
+  //
+  // ⚠️ Le récit et l'hypothèse machine de Jouve MANQUENT ici : leurs deux textes nomment
+  // Paul, et « ne réécris pas » + « aucun nom à l'écran » ne peuvent pas être tenus tous
+  // les deux sans arbitrage. Ils attendent Abtine.
+  var EX_METAB = [
+    { n:"synthèse", d:"4 juil.",
+      t:"Alliance tenue par la sœur. Traitement pris. Réinvestissement possible du côté du travail à explorer. Pas d’inquiétude aiguë.",
+      agr:"Je ne reconnais pas « alliance tenue ». Sa sœur tient, ce n’est pas pareil.", agrD:"5 juil." },
+    { n:"accompagnement", d:"4 juil.",
+      t:"On accompagne le desserrage du lien fraternel sans le rompre ; on ouvre doucement le versant travail comme appui. On ne force pas le traitement du soir — on attend qu’il en reparle." }
+  ];
+  // Filigrane ne nomme personne : son sujet est le soignant, jamais le patient.
+  var EX_REFLEX = [
+    { n:"récit", d:"ce trimestre", html:
+      "<p>Ce trimestre, <b>quarante-sept personnes</b> ont été suivies. On a déposé <b>mille huit cents fois</b>. "+
+      "<b>Six fils</b> sont passés de main en main. On a ouvert <b>cent douze questions</b>, on en a refermé <b>vingt et une</b>.</p>"+
+      "<p>Depuis le dernier point, on dépose davantage et on noue moins : <b>un dépôt sur quatre</b> est agrafé à un autre, "+
+      "contre un sur trois il y a trois mois.</p>"+
+      "<p>Le mot « <b>épuisement</b> » est apparu <b>neuf fois</b>, sous <b>sept plumes différentes</b>. Il n’était pas là au dernier point.</p>"+
+      "<p><b>Trois gestes n’ont pas bougé depuis quatre trimestres</b> : on ne dépose presque jamais un vide d’information, "+
+      "on ne tient presque jamais un écart, on ne choisit presque jamais d’attendre.</p>" },
+    { n:"hypothèse", d:"il y a 2 j", t:"L’unité va bien. C’est le volume qui a changé, pas nous." },
+    { n:"hypothèse", d:"il y a 2 j", t:"On a arrêté de se contredire. Ça m’inquiète plus que la charge." },
+    { n:"hypothèse", d:"aujourd’hui", m:"proposée par la machine",
+      t:"On dirait que l’unité absorbe de plus en plus et relie de moins en moins. Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, tenir un écart, écrire ce qu’on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu’on tient encore, ou est-ce qu’on encaisse ?" },
+    { n:"écart", d:"aujourd’hui", t:"Six lectures. Aucune ne recouvre une autre." }
+  ];
+
+  // Le gabarit de la Récolte, à l'identique : le texte, puis la date et la nature. Rien
+  // d'autre — pas d'auteur, donc pas de place où en mettre un.
+  function filEx(items){
+    return '<ul class="fil">'+items.map(function(x){
+      var corps = x.html ? '<div class="depot">'+x.html+'</div>' : '<p class="depot">'+ech(x.t)+'</p>';
+      var marques = '<span class="nat">'+ech(x.n)+'</span>' + (x.m ? '<span class="nat">'+ech(x.m)+'</span>' : '');
+      var agr = x.agr ? '<div class="agr"><p class="agrTxt">'+ech(x.agr)+'</p>'+
+                        '<p class="attr">'+ech(x.agrD)+'<span class="nat">agrafé</span></p></div>' : '';
+      return '<li><p class="attr">'+ech(x.d)+' '+marques+'</p>'+corps+agr+'</li>';
+    }).join('')+'</ul>';
+  }
 
   // ── Le patient nu : `?nu` ─────────────────────────────────────────────────────────
   // Ce n'est pas un mode de test, c'est l'état le plus important de l'app et le plus rare
@@ -518,15 +575,29 @@ import { creerNoeud } from '../noeud.js';
     }
 
     if(s===1){
+      // La note doctrinale reste EN DESSOUS des exemples : on montre, puis on dit.
+      // ⚠️ « Aucun guichet ici tant que le collège n'est pas réuni » : NON TOUCHÉ, à
+      // trancher. La page 2 a un guichet sur Synthèse (✎), sur Hypothèse (+) ET sur
+      // Accompagnement (✎) — les trois objets de la métabolisation. Seule la Vigilance
+      // n'en a pas, et son commentaire le dit : « Aucun .trigIco dans ces secHead ».
       pan.innerHTML='<p class="rtag">Métabolisation · trilobe</p>'+
+        filEx(EX_METAB)+
         '<div class="note-bas">Affectif et Réflexif <b>composent</b> ; la Vigilante <b>lit</b> — deux lobes composent, un seul lit. '+
         'Entre dans un lobe : l’œil saute la corde. Dans la Vigilante il chausse la lentille. '+
         'Aucun guichet ici tant que le collège n’est pas réuni : ce qui se <i>formule</i> ne se dépose jamais seul.</div>';
       return;
     }
-    pan.innerHTML='<p class="rtag">Institutionnel · l’infini</p>'+
+    // (2026-07-15, Abtine) Deux périmés levés dans cette note :
+    //  · « montré jamais chiffré » : la garde est levée au bilobe — le nombre est permis
+    //    sur l'agrégat anonyme, il n'y a plus personne dedans ; l'interdit porte sur la
+    //    personne.
+    //  · « se tient au centre » : l'œil se balade sur le fil depuis le chantier du 15/07.
+    // Le reste de la note est intact.
+    pan.innerHTML='<p class="rtag">Réflexivité · l’infini</p>'+
+      filEx(EX_REFLEX)+
       '<div class="note-bas">Continuité et Fragmentation — les deux faces d’une même présence. '+
-      'L’œil se tient au centre et veille : sentinelle, non lecteur. Agrégat anonyme, montré jamais chiffré.</div>';
+      'L’œil veille : sentinelle, non lecteur. Agrégat anonyme : aucun nombre sur quelqu’un, '+
+      'mais on peut compter notre trace.</div>';
   }
 
   // La prose en cours n'est pas un dépôt — mais elle n'est pas rien non plus. Déposer un doute
