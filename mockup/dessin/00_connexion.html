@@ -58,6 +58,33 @@
      vide. On aligne sur ce qu'il y a, pas sur le chiffre des voisines. */
   .ecran{position:absolute;top:59px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
+  /* ── LA BOÎTE DE CONNEXION — le mobilier de la boîte de résonance (page 2), qui est
+        elle-même un .guichet. Copié verbatim : .guichet(.on)/h4, .resoDoc, .fin.
+        Elle vit hors de .ecran, en enfant direct du .tel — comme #guichet et #resoBox
+        page 2 : un overlay ne défile pas avec ce qu'il recouvre. ─────────────────── */
+  .guichet{position:absolute;inset:0;z-index:10;background:rgba(233,236,239,.97);
+           transform:translateY(101%);transition:transform .3s cubic-bezier(.2,.9,.2,1);
+           display:flex;flex-direction:column;padding:26px 22px 22px}
+  .guichet.on{transform:none}
+  .guichet h4{font-family:var(--prose);font-weight:700;font-size:19px;margin:0 0 2px}
+  #coBox{overflow-y:auto}
+  .resoDoc{font-family:var(--prose);font-size:13px;line-height:1.55;color:var(--ink);margin-bottom:16px}
+  .resoDoc b{font-weight:700}
+  /* Les deux champs : les règles de `.sortie label` / `.sortie input[type=text]` (page 2),
+     copiées telles quelles. `.sortie` elle-même ne vient pas — c'est la sortie du patient,
+     elle n'a rien à faire ici ; seul son habillage de champ est repris. */
+  .coChamps{margin-top:2px}
+  .coChamps label{display:block;font-family:var(--prose);font-weight:700;font-size:14.5px;margin-bottom:8px}
+  .coChamps input{width:100%;border:0;border-bottom:1px solid var(--faint);background:0;
+    padding:7px 2px;font-family:var(--word);font-size:14px;outline:0;color:var(--ink);margin-bottom:16px}
+  /* .fin : le pied du guichet — l'acte à gauche, le renoncement à droite. C'est de l'encre,
+     pas du rouge : `.resoActes button.pri` est rouge parce qu'une résonance pèse sur le
+     point ; entrer ne pèse sur rien. Le rouge reste au seul œil (§19/§20). */
+  .fin{margin-top:auto;display:flex;gap:12px;align-items:center}
+  .fin button{flex:1;height:48px;border-radius:24px;border:0;background:var(--ink);color:var(--paper);
+    font-family:var(--word);font-size:14.5px;font-weight:600;cursor:pointer}
+  .fin .annul{flex:0 0 auto;background:0;color:var(--ink-soft);font-weight:400;width:auto;padding:0 8px}
+
   #fil{stroke:var(--ink);fill:none}
   #filR{fill:var(--ink);stroke:var(--ink);stroke-width:.7;stroke-linejoin:round}
   #pt{fill:var(--red)}
@@ -195,6 +222,24 @@
   </div>
   <div id="panneau"></div>
   </div><!-- /.ecran -->
+
+  <!-- LA CONNEXION — le chevron du header ouvre cette boîte (même mobilier que la
+       résonance page 2, qui est un .guichet). Hors .ecran : un overlay ne défile pas. -->
+  <div class="guichet" id="coBox">
+    <h4>Entrer</h4>
+    <div class="resoDoc">
+      Cette page est ouverte à tous — c’est l’outil qui se montre, avec des dépôts anonymisés.
+      Ce qui est derrière ne l’est pas : on n’y entre que si on y dépose.
+    </div>
+    <div class="coChamps">
+      <label for="coId">identifiant</label>
+      <input type="text" id="coId" autocomplete="off">
+      <label for="coMdp">mot de passe</label>
+      <input type="password" id="coMdp" autocomplete="off">
+    </div>
+    <!-- Rien ne vérifie rien : c'est un croquis. Les deux champs sont inertes. -->
+    <div class="fin"><button id="coEntrer">entrer</button><button class="annul" id="coFermer">fermer</button></div>
+  </div>
 </div><!-- /.tel -->
 <script type="module">
 import { SET, setRed, setInk, setRefreshStatics } from '../noyau.js';
@@ -501,6 +546,13 @@ import { creerNoeud } from '../noeud.js';
       });
     });
   }
+
+  // ── La boîte de connexion ─────────────────────────────────────────────────────
+  // Même mécanique que la résonance (page 2) : la classe `on` glisse le bottom-sheet.
+  // Rien ne vérifie rien — les deux champs sont inertes, « entrer » ouvre la file active.
+  $("btCo").addEventListener("click", function(){ $("coBox").classList.add("on"); });
+  $("coFermer").addEventListener("click", function(){ $("coBox").classList.remove("on"); });
+  $("coEntrer").addEventListener("click", function(){ location.href="01_file_active.html"; });
 
   // ── Qui écrit ─────────────────────────────────────────────────────────────────
   var QUI="Karima";
