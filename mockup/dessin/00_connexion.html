@@ -110,8 +110,6 @@
   .hint{font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);
         text-align:center;margin:6px 0 0;opacity:0;transition:opacity .5s}
   .hint.show{opacity:.75}
-  .qui{font-family:var(--slate);font-size:11px;letter-spacing:.08em;color:var(--ink-soft);text-align:center;margin:18px 0 0}
-  .qui select{font:inherit;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--faint);cursor:pointer}
 
   /* ── Le panneau : ce que la strate, et la boucle tenue, donnent à lire. ────────── */
   /* Il était une colonne de grille (1fr) ; il est maintenant un bloc du flux de .ecran.
@@ -219,11 +217,9 @@
     </div>
     <p class="tag" id="tag"></p>
     <p class="hint" id="hint">clique une boucle — l'œil s'y pose et déroule ce qu'elle porte ; relâche-la pour écrire</p>
-    <p class="qui">
-      <select id="qui" aria-label="Qui écrit">
-        <option>Karima</option><option>Céline</option><option>Anthony</option>
-      </select> écrit · D. Un · IPP-001
-    </p>
+    <!-- La ligne « qui écrit · D. Un · IPP-001 » appartenait au prototype interne : on y
+         choisissait un prénom pour tester, et le patient y était nommé. La vitrine est
+         publique — elle ne montre ni soignant ni patient. -->
   </div>
   <div id="panneau"></div>
   </div><!-- /.ecran -->
@@ -309,13 +305,16 @@ import { creerNoeud } from '../noeud.js';
   // préexistent repliées. La récolte DÉPLIE, elle ne crée pas.
 
   // ── Dépôts (domaine 2) ────────────────────────────────────────────────────────
+  // Les textes sont ceux du prototype, mot pour mot. Seuls les auteurs sont partis : la
+  // vitrine ne signe personne. Aucun de ces six textes ne nomme quelqu'un — ils disent
+  // « il », « sa sœur », « au CMP », « à l'atelier ».
   var DEPOTS=[
-    {a:"Karima", t:"Le 3 mars : « toute-puissance ». Il a refusé de s’asseoir, puis s’est excusé dans le couloir."},
-    {a:"Karima", t:"Sa sœur a rappelé, depuis qu’il ne travaille plus. Elle demande si on peut passer le matin."},
-    {a:"Céline", t:"Il dit qu’il ne prend plus le traitement du soir. Il ne veut pas en parler à sa sœur."},
-    {a:"Anthony",t:"Rendez-vous manqué au CMP. Il était chez lui, il n’a pas ouvert."},
-    {a:"Céline", t:"Il a parlé de son ancien poste à l’atelier. Il en parle au présent."},
-    {a:"Karima", t:"Sa sœur pleure au téléphone. Elle dit qu’elle n’en peut plus, mais qu’elle ne lâchera pas."}
+    {t:"Le 3 mars : « toute-puissance ». Il a refusé de s’asseoir, puis s’est excusé dans le couloir."},
+    {t:"Sa sœur a rappelé, depuis qu’il ne travaille plus. Elle demande si on peut passer le matin."},
+    {t:"Il dit qu’il ne prend plus le traitement du soir. Il ne veut pas en parler à sa sœur."},
+    {t:"Rendez-vous manqué au CMP. Il était chez lui, il n’a pas ouvert."},
+    {t:"Il a parlé de son ancien poste à l’atelier. Il en parle au présent."},
+    {t:"Sa sœur pleure au téléphone. Elle dit qu’elle n’en peut plus, mais qu’elle ne lâchera pas."}
   ];
   DEPOTS.forEach(function(d,i){ d.h=new Date(Date.now()-(DEPOTS.length-i)*36e5); });
 
@@ -450,7 +449,9 @@ import { creerNoeud } from '../noeud.js';
           : '<p class="depot">'+ech(d.t)+'</p>';
         var typ = (d.n && d.n!=="observation") ? '<span class="nat">'+ech(d.n)+'</span>' : '';
         return '<li'+(d.n==="gestation"?' class="gest"':'')+'>'+corps+
-               '<p class="attr">'+ech(d.a)+' · '+quand(d.h)+' '+typ+'</p></li>';
+               // La date seule, sans auteur — comme les hypothèses de Filigrane. Pas
+               // « anonyme » : ça ferait une colonne de « anonyme · anonyme · anonyme ».
+               '<p class="attr">'+quand(d.h)+' '+typ+'</p></li>';
       }).join("");
       pan.innerHTML =
         '<p class="rtag">Récolte · le nœud · <b>on écrit ici</b></p>'+
@@ -492,7 +493,9 @@ import { creerNoeud } from '../noeud.js';
         ? fr.map(function(f){ var d=DEPOTS[f.depot];
             var croise=f.lobes.length>1 ? '<span class="croise">croise '+f.lobes.filter(function(x){return x!==b;}).map(function(x){return AX[x];}).join(" · ")+'</span>' : '';
             return '<li><p class="depot">'+ech(d.t.slice(f.debut,f.fin))+'</p>'+
-                   '<p class="attr">'+ech(d.a)+' · '+quand(d.h)+' · <a href="#" class="note">la note entière</a> '+croise+'</p></li>';
+                   // Second endroit où l'auteur s'affichait : le panneau « on lit » d'une
+                   // boucle tenue. Même fuite, même page — la date seule ici aussi.
+                   '<p class="attr">'+quand(d.h)+' · <a href="#" class="note">la note entière</a> '+croise+'</p></li>';
           }).join("")
         : '<li class="creux"><p class="depot">—</p><p class="attr">'+(PASSE?'rien n’a été rangé ici':'la lecture machine n’a pas tourné')+'</p></li>';
       pan.innerHTML =
@@ -560,8 +563,13 @@ import { creerNoeud } from '../noeud.js';
   $("coEntrer").addEventListener("click", function(){ location.href="01_file_active.html"; });
 
   // ── Qui écrit ─────────────────────────────────────────────────────────────────
-  var QUI="Karima";
-  $("qui").addEventListener("change",function(){ QUI=this.value; });
+  // Personne, sur la vitrine. Le sélecteur de prénom appartenait au prototype interne, où
+  // l'on choisissait qui écrit pour tester ; QUI ne se lit donc plus dans le DOM — il n'y
+  // a plus de DOM à lire. C'est une constante, et elle est nulle : le dépôt garde sa place
+  // dans le fil et son heure, il n'est simplement signé de personne. `a` reste dans la
+  // forme du dépôt (l'app réelle signe — invariant 1) ; ici il ne porte rien, et rien
+  // ne l'affiche.
+  var QUI=null;
 
   // ── Le nœud (module) et son câblage à la page ──────────────────────────────────
   // La page ne dessine plus le nœud : elle l'instancie, le pilote (setStrate/setGrain),
