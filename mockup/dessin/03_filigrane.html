@@ -65,14 +65,27 @@
   .prose{font-family:var(--prose);font-size:13.5px;line-height:1.55}
   .prose b{font-weight:700}
   .prose p{margin-bottom:9px}
-  .hyp{border-left:2px solid var(--faint);padding:2px 0 2px 11px;margin-bottom:11px}
-  .hypTxt{font-family:var(--prose);font-size:13px;line-height:1.45}
-  .hypQui{font-family:var(--slate);font-size:8.5px;letter-spacing:.06em;color:var(--ink-soft);opacity:.8;margin-top:3px}
-  .hyp.machine{border-left-color:var(--red)}
-  .scelle{border:1px dashed var(--creux);border-radius:12px;padding:13px;text-align:center;cursor:pointer;
-    font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);line-height:1.7}
-  .scelle b{color:var(--ink);font-weight:400}
-  .ecart{background:rgba(255,255,255,.45);border:1px solid var(--faint);border-radius:12px;padding:11px 13px;margin-top:4px}
+  /* la mécanique de l'Hypothèse — VERBATIM de 02_intra_patient.html (poser · signer · révéler) */
+  .recit{font-family:var(--prose);font-size:13px;line-height:1.5;background:rgba(255,255,255,.4);border:1px solid var(--faint);border-radius:12px;padding:11px 13px}
+  .recit.machine{border-style:dashed}
+  .recit .maj{display:block;font-family:var(--slate);font-size:9px;color:var(--ink-soft);opacity:.7;margin-top:8px}
+  .actes{display:flex;gap:8px;margin-top:2px}
+  .actes button{background:rgba(21,25,30,.05);border:1px solid var(--faint);border-radius:11px;padding:9px 15px;font-family:var(--word);font-size:12.5px;color:var(--ink);cursor:pointer}
+  .actes button.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .edit{display:none;margin-top:10px}
+  .edit.on{display:block}
+  .edit textarea{width:100%;height:140px;border:1px solid var(--faint);border-radius:12px;background:rgba(255,255,255,.7);padding:12px 13px;font-family:var(--prose);font-size:13px;line-height:1.5;color:var(--ink);outline:0;resize:vertical}
+  .edit .sig{font-family:var(--slate);font-size:10px;color:var(--ink-soft);margin:8px 2px 10px}
+  .stack{margin-top:12px}
+  .item{border-left:2px solid var(--faint);padding:2px 0 11px 11px;margin-bottom:2px}
+  .item.tete{border-left-color:var(--ink)}
+  .item .d{font-family:var(--slate);font-size:9.5px;color:var(--ink-soft)}
+  .item .t{font-family:var(--prose);font-size:12.5px;line-height:1.45;color:#2A2F35;margin-top:3px}
+  /* L'ÉCART — le miroir tendu (§18bis, la Vigilante) : écart tenu, jamais résolu. */
+  .ecart{background:rgba(255,255,255,.45);border:1px solid var(--faint);border-radius:12px;
+    padding:11px 13px;margin-top:4px}
+  .ecart .hypTxt{font-family:var(--prose);font-size:13px;line-height:1.45}
+  .ecart .hypQui{font-family:var(--slate);font-size:8.5px;letter-spacing:.06em;color:var(--ink-soft);opacity:.8;margin-top:3px}
   .tex{margin-bottom:13px}
   .texNom{font-family:var(--prose);font-weight:700;font-size:13.5px}
   .texCompte{font-family:var(--slate);font-size:9px;letter-spacing:.06em;color:var(--ink-soft);opacity:.85;margin:1px 0 5px}
@@ -80,23 +93,6 @@
   .visage{border:1px solid var(--faint);border-radius:12px;padding:11px 13px;margin-bottom:10px;background:rgba(255,255,255,.35)}
   .visageNom{font-family:var(--prose);font-weight:700;font-size:13.5px}
   .visageDit{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:2px}
-
-  /* Guichet — le SEUL geste de Filigrane (vigie_institutionnelle §4). Bottom-sheet importé de
-     02_intra_patient.html, élagué : ni date de prochaine fois (.pf), ni relais/sortie (.sortie). */
-  .guichet{position:absolute;inset:0;z-index:10;background:rgba(233,236,239,.97);
-           transform:translateY(101%);transition:transform .3s cubic-bezier(.2,.9,.2,1);
-           display:flex;flex-direction:column;padding:26px 22px 22px}
-  .guichet.on{transform:none}
-  .guichet h4{font-family:var(--prose);font-weight:700;font-size:19px;margin:0 0 2px}
-  .guichet .who{font-size:11.5px;color:var(--ink-soft);margin-bottom:14px}
-  .guichet .who b{font-weight:700;color:var(--ink)}
-  .guichet textarea{width:100%;height:140px;border:1px solid var(--faint);border-radius:14px;
-    background:rgba(255,255,255,.6);padding:13px 15px;font-family:var(--prose);font-size:15px;
-    color:var(--ink);resize:none;outline:0;line-height:1.5}
-  .fin{margin-top:auto;display:flex;gap:12px;align-items:center}
-  .fin button{flex:1;height:48px;border-radius:24px;border:0;background:var(--ink);color:var(--paper);
-    font-family:var(--word);font-size:14.5px;font-weight:600;cursor:pointer}
-  .fin .annul{flex:0 0 auto;background:0;color:var(--ink-soft);font-weight:400;width:auto;padding:0 8px}
 
   /* la marge — règles verbatim de 02_intra_patient.html */
   .marge{max-width:392px;font-size:13.5px;line-height:1.62;color:#2B3138;padding-top:10px}
@@ -148,22 +144,34 @@
         <g id="labels" font-size="10" letter-spacing="0" opacity="0"></g>
       </svg>
     </div>
-    <!-- ① LE RÉCIT — pas de guichet : il s'écrit tout seul, en permanence, au fil des dépôts -->
+    <!-- ① LE RÉCIT — pas de +, pas d'acte : il s'écrit tout seul, en permanence, au fil des dépôts -->
     <div class="sec">
       <div class="secHead"><div class="secTitre">Récit</div></div>
       <div class="secSub">L'histoire qui s'en dégage — il s'écrit tout seul, personne ne le signe</div>
       <div class="prose" id="recit"></div>
     </div>
 
-    <!-- ② L'HYPOTHÈSE — chacun la sienne, sans voir celle des autres. Celle de la machine est SCELLÉE
-         tant qu'on n'a pas déposé : sinon elle nous ancre, on croirait penser et on compléterait son
-         brouillon. La récolte EST la diffraction, un tour plus haut. -->
+    <!-- ② L'HYPOTHÈSE — MÊME MÉCANIQUE QUE LA PAGE 2 (Hypothèse) : on pose d'abord, la machine ne se
+         révèle qu'APRÈS. Ici l'intervalle est plus long, c'est tout. Anonymes : pas de qui:, la même
+         diffraction (conserver la vision de tout le monde), un tour plus haut. -->
     <div class="sec">
       <div class="secHead"><div class="secTitre">Hypothèse</div>
-        <button class="trigIco" id="btHyp" title="déposer la mienne" aria-label="déposer la mienne">+</button></div>
+        <span id="actesH"><button class="trigIco" id="btHyp" title="poser l'hypothèse" aria-label="poser l'hypothèse">+</button></span></div>
       <div class="secSub">Ce qui se joue — chacun la sienne, sans voir celle des autres · anonymes</div>
-      <div id="hyps"></div>
-      <div id="mach"></div>
+      <div class="edit" id="editH">
+        <textarea id="taH" placeholder="ce qui se joue dans l'unité…"></textarea>
+        <div class="sig">chacun pose la sienne · deux signatures égales, anonymes</div>
+        <div class="actes"><button class="pri" id="btSignerH">signer en équipe</button><button id="btAnnulH">annuler</button></div>
+      </div>
+      <div class="stack" id="listH"></div>
+      <!-- révélée SEULEMENT après la signature : un autre angle, jamais une correction -->
+      <div id="hypMachine" style="display:none;margin-top:12px">
+        <div class="recit machine" id="hypMachineTxt"></div>
+        <div class="secSub" style="margin-top:6px;opacity:.8">lue à l'aveugle de la vôtre — l'écart est matière, pas un verdict</div>
+        <!-- L'ÉCART — le seul organe que la page ajoute : ce que personne ne voit depuis sa place.
+             Il MONTRE que les lectures diffèrent, il ne les RANGE pas. Révélé avec le bloc machine. -->
+        <div class="ecart" id="ecart"></div>
+      </div>
     </div>
 
     <!-- ③ CONTINUITÉ -->
@@ -183,15 +191,6 @@
       <div class="visage"><div class="visageNom">Dissolution</div>
         <div class="visageDit">fragmenter par <b>absence de cadre</b> — tout accepter, plus de bords, le cadre qui disparaît.</div></div>
     </div>
-  </div>
-
-  <!-- LE GUICHET — le seul de Filigrane. Une hypothèse par personne, ANONYME, irrévocable.
-       Reste hors de .ecran : c'est une fenêtre, pas un champ de plus. -->
-  <div class="guichet" id="guichet">
-    <h4>Mon hypothèse sur l'unité</h4>
-    <div class="who">déposée <b>anonymement</b> · aujourd'hui · <b>irrévocable</b></div>
-    <textarea id="g-txt" placeholder="ce qui se joue, selon moi…"></textarea>
-    <div class="fin"><button id="g-dep">déposer</button><button class="annul" id="g-annul">annuler</button></div>
   </div>
 </div>
 
@@ -235,8 +234,8 @@
      institutionnel</b>, une fois par trimestre. D'où les deux fenêtres — « les trois derniers mois »
      contre « les trois d'avant », c'est <i>ce qui a bougé depuis qu'on s'est vus</i>.</p>
   <h3>l'hypothèse avant la machine</h3>
-  <p>Chacun dépose la sienne sans voir celle des autres, et l'hypothèse machine reste <b>scellée</b>
-     jusque-là. <span class="q">Si elle parlait la première, elle nous ancrerait : on croirait penser,
+  <p>Chacun pose la sienne sans voir celle des autres, et <b>l'angle machine ne se révèle qu'après</b>
+     — comme sur le Fil de soi, un tour plus bas. <span class="q">Si elle parlait la première, elle nous ancrerait : on croirait penser,
      on compléterait son brouillon. La récolte <i>est</i> la diffraction — quatre regards qui disent
      la même chose n'ont pas convergé, ils ont fondu.</span> L'écart se lit alors trois fois : entre
      nous, entre nous et la machine, et entre le tout et ce que le récit montrait. Elles sont
@@ -246,13 +245,11 @@
      s'écrit tout seul, les deux faces se lisent, la machine attend. <span class="q">Une seule
      hypothèse par personne, anonyme — et l'hypothèse de l'unité, quand elle se
      formule, demande <b>deux signatures égales</b> : aucune voix ne pèse plus qu'une autre.</span></p>
-  <h3>le quorum est la porte</h3>
-  <p>L'hypothèse de la machine ne s'ouvre pas sur un bouton : elle s'ouvre quand <b>deux hypothèses
-     au moins</b> ont été déposées. <span class="q">Sous le quorum, il n'y a pas de chemin vers elle —
-     pas un bouton grisé, pas de bouton. La garde n'est pas une consigne, c'est une absence.</span>
-     Deux, parce que réunir cinq personnes n'arrive pas ; le principe, lui, ne bouge pas : <b>aucune
-     voix ne pèse plus qu'une autre</b>, et le compte est anonyme — on voit qu'ils sont deux, jamais
-     qui ils sont.</p>
+  <p>L'écart est le seul organe que la page ajoute. <span class="q">Chacun croise ses collègues tous
+     les jours ; personne ne voit jamais que leurs lectures ne se recouvrent pas. C'est ce qui n'est
+     visible que du dessus — et c'est ce qu'on vient chercher ici.</span> Il est montré, jamais rangé :
+     la machine ne classe pas les lectures en camps, elle pose qu'elles diffèrent. L'analyse se fait
+     entre les gens, au point institutionnel.</p>
   <h3>elle peut citer, elle peut compter</h3>
   <p>L'interdit du chiffre protège <b>quelqu'un</b> : aucun nombre sur un patient ni un soignant
      nommé. Ici l'agrégat est anonyme — <b>il n'y a plus personne</b> : compter ce qu'on a déposé,
@@ -344,59 +341,50 @@ var HYPS = [
  { d:"il y a 2 j", t:"L'unité va bien. C'est le volume qui a changé, pas nous." },
  { d:"il y a 2 j", t:"On a arrêté de se contredire. Ça m'inquiète plus que la charge." }
 ];
-function rendHyps(){
-  $("hyps").innerHTML = HYPS.map(function(h){
-    return '<div class="hyp"><div class="hypTxt">'+h.t+'</div><div class="hypQui">'+h.d+'</div></div>'; }).join("");
-}
+var esc = function(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); };
 
-/* ══ LE GUICHET — le seul geste de la page (vigie_institutionnelle §4, « Le geste de création »).
-      Le « + » ouvre la fenêtre ; « déposer » ajoute MON hypothèse EN TÊTE, ANONYME (rien ne la
-      distingue des autres), puis re-rend #hyps ET #mach (le dépôt fait avancer le compte du
-      quorum) et ferme. Texte vide → rien n'est déposé, on ferme. ══ */
-$("btHyp").addEventListener("click", function(){
-  $("g-txt").value = "";
-  $("guichet").classList.add("on");
-  setTimeout(function(){ $("g-txt").focus(); }, 260);
-});
-$("g-annul").addEventListener("click", function(){ $("guichet").classList.remove("on"); });
-$("g-dep").addEventListener("click", function(){
-  var txt = $("g-txt").value.trim();
-  if(txt){ HYPS.unshift({ d:"à l'instant", t:txt }); rendHyps(); rendMach(); }  // aucun nom : elle rejoint le champ ; rendMach relit le compte
-  $("guichet").classList.remove("on");
-});
-
-/* ══ LE SCELLÉ — piloté par le COMPTE, pas par un bouton. Le quorum est anonyme, comme le poids
-      (vigie_institutionnelle §5 : « on voit le poids, jamais qui l'a posé »). QUORUM = 2 (Abtine,
-      15/07 : réunir cinq personnes est irréaliste ; le principe ne bouge pas — tout le monde égal). ══ */
-var QUORUM = 2;
-/* La porte est le COMPTE, pas un bouton : sous le quorum, il n'existe aucun chemin vers
-   l'hypothèse machine. Elle ne parle jamais la première — sinon elle nous ancre : on croirait
-   penser, on compléterait son brouillon. Le quorum est anonyme (un nombre, jamais des noms). */
-function ouvrirMach(){
-  $("mach").innerHTML =
-   '<div class="hyp machine"><div class="hypTxt">On dirait que l\'unité absorbe de plus en plus et relie de moins '+
-   'en moins. Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, '+
-   'tenir un écart, écrire ce qu\'on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu\'on tient encore, ou '+
-   'est-ce qu\'on encaisse ?</div><div class="hypQui">la machine · au tentatif · rien n\'est conclu</div></div>'+
-   '<div class="ecart"><div class="hypTxt">'+HYPS.length+' lectures, aucune identique. Deux disent la charge, '+
-   'une dit le lien, une dit qu\'il n\'y a rien. La machine dit l\'absorption.</div>'+
-   '<div class="hypQui">l\'écart — tenu, jamais résolu</div></div>';
+/* ══ LA MÉCANIQUE DE L'HYPOTHÈSE — VERBATIM de 02_intra_patient.html. Une pile signée générique +
+      brancherActe (poser → signer → révéler). Ici la pile n'affiche que la date (anonymat : pas de
+      qui:, §18bis). L'angle machine ne se révèle qu'APRÈS ta signature — même règle que la page 2. ══ */
+function rendreStack(listId, data){
+  $(listId).innerHTML = data.map(function(o,i){
+    return '<div class="item'+(i===0?' tete':'')+'"><div class="d">'+esc(o.d)+'</div><div class="t">'+esc(o.t)+'</div></div>';
+  }).join("");
 }
-function rendMach(){
-  if(HYPS.length < QUORUM){
-    $("mach").innerHTML = '<div class="scelle" style="cursor:default">L\'hypothèse de la machine est <b>scellée</b>.'+
-      '<br>Il faut <b>'+QUORUM+' hypothèses</b> déposées. Il y en a <b>'+HYPS.length+'</b>.'+
-      '<br><br>· elle ne parle pas la première ·</div>';
-    return;
-  }
-  $("mach").innerHTML = '<div class="scelle" id="sc"><b>'+HYPS.length+' hypothèses</b> déposées — le quorum est atteint.'+
-    '<br>Elle peut s\'ouvrir.<br><br>· toucher pour ouvrir ·</div>';
-  $("sc").addEventListener("click", ouvrirMach);
+function brancherActe(cfg){
+  rendreStack(cfg.list, cfg.data);
+  $(cfg.bt).addEventListener("click", function(){
+    $(cfg.ta).value = cfg.prefill();
+    $(cfg.edit).classList.add("on"); $(cfg.actes).style.display = "none"; $(cfg.ta).focus();
+  });
+  $(cfg.annul).addEventListener("click", function(){
+    $(cfg.edit).classList.remove("on"); $(cfg.actes).style.display = "";
+  });
+  $(cfg.signer).addEventListener("click", function(){
+    var txt = $(cfg.ta).value.trim(); if(!txt) return;
+    cfg.data.unshift({ d:"aujourd’hui", t:txt });
+    $(cfg.edit).classList.remove("on"); $(cfg.actes).style.display = "";
+    rendreStack(cfg.list, cfg.data);
+    if(cfg.afterSign) cfg.afterSign();
+  });
 }
-/* ⚠️ DÉFAUT DE MAQUETTE (pas de doctrine) : si la machine est déjà ouverte, un nouveau dépôt la
-   re-scelle — rendMach() re-rend le scellé fermé/ouvert selon le compte, sans mémoire du fait
-   qu'elle était ouverte. Signalé, non corrigé. */
-rendHyps(); rendMach();
+// L'hypothèse machine — un autre angle, révélé APRÈS que tu as posé la tienne, jamais une correction.
+var HYP_MACHINE =
+  "On dirait que l'unité absorbe de plus en plus et relie de moins en moins. Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, tenir un écart, écrire ce qu'on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu'on tient encore, ou est-ce qu'on encaisse ?";
+$("hypMachineTxt").innerHTML = esc(HYP_MACHINE) + '<span class="maj">hypothèse machine · un autre angle, jamais une correction</span>';
+/* L'ÉCART — le seul organe que la page ajoute (§18bis, la Vigie : le miroir tendu, tenu jamais
+   résolu). Il MONTRE que les lectures diffèrent, il ne les RANGE pas (l'ancienne version les classait
+   en camps — c'était le tri qui était faux, pas l'écart). Compte = les hypothèses déposées + celle de
+   la machine ; calculé, jamais en dur. Posé avec le bloc machine, révélé au même moment. */
+var LECT = ["zéro","une","deux","trois","quatre","cinq","six","sept","huit","neuf","dix","onze","douze","treize","quatorze"];
+var nEcart = HYPS.length + 1, motEcart = LECT[nEcart] || String(nEcart);
+$("ecart").innerHTML =
+  '<div class="hypTxt">'+ motEcart.charAt(0).toUpperCase()+motEcart.slice(1) +' lectures. Aucune ne recouvre une autre.</div>'+
+  '<div class="hypQui">l\'écart — tenu, jamais résolu</div>';
+// Hypothèse — chacun pose SA question (anonyme) ; l'angle machine ne se révèle qu'APRÈS ta signature.
+brancherActe({ bt:"btHyp", edit:"editH", actes:"actesH", ta:"taH", signer:"btSignerH", annul:"btAnnulH",
+               prefill:function(){ return ""; }, data:HYPS, list:"listH",
+               afterSign:function(){ $("hypMachine").style.display = ""; } });
 
 $("cont").innerHTML =
  '<div class="tex"><div class="texNom">Le fil survit à celui qui le tient</div>'+
