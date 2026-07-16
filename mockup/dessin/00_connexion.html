@@ -120,7 +120,12 @@
   .rtag{font-family:var(--slate);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
         color:var(--ink-soft);margin:0 0 26px;padding-bottom:14px;border-bottom:1px solid var(--faint)}
   .rtag b{color:var(--ink);font-weight:400}
-  ul.fil{list-style:none;margin:0;padding:0}
+  /* La liste défile, pas la page — le motif vient de `.vigCol.defile` (page 2).
+     132px est MESURÉ, pas calculé : .ecran offre 753px (812 − 59 de header), le reste de
+     la Récolte en occupe 620,7 (le .shell 388 ; rtag + champ + couv + barre + leurs marges
+     232,7). Il reste 132,3 — au-delà, .ecran se remet à défiler et le champ repart sous le
+     pli. C'est peu : un dépôt fait 122px en moyenne, la boîte n'en montre qu'un. */
+  ul.fil{list-style:none;margin:0;padding:0;max-height:132px;overflow-y:auto;overscroll-behavior:contain}
   ul.fil li{position:relative;padding:0 0 30px var(--gout)}
   ul.fil li::before{content:"";position:absolute;left:2px;top:.42em;bottom:1.1em;width:1px;background:var(--faint)}
   ul.fil li.creux::before{background:none;border-left:1px dotted var(--faint)}
