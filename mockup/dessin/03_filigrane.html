@@ -375,16 +375,19 @@ $("hypMachineTxt").innerHTML = esc(HYP_MACHINE) + '<span class="maj">hypothèse 
 /* L'ÉCART — le seul organe que la page ajoute (§18bis, la Vigie : le miroir tendu, tenu jamais
    résolu). Il MONTRE que les lectures diffèrent, il ne les RANGE pas (l'ancienne version les classait
    en camps — c'était le tri qui était faux, pas l'écart). Compte = les hypothèses déposées + celle de
-   la machine ; calculé, jamais en dur. Posé avec le bloc machine, révélé au même moment. */
+   la machine ; calculé, jamais en dur, et évalué AU MOMENT DE LA RÉVÉLATION (celui qui vient de signer
+   est déjà dans HYPS) — pas figé à l'init. Il n'existe pas tant qu'on n'a pas ouvert la porte. */
 var LECT = ["zéro","une","deux","trois","quatre","cinq","six","sept","huit","neuf","dix","onze","douze","treize","quatorze"];
-var nEcart = HYPS.length + 1, motEcart = LECT[nEcart] || String(nEcart);
-$("ecart").innerHTML =
-  '<div class="hypTxt">'+ motEcart.charAt(0).toUpperCase()+motEcart.slice(1) +' lectures. Aucune ne recouvre une autre.</div>'+
-  '<div class="hypQui">l\'écart — tenu, jamais résolu</div>';
-// Hypothèse — chacun pose SA question (anonyme) ; l'angle machine ne se révèle qu'APRÈS ta signature.
+// Hypothèse — chacun pose SA question (anonyme) ; l'angle machine ET l'écart ne se révèlent qu'APRÈS ta signature.
 brancherActe({ bt:"btHyp", edit:"editH", actes:"actesH", ta:"taH", signer:"btSignerH", annul:"btAnnulH",
                prefill:function(){ return ""; }, data:HYPS, list:"listH",
-               afterSign:function(){ $("hypMachine").style.display = ""; } });
+               afterSign:function(){
+                 var n = HYPS.length + 1, mot = LECT[n] || String(n);   // les lectures humaines + celle de la machine
+                 $("ecart").innerHTML =
+                   '<div class="hypTxt">'+ mot.charAt(0).toUpperCase()+mot.slice(1) +' lectures. Aucune ne recouvre une autre.</div>'+
+                   '<div class="hypQui">l\'écart — tenu, jamais résolu</div>';
+                 $("hypMachine").style.display = "";
+               } });
 
 $("cont").innerHTML =
  '<div class="tex"><div class="texNom">Le fil survit à celui qui le tient</div>'+
