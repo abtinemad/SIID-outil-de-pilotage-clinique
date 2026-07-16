@@ -126,8 +126,15 @@
      ligne .qui (l'anonymat), 49 pris sur l'air (rtag 26→12, couv 20→10, barre 16→10,
      panneau 28→12, tag 12→10).
      Un dépôt fait 122px en moyenne : 215 en montrent 1,8 — le fil respire, il ne déroule
-     pas encore. Passer à 2 ou 3 demanderait de toucher au nœud (232) : pas fait ici. */
+     pas encore. Passer à 2 ou 3 demanderait de toucher au nœud (232) : pas fait ici.
+
+     215 était calé pour la RÉCOLTE et les trois strates en héritaient sans raison — elles
+     n'ont pas les mêmes meubles sous le fil : la Récolte a le champ, la couverture et la
+     barre ; les deux autres ont une note, et pas de la même taille (169px au trilobe,
+     90px au bilobe). Chaque strate a donc sa mesure, et chacune est mesurée. */
   ul.fil{list-style:none;margin:0;padding:0;max-height:215px;overflow-y:auto;overscroll-behavior:contain}
+  ul.fil.mMetab{max-height:176px}    /* la note du trilobe fait 169px : il ne reste que ça */
+  ul.fil.mReflex{max-height:255px}   /* la note du bilobe n'en fait que 90 : 40px de plus qu'en Récolte */
   ul.fil li{position:relative;padding:0 0 30px var(--gout)}
   ul.fil li::before{content:"";position:absolute;left:2px;top:.42em;bottom:1.1em;width:1px;background:var(--faint)}
   ul.fil li.creux::before{background:none;border-left:1px dotted var(--faint)}
@@ -162,6 +169,8 @@
   .actes a{color:var(--ink-soft);text-decoration:none;border-bottom:1px dotted var(--faint);cursor:pointer}
   .actes a:hover{color:var(--ink)}
   .nat{margin-left:10px;padding-left:10px;border-left:1px solid var(--faint)}
+  /* Sans date devant, la première marque n'a rien à séparer : pas de filet dans le vide. */
+  .attr .nat:first-child{margin-left:0;padding-left:0;border-left:0}
   /* L'agrafé — .agr/.agrTxt copiés de la page 2. Le désaccord se lit SOUS son objet, en
      retrait : il s'agrafe à ce qu'il conteste, détaché il ne veut plus rien dire. */
   .agr{margin:6px 0 0 12px;border-left:2px solid var(--faint);padding:2px 0 2px 10px}
@@ -349,12 +358,12 @@ import { creerNoeud } from '../noeud.js';
   //    sur la vitrine, alors on n'y touche pas. La première ligne est perdue ; aucun mot
   //    n'est réécrit.
   var EX_METAB = [
-    { n:"récit", d:"aujourd’hui", m:"proposé par la machine",
+    { n:"récit", m:"proposé par la machine",
       t:"Sa sœur reste le lien principal mais dit son épuisement. Le travail apparaît au présent dans son discours — un appui qui n’est plus actif mais reste vivant. Un rendez-vous manqué récent, sans explication donnée." },
     { n:"synthèse", d:"4 juil.",
       t:"Alliance tenue par la sœur. Traitement pris. Réinvestissement possible du côté du travail à explorer. Pas d’inquiétude aiguë.",
       agr:"Je ne reconnais pas « alliance tenue ». Sa sœur tient, ce n’est pas pareil.", agrD:"5 juil." },
-    { n:"hypothèse", d:"aujourd’hui", m:"proposée par la machine, révélée après la signature",
+    { n:"hypothèse", m:"proposée par la machine, révélée après la signature",
       t:"Le retrait — le traitement du soir arrêté, le rendez-vous manqué — est-il un refus du soin, ou une manière de tenir un reste de maîtrise là où le travail et le lien lui échappent ?" },
     { n:"accompagnement", d:"4 juil.",
       t:"On accompagne le desserrage du lien fraternel sans le rompre ; on ouvre doucement le versant travail comme appui. On ne force pas le traitement du soir — on attend qu’il en reparle." }
@@ -371,20 +380,25 @@ import { creerNoeud } from '../noeud.js';
       "on ne tient presque jamais un écart, on ne choisit presque jamais d’attendre.</p>" },
     { n:"hypothèse", d:"il y a 2 j", t:"L’unité va bien. C’est le volume qui a changé, pas nous." },
     { n:"hypothèse", d:"il y a 2 j", t:"On a arrêté de se contredire. Ça m’inquiète plus que la charge." },
-    { n:"hypothèse", d:"aujourd’hui", m:"proposée par la machine",
+    { n:"hypothèse", m:"proposée par la machine",
       t:"On dirait que l’unité absorbe de plus en plus et relie de moins en moins. Quelque chose se dépose sans se reprendre — et les trois gestes qui demandent du temps (attendre, tenir un écart, écrire ce qu’on ne sait pas) sont ceux qui ne bougent plus. Est-ce qu’on tient encore, ou est-ce qu’on encaisse ?" },
-    { n:"écart", d:"aujourd’hui", t:"Six lectures. Aucune ne recouvre une autre." }
+    { n:"écart", t:"Six lectures. Aucune ne recouvre une autre." }
   ];
 
   // Le gabarit de la Récolte, à l'identique : le texte, puis la date et la nature. Rien
   // d'autre — pas d'auteur, donc pas de place où en mettre un.
-  function filEx(items){
-    return '<ul class="fil">'+items.map(function(x){
+  //
+  // `d` est FACULTATIF, et son absence dit quelque chose : une proposition de la machine
+  // est recalculée en permanence, elle est toujours maintenant — la dater serait mentir.
+  // La mention « proposé par la machine » dit déjà ce qu'il faut. Seuls les objets signés
+  // portent une date : ce sont des dépôts, ils ont eu lieu une fois.
+  function filEx(items, cls){
+    return '<ul class="fil '+cls+'">'+items.map(function(x){
       var corps = x.html ? '<div class="depot">'+x.html+'</div>' : '<p class="depot">'+ech(x.t)+'</p>';
       var marques = '<span class="nat">'+ech(x.n)+'</span>' + (x.m ? '<span class="nat">'+ech(x.m)+'</span>' : '');
       var agr = x.agr ? '<div class="agr"><p class="agrTxt">'+ech(x.agr)+'</p>'+
                         '<p class="attr">'+ech(x.agrD)+'<span class="nat">agrafé</span></p></div>' : '';
-      return '<li><p class="attr">'+ech(x.d)+' '+marques+'</p>'+corps+agr+'</li>';
+      return '<li><p class="attr">'+(x.d ? ech(x.d)+' ' : '')+marques+'</p>'+corps+agr+'</li>';
     }).join('')+'</ul>';
   }
 
@@ -591,7 +605,7 @@ import { creerNoeud } from '../noeud.js';
       // Accompagnement ont chacun le leur ; la Vigilance est la seule à n'en avoir aucun.
       // Le reste de la note est intact.
       pan.innerHTML='<p class="rtag">Métabolisation · trilobe</p>'+
-        filEx(EX_METAB)+
+        filEx(EX_METAB,"mMetab")+
         '<div class="note-bas">Affectif et Réflexif <b>composent</b> ; la Vigilante <b>lit</b> — deux lobes composent, un seul lit. '+
         'Entre dans un lobe : l’œil saute la corde. Dans la Vigilante il chausse la lentille. '+
         'Ce qui se <i>formule</i> ne se dépose jamais seul : on noue et on signe en collège. '+
@@ -605,7 +619,7 @@ import { creerNoeud } from '../noeud.js';
     //  · « se tient au centre » : l'œil se balade sur le fil depuis le chantier du 15/07.
     // Le reste de la note est intact.
     pan.innerHTML='<p class="rtag">Réflexivité · l’infini</p>'+
-      filEx(EX_REFLEX)+
+      filEx(EX_REFLEX,"mReflex")+
       '<div class="note-bas">Continuité et Fragmentation — les deux faces d’une même présence. '+
       'L’œil veille : sentinelle, non lecteur. Agrégat anonyme : aucun nombre sur quelqu’un, '+
       'mais on peut compter notre trace.</div>';
