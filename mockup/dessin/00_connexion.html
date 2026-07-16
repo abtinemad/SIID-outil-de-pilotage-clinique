@@ -105,7 +105,9 @@
   .switch button{font-family:var(--slate);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
     padding:10px 10px;background:transparent;border:0;color:var(--ink-soft);cursor:pointer;transition:background .25s,color .25s}
   .switch button.on{background:var(--ink);color:var(--paper)}
-  .tag{font-family:var(--slate);font-size:11px;letter-spacing:.1em;color:var(--ink-soft);text-align:center;margin:12px 0 0}
+  /* L'air entre le switch, le tag et le hint : 36px quand la ligne .qui était là (12+6+18).
+     Elle est partie avec ses 18 ; il reste 12+6, et 10+6 = 16 touche la cible. */
+  .tag{font-family:var(--slate);font-size:11px;letter-spacing:.1em;color:var(--ink-soft);text-align:center;margin:10px 0 0}
   .tag b{font-weight:400;color:var(--ink)}
   .hint{font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);
         text-align:center;margin:6px 0 0;opacity:0;transition:opacity .5s}
@@ -114,16 +116,18 @@
   /* ── Le panneau : ce que la strate, et la boucle tenue, donnent à lire. ────────── */
   /* Il était une colonne de grille (1fr) ; il est maintenant un bloc du flux de .ecran.
      Il lui faut la marge des autres pages — 22px, celle de .titreLigne et de .modes. */
-  #panneau{padding:0 22px 28px}
+  #panneau{padding:0 22px 12px}
   .rtag{font-family:var(--slate);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-        color:var(--ink-soft);margin:0 0 26px;padding-bottom:14px;border-bottom:1px solid var(--faint)}
+        color:var(--ink-soft);margin:0 0 12px;padding-bottom:14px;border-bottom:1px solid var(--faint)}
   .rtag b{color:var(--ink);font-weight:400}
   /* La liste défile, pas la page — le motif vient de `.vigCol.defile` (page 2).
-     132px est MESURÉ, pas calculé : .ecran offre 753px (812 − 59 de header), le reste de
-     la Récolte en occupe 620,7 (le .shell 388 ; rtag + champ + couv + barre + leurs marges
-     232,7). Il reste 132,3 — au-delà, .ecran se remet à défiler et le champ repart sous le
-     pli. C'est peu : un dépôt fait 122px en moyenne, la boîte n'en montre qu'un. */
-  ul.fil{list-style:none;margin:0;padding:0;max-height:132px;overflow-y:auto;overscroll-behavior:contain}
+     215px est MESURÉ, pas calculé. .ecran offre 753px (812 − 59 de header) ; le reste de
+     la Récolte en occupe 538. La boîte a gagné 83px sur deux reprises : 34 rendus par la
+     ligne .qui (l'anonymat), 49 pris sur l'air (rtag 26→12, couv 20→10, barre 16→10,
+     panneau 28→12, tag 12→10).
+     Un dépôt fait 122px en moyenne : 215 en montrent 1,8 — le fil respire, il ne déroule
+     pas encore. Passer à 2 ou 3 demanderait de toucher au nœud (232) : pas fait ici. */
+  ul.fil{list-style:none;margin:0;padding:0;max-height:215px;overflow-y:auto;overscroll-behavior:contain}
   ul.fil li{position:relative;padding:0 0 30px var(--gout)}
   ul.fil li::before{content:"";position:absolute;left:2px;top:.42em;bottom:1.1em;width:1px;background:var(--faint)}
   ul.fil li.creux::before{background:none;border-left:1px dotted var(--faint)}
@@ -139,7 +143,7 @@
     font-family:var(--prose);font-size:19px;line-height:1.62;resize:none;padding:0;
     min-height:calc(1.62em * 2);max-height:38vh;overflow-y:auto;caret-color:var(--ink)}
   textarea:focus{outline:0}
-  .barre{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:16px;padding-left:var(--gout)}
+  .barre{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:10px;padding-left:var(--gout)}
   /* Le bouton reste vif quand le champ est vide. Un bouton grisé est une glose. */
   button#btDep{font-family:var(--slate);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
     padding:12px 20px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:background .22s,color .22s}
@@ -148,7 +152,7 @@
   .passe{font-family:var(--slate);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);
          cursor:pointer;border-bottom:1px dotted var(--faint)}
   /* Les trois couvertures : ardoise. C'est la machine qui parle, et elle n'a aucun pouvoir. */
-  .couv{display:flex;gap:26px;flex-wrap:wrap;padding-left:var(--gout);margin-top:20px}
+  .couv{display:flex;gap:26px;flex-wrap:wrap;padding-left:var(--gout);margin-top:10px}
   .mq{position:relative;font-family:var(--slate);font-size:10.5px;letter-spacing:.09em;
       color:var(--faint);cursor:default;padding-bottom:3px;border-bottom:1px solid transparent}
   .mq.on{color:var(--ink-soft);border-bottom-color:var(--faint)}
@@ -483,6 +487,13 @@ import { creerNoeud } from '../noeud.js';
       // défiler .ecran jusqu'au champ — le nœud sortait du cadre avant qu'on l'ait vu.
       // Le focus appartient au DÉPÔT (on continue d'écrire), pas au rendu : il est posé
       // sur chacun des trois gestes qui déposent, jamais ici.
+
+      // Le fil est une chronologie et les dépôts s'ajoutent en queue : on ouvre EN BAS,
+      // sur le dernier, comme on arrive dans une conversation. `scrollTop` sur la boîte
+      // ne touche pas .ecran — c'est un défilement interne, pas un scrollIntoView (le
+      // piège du focus). Seule la boîte des dépôts est concernée : la liste d'une boucle
+      // tenue se lit, elle ne s'écrit pas, elle reste en tête.
+      var ul=pan.querySelector("ul.fil"); if(ul) ul.scrollTop=ul.scrollHeight;
       return;
     }
 
