@@ -35,7 +35,9 @@
   .tel::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
     background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.35),transparent 60%)}
 
-  /* ── LE HEADER — .pageHead/.titreLigne/.titre/.ret et .modes : VERBATIM de la page 2 ── */
+  /* ── LE HEADER — .pageHead/.titreLigne/.titre/.ret : VERBATIM de la page 2 ──
+     La bande reste vide : les onglets vivent sous le nœud, dans le .shell. Le header
+     n'est donc que la ligne du titre. */
   .pageHead{position:absolute;top:0;left:0;right:0;z-index:5;background:var(--paper)}
   .titreLigne{position:relative;padding:24px 22px 2px}
   .titre{font-family:var(--prose);font-weight:700;font-size:22px;padding-left:38px}
@@ -43,19 +45,18 @@
        background:rgba(255,255,255,.6);color:var(--ink-soft);cursor:pointer;
        display:flex;align-items:center;justify-content:center;transition:background .2s}
   .ret:hover{background:rgba(255,255,255,.95)}
-  /* Ici il n'y a pas de retour : c'est l'entrée. L'icône de connexion prend la place
-     SYMÉTRIQUE du chevron — même .ret, même 30px, même top:22px, mais à droite.
-     On garde .ret en `absolute` plutôt qu'un flex space-between : c'est ce qui tient
-     l'alignement au pixel. En flux, la ligne se caserait sur les 30px du bouton — l'icône
-     descendrait de 2px et le header dépasserait les 100px que .ecran attend.
+  /* Ici il n'y a pas de retour : c'est l'entrée. Le chevron des autres pages, retourné —
+     elles reviennent, celle-ci entre — et il prend la place symétrique : même .ret, même
+     30px, même top:22px, mais à droite. On garde .ret en `absolute` plutôt qu'un flex
+     space-between : en flux, la ligne se caserait sur les 30px du bouton, l'icône
+     descendrait de 2px et la ligne du titre grandirait.
      Le .titre garde ses 38px de padding-left : il reste où il est pages 1/2/3. */
   .titreLigne .ret{left:auto;right:22px}
-  /* onglets — copie de .modes (page 2), elle-même copie de .terrains (page 1) */
-  .modes{display:flex;gap:18px;align-items:center;padding:8px 22px 9px;border-bottom:1px solid var(--faint)}
-  .modes button{background:0;border:0;padding:2px 0 6px;font-family:var(--word);font-size:12.5px;
-    color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent}
-  .modes button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
-  .ecran{position:absolute;top:100px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  /* 59px = la hauteur MESURÉE de .titreLigne seule : 24 de padding + 33 du titre + 2.
+     C'est exactement les 104px des pages 1/2/3 moins les 45px de leur bande. Ce n'est pas
+     100px, et on ne les force pas : là-bas le header porte titre + bande, ici la bande est
+     vide. On aligne sur ce qu'il y a, pas sur le chiffre des voisines. */
+  .ecran{position:absolute;top:59px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
   #fil{stroke:var(--ink);fill:none}
   #filR{fill:var(--ink);stroke:var(--ink);stroke-width:.7;stroke-linejoin:round}
@@ -65,13 +66,15 @@
 
   /* ── Le shell : le nœud, toujours visible. Ce n'est pas un logo posé en en-tête —
         c'est le seul organe de navigation de l'app. ─────────────────────────────── */
-  /* .app (grille 440px + 1fr) et le sticky du .shell ont disparu : le cadre téléphone est
-     la mise en page maintenant. Il ne reste du .shell que de quoi centrer le nœud dans
-     .ecran. Ses media queries (900px) mesuraient le VIEWPORT, jamais les 390px du .tel :
-     elles n'auraient plus jamais rien décidé ici.
-     .switch a disparu aussi — ses trois boutons sont montés dans la bande (.modes). */
-  .shell{padding:16px 22px 2px}
+  /* .app (grille 440px + 1fr) a disparu : le cadre téléphone est la mise en page. Le shell
+     garde son sticky — il le tenait déjà sous .app, et c'est lui qui garde le nœud sous
+     l'œil pendant que le panneau défile. Le padding remplace celui que .app donnait. */
+  .shell{position:sticky;top:18px;padding:16px 22px 2px}
   #knot{width:232px;height:232px;display:block;margin:0 auto;cursor:pointer;overflow:visible;touch-action:manipulation}
+  .switch{display:flex;border:1px solid var(--faint);margin:14px auto 0;width:max-content}
+  .switch button{font-family:var(--slate);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    padding:10px 14px;background:transparent;border:0;color:var(--ink-soft);cursor:pointer;transition:background .25s,color .25s}
+  .switch button.on{background:var(--ink);color:var(--paper)}
   .tag{font-family:var(--slate);font-size:11px;letter-spacing:.1em;color:var(--ink-soft);text-align:center;margin:12px 0 0}
   .tag b{font-weight:400;color:var(--ink)}
   .hint{font-family:var(--slate);font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft);
@@ -134,18 +137,14 @@
 </head>
 <body>
 <div class="tel">
-  <!-- HEADER FIXE (hors scroll) — la grammaire des pages 1/2/3 -->
+  <!-- HEADER FIXE (hors scroll) — la grammaire des pages 1/2/3, et rien d'autre.
+       La bande est vide : les onglets sont sous le nœud, là où ils ont toujours été. -->
   <div class="pageHead">
     <div class="titreLigne">
       <div class="titre">CONTINUUM</div>
-      <!-- Pas de chevron : on n'est revenu de nulle part, c'est l'entrée. L'icône prend la
-           place symétrique, à droite. Aucun handler pour l'instant (étape 2). -->
-      <button class="ret" id="btCo" aria-label="se connecter" title="se connecter"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="15.5" r="4"/><path d="M11.5 12.5L20 4"/><path d="M17 7l2.5 2.5"/></svg></button>
-    </div>
-    <div class="modes" id="modes">
-      <button data-s="2" aria-current="true">Récolte</button>
-      <button data-s="1">Métabolisation</button>
-      <button data-s="0">Institutionnel</button>
+      <!-- Le chevron des autres pages, retourné : elles reviennent, celle-ci entre.
+           Aucun handler pour l'instant (étape 2). -->
+      <button class="ret" id="btCo" aria-label="se connecter" title="se connecter"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
   </div>
   <div class="ecran">
@@ -178,6 +177,11 @@
         <g id="oudjat" opacity="0" pointer-events="none" aria-hidden="true"><path fill="#1F222A" fill-rule="evenodd" d="M792.694 902.525C801.944 900.231 811.639 899.173 821.22 897.465 844.258 893.355 867.699 890.8 890.732 886.637 918.202 881.526 945.528 875.667 972.679 869.067 1054.773 849.035 1127.72 818.979 1206 788.169 1222.97 781.489 1253.93 763.14 1267.26 760.446 1302.06 753.413 1339.89 756.95 1376.52 760.375 1392.64 761.882 1408.52 763.368 1423.82 763.922L1672.41 772.564C1725.94 774.804 1777.46 776.972 1830.81 783.123 1872.85 787.969 1915.59 790.328 1957.68 794.889 1965.77 795.64 1977.12 797.185 1984.97 799.029 1985.1 797.128 1985.32 794.461 1985.58 791.236 1987.36 769.411 1991.22 722.07 1984.12 714.358 1980.46 710.375 1970.01 710.609 1964.77 710.727L1964.39 710.736C1954.77 710.949 1945.19 711.353 1935.62 711.757L1935.6 711.758C1919.48 712.439 1903.37 713.119 1887.12 712.881 1799.8 711.604 1712.04 703.386 1624.9 697.699 1522.05 690.985 1429.2 691.703 1328.53 662.53 1304.64 655.606 1281.26 648.069 1259.1 636.587 1226.94 619.931 1197.66 598.142 1165.1 582.168 1042.483 522.005 845.91 471.061 710.824 474.108 670.027 474.59 611.139 476.092 572.153 486.177 514.675 501.045 440.804 517.915 399.105 563.024 377.333 586.577 358.926 610.114 339.91 635.733 313.391 671.47 287.369 705.742 258.468 739.759 226.844 777.959 185.628 808.627 156.8591 849.039 151.8641 856.055 147.4661 870.13 155.0941 875.82 169.894 886.229 194.574 884.707 215.05 883.444L215.053 883.444C219.922 883.144 224.554 882.858 228.758 882.751 238.598 882.501 248.531 882.039 258.51 881.576 297.501 879.763 337.189 877.919 374.714 888.536 378.012 889.469 381.065 890.462 383.874 891.557L792.694 902.525ZM1018.127 612.492C993.119 605.494 967.889 599.316 942.478 593.966 946.425 609.441 950.732 622.231 953.262 638.165 960.956 688.967 950.848 740.869 924.65 785.068 909.538 810.427 893.252 827.571 871.016 846.474 938.81 838.232 1008.751 825.306 1072.51 800.568 1122.69 780.144 1166.71 756.639 1200 712.665 1176.65 671.168 1126.26 652.439 1084.44 634.883 1063.04 625.902 1040.479 618.737 1018.127 612.492ZM612.003 856.432C562.375 822.23 528.698 773.86 517.195 714.146 512.513 688.885 512.091 663.018 515.947 637.617 516.233 635.791 517.285 630.999 518.486 625.534 520.637 615.747 523.262 603.8 522.805 602.857 442.527 641.524 414.262 680.823 361.121 750.132 340.864 776.554 313.401 799.989 294.888 829.103 315.707 836.97 341.129 837.439 363.402 839.913 378.752 841.617 395.398 843.7 410.694 845.055 453.59 849.307 496.583 852.504 539.635 854.642 555.579 855.395 585.011 855.541 604.141 856.801L612.003 856.432Z M563.7137 693.7131 a 173.7912 162.0288 0 1 0 347.5824 0 a 173.7912 162.0288 0 1 0 -347.5824 0 Z"/></g>
         <g id="labels" font-size="10" letter-spacing="0" opacity="0"></g>
       </svg>
+    <div class="switch" id="switch">
+      <button data-s="2" class="on">Récolte</button>
+      <button data-s="1">Métabolisation</button>
+      <button data-s="0">Institutionnel</button>
+    </div>
     <p class="tag" id="tag"></p>
     <p class="hint" id="hint">clique une boucle — l'œil s'y pose et déroule ce qu'elle porte ; relâche-la pour écrire</p>
     <p class="qui">
@@ -209,7 +213,7 @@ import { creerNoeud } from '../noeud.js';
       hint=document.getElementById("hint"), knotSvg=document.getElementById("knot"),
       eyeG=document.getElementById("eyeG"),
       holesG=document.getElementById("holes"), oversG=document.getElementById("overs");
-  var switchBtns=[].slice.call(document.querySelectorAll("#modes button"));
+  var switchBtns=[].slice.call(document.querySelectorAll("#switch button"));
   var frames=[].slice.call(document.querySelectorAll(".frame"));
   var NS="http://www.w3.org/2000/svg";
 
@@ -515,9 +519,7 @@ import { creerNoeud } from '../noeud.js';
   function changerStrate(s){
     STRATE=s; HELD=-1; HELDAXE=null;
     noeud.setStrate(s);
-    // L'habillage change, pas la mécanique : la bande marque le mode courant avec
-    // aria-current (grammaire .modes des pages 1/2/3), là où .switch marquait .on.
-    switchBtns.forEach(function(b){ b.setAttribute("aria-current",(+b.dataset.s)===s ? "true" : "false"); });
+    switchBtns.forEach(function(b){ b.classList.toggle("on",(+b.dataset.s)===s); });
     frames.forEach(function(f){ f.classList.toggle("on",(+f.dataset.f)===s); });
     // Ouvrir la métabolisation paie le recalcul (seul déclencheur, humain sans être un verdict).
     if(s===1 && passePerimee()) passer();
