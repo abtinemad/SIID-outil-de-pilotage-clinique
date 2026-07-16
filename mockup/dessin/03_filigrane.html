@@ -229,6 +229,14 @@
      n'est montré nulle part, et c'est voulu : il se pomperait. Un ratio, non — pour le déplacer, il
      faut déposer autrement.</span> On compare à l'œil, sans échelle : une forme se regarde, un nombre
      se pilote.</p>
+  <h3>est-ce qu'on est d'accord avec ce qu'on fait</h3>
+  <p>Les deux lectures du §18 bis vivent ici sans être des faces : l'<b>affectif</b>, c'est ce qui
+     nous touche — le poids, « ça résonne » ; le <b>réflexif</b>, c'est ce qu'on fait — les gestes
+     déposés. <span class="q">Elles sont montrées côte à côte, jamais soustraites : un seul chiffre
+     d'écart remplacerait les deux lectures, et c'est exactement ce que l'anti-fusion refuse. Ici on
+     peut compter — l'agrégat est anonyme, il n'y a plus personne dedans. Au patient, jamais : la
+     finesse même dé-anonymiserait.</span> Quand les deux ne vont pas ensemble, c'est qu'on fait
+     quelque chose qui ne nous touche pas, ou qu'on est touchés par ce qu'on ne fait pas.</p>
   <h3>un moment, pas un écran</h3>
   <p>Filigrane n'est pas un tableau de bord qu'on consulte : c'est le support du <b>point
      institutionnel</b>, une fois par trimestre. D'où les deux fenêtres — « les trois derniers mois »
@@ -321,6 +329,21 @@ function matiere(cle){
 var M_AP = matiere("ap"), M_AV = matiere("av");
 /* setGrainBi ne lit qu'un RATIO (il normalise a/(a+b)) : passer les masses brutes suffit. */
 
+/* ══ L'ÉCART AFFECTIF↔RÉFLEXIF — il est déjà à l'écran, sans nom : les boucles portent la
+   matière (les gestes déposés = comment on tient le soin = le RÉFLEXIF), la poutre porte le
+   poids (« ça résonne » = ce qui nous touche = l'AFFECTIF). Leur divergence est l'écart, un
+   tour plus haut.
+   Deux lectures du même corpus, jamais soustraites : on ne les fond pas en un écart, on les
+   montre toutes les deux et leur distance se voit. Le modèle est celui de LeCLG — diffraction
+   ⊕ diffraction_sans_partage, co-présentes, jamais fondues.
+   Au bilobe il n'y a plus personne : le nombre y est permis (CONTINUUM.md §18bis,
+   2026-07-15). Au trilobe, jamais — localisation seule. ══ */
+function part(o){ return Math.round(100 * o.c / (o.c + o.f)); }   // % vers la Continuité
+var P_REFLEXIF = part(M_AP);   // ce qu'on fait — la matière rangée sur les boucles
+var P_AFFECTIF = part(AP);     // ce qui nous touche — le poids que porte l'assiette
+/* AP porte déjà {c, f} : c'est l'assiette("poids") calculée plus haut. Pas de POIDS_C/POIDS_F
+   à créer — les deux masses existent, il suffit de les lire. */
+
 /* ══ LA FICTION — registre-garde : les mots de la personne, zéro jargon, tentatif, aucun verdict.
       Le patient peut apparaître dans les mots ; rien ne se conclut sur lui (sujet = le soignant).
       ⚠️ ENTIÈREMENT DE MA MAIN — à reprendre par Abtine. ══ */
@@ -331,7 +354,17 @@ $("recit").innerHTML =
  "contre un sur trois il y a trois mois.</p>"+
  "<p>Le mot « <b>épuisement</b> » est apparu <b>neuf fois</b>, sous <b>sept plumes différentes</b>. Il n'était pas là au dernier point.</p>"+
  "<p><b>Trois gestes n'ont pas bougé depuis quatre trimestres</b> : on ne dépose presque jamais un vide d'information, "+
- "on ne tient presque jamais un écart, on ne choisit presque jamais d'attendre.</p>";
+ "on ne tient presque jamais un écart, on ne choisit presque jamais d'attendre.</p>"+
+ /* Les deux nombres restent CÔTE À CÔTE : leur différence n'est écrite nulle part. L'écrire,
+    ce serait les fondre en un seul chiffre, et ce chiffre remplacerait les deux lectures —
+    exactement ce que l'anti-fusion refuse. On montre les deux, la distance se lit.
+    « Les deux ne vont pas ensemble » n'est ni bien ni mal : la Vigie ne pousse dans aucun
+    sens, et aucun adjectif ne s'y ajoute. */
+ "<p><b>Ce qu'on fait</b> tombe à "+P_REFLEXIF+" % du côté de la Continuité. "+
+ "<b>Ce qui nous touche</b> y tombe à "+P_AFFECTIF+" %. "+
+ (Math.abs(P_REFLEXIF - P_AFFECTIF) < 5
+   ? "Les deux vont ensemble."
+   : "Les deux ne vont pas ensemble.")+"</p>";
 
 /* Anonymes : au bilobe, on lit l'angle, pas la personne — c'est la diffraction (conserver la
    vision de tout le monde), pas une mesure de discrétion. */
